@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Parampara Heritage Treasure Hunt | Interactive India Map</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+* { box-sizing: border-box; }
+body {
+  background: linear-gradient(#ffe9c9, #fff7e6 85%);
+  font-family: 'Poppins', Arial, sans-serif;
+  margin: 0;
+  color: #a35b04;
+  overflow-x: hidden;
+}
+.header {
+  background: linear-gradient(90deg, #ff9900, #ffca6d);
+  color: white;
+  padding: 22px 0 16px 0;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+.header h1 { margin:0; font-size:1.9em; letter-spacing: 1px;}
+.header p { font-size:1em; margin:6px 0 0 0; }
+
+#map-container {
+  width: 96vw;
+  max-width: 1100px;
+  height: 72vh;
+  max-height: 560px;
+  margin: 20px auto;
+  position: relative;
+  background: #fffbe9;
+  border-radius: 26px;
+  box-shadow: 0 8px 40px #ffb22d19;
+  border: 3px solid #ffb22d;
+  overflow: hidden;
+}
+.back-link {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: #ff9800;
+  color: #ffeaa7;
+  padding: 10px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: background 0.2s;
+  z-index: 50;
+}
+.back-link:hover {
+  background: #555;
+}
+
+svg {
+  width: 100%;
+  height: 100%;
+}
+
+.state, .district {
+  fill: #ffeaa7;
+  stroke: #ff9800;
+  stroke-width: 1.5;
+  cursor: pointer;
+  transition: fill 0.3s;
+}
+/* Add after the existing .state and .district styles */
+.state-label, .district-label {
+  font-size: 11px;
+  font-weight: 600;
+  fill: #6b3f00;
+  pointer-events: none;
+  text-anchor: middle;
+  text-shadow: 1px 1px 2px #fff, -1px -1px 2px #fff, 1px -1px 2px #fff, -1px 1px 2px #fff;
+}
+
+.state-name-tooltip, .district-name-tooltip {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.95);
+  color: #6b3f00;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  border: 1px solid #ffbb33;
+  display: none;
+}
+
+.state:hover, .district:hover {
+  fill: #ffd97d;
+}
+.state.visited, .district.visited {
+  fill: #a8e6cf;
+  stroke: #2ecc71;
+}
+
+#clue-panel {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  left: auto;
+  transform: none;
+  background: rgba(255, 249, 223, 0.97);
+  color: #944f03;
+  font-size: 1.04em;
+  min-width: 260px;
+  max-width: 320px;
+  padding: 16px 18px 14px 18px;
+  border-radius: 12px;
+  border: 2.5px solid #ffcc7b;
+  box-shadow: 0 4px 20px #ffb22d55;
+  z-index: 10;
+  text-align: center;
+  line-height: 1.5;
+}
+
+#answer-input {
+  width: 88%;
+  padding: 9px 12px;
+  margin: 10px 0 8px 0;
+  border: 2px solid #ffbb33;
+  border-radius: 7px;
+  font-size: 1em;
+  background: #fff8e0;
+  color: #6b3f00;
+}
+
+#submit-btn, #back-btn {
+  background: #ff9800;
+  color: white;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1em;
+  transition: 0.2s;
+  margin: 4px;
+}
+#submit-btn:hover, #back-btn:hover {
+  background: #e68900;
+}
+#back-btn {
+  background: #666;
+}
+
+#score {
+  color: #e67b00;
+  font-size: 1.1em;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin: 8px 0 4px 28px;
+  background: #fffbe8;
+  padding: 7px 18px;
+  border-radius: 16px;
+  box-shadow: 0 0 0 2.5px #ffedcd inset;
+  display: inline-block;
+}
+
+#win-modal {
+  position: fixed;
+  left: 0; top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+  background: rgba(255, 205, 90, 0.96);
+  color: #965b00;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: 1.6em;
+  text-align: center;
+  padding: 20px;
+}
+#win-modal h2 { margin: 0 0 14px 0; font-size: 1.4em; }
+#win-modal p { font-size: 0.68em; max-width: 700px; line-height: 1.5; }
+#win-modal button {
+  background: #fff;
+  color: #ff9800;
+  border: none;
+  font-weight: 700;
+  padding: 14px 32px;
+  font-size: 0.65em;
+  border-radius: 8px;
+  margin-top: 20px;
+  box-shadow: 0 4px 12px #ab771957;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  #clue-panel {
+    right: 10px;
+    max-width: 280px;
+    font-size: 0.96em;
+  }
+}
+
+@media (max-width: 650px) {
+  #clue-panel {
+    position: relative;
+    right: auto;
+    margin: 10px auto;
+    max-width: 90%;
+  }
+}
+</style>
+</head>
+<body>
+<a href="indexes.html" class="back-link">← Back to Home</a>
+<div class="header">
+  <h1>🏺 Parampara Heritage Treasure Hunt</h1>
+  <p>Read clues → Find locations → Answer riddles → Collect tokens!</p>
+</div>
+<div id="score">Clue: 1/7 | Tokens: 0</div>
+<div id="map-container">
+  <svg id="india-map"></svg>
+  <div id="clue-panel">
+    <strong>🗺️ Location Clue #1</strong><br>
+    <em>"This region is often called <strong>God's Own Country</strong>. Lush backwaters, cultural dance, and green landscapes welcome you. Which state?"</em>
+  </div>
+</div>
+
+<div id="win-modal">
+  <h2>🎉 Congratulations, Heritage Guardian! 🎉</h2>
+  <p>
+    You've completed the sacred journey from Kerala's backwaters to Mumbai's Gateway! From Kathakali's painted faces to Elephanta's stone gods, you've walked through centuries of Bharatiya Sanskriti. The real treasure was the stories, the devotion carved in stone, and the thread of Parampara that binds us all. <strong>You are now a keeper of India's heritage.</strong>
+  </p>
+  <button onclick="location.reload()">🔄 Play Again</button>
+</div>
+
+<script>
+const heritageRoute = [
+  { 
+    state: 'Kerala', 
+    locationClue: "This region is often called <strong>God's Own Country</strong>. Lush backwaters, cultural dance, and green landscapes welcome you. Which state?",
+    riddle: "🎭 I dance without feet, speak without words. My face painted green, my eyes tell of gods. From Mahabharata to Ramayana I bring. What am I?", 
+    answer: 'kathakali', 
+    fact: "✅ KATHAKALI discovered! Kerala's ancient dance-drama. Token earned: 🎭" 
+  },
+  
+  { 
+    state: 'Goa', 
+    locationClue: "A land of beaches and churches, where <strong>East met West</strong> for 450 years. Portuguese influence and carnival spirit. Which coastal state?",
+    riddle: "⛪ I hold Saint Francis Xavier's body. Baroque beauty in white and gold. A UNESCO treasure in Goa. Which church?", 
+    answer: 'basilica', 
+    fact: "✅ BASILICA OF BOM JESUS! Indo-Portuguese harmony. Token earned: ⛪" 
+  },
+  { 
+    state: 'Karnataka', 
+    locationClue: "Ruins of an ancient empire where boulders tell tales. Once rivaled Rome in size. The <strong>Vijayanagara capital</strong>. Which heritage site?",
+    riddle: "🏛️ I'm made of stone but built like I could move. With wheels that can't turn. At Vittala Temple. What am I?", 
+    answer: 'chariot', 
+    fact: "✅ STONE CHARIOT! Hampi's Vijayanagara glory. Token earned: 🏛️" 
+  },
+  { 
+    state: 'Maharashtra', 
+    locationClue: "Home to 29 rock-cut caves near Aurangabad. <strong>Buddhist, Hindu, and Jain</strong> temples side by side. UNESCO site. Which state?",
+    riddle: "🕉️ I'm carved from a single rock, top to bottom. Mount Kailash I represent. 200,000 tons removed. Which temple at Ellora?", 
+    answer: 'kailasa', 
+    fact: "✅ KAILASA TEMPLE! World's largest monolith. Token earned: 🕉️" 
+  },
+  { 
+    state: 'Maharashtra',
+    district: 'Mumbai Suburban',
+    locationClue: "An island 10 km from a major city's harbor. Portuguese named it after a giant elephant sculpture. <strong>Shiva's cave temples</strong>. Which district are these caves near?",
+    riddle: "🔱 I have three faces but one soul: Creator, Keeper, Destroyer. 6 meters tall in basalt. What sculpture?", 
+    answer: 'trimurti', 
+    fact: "✅ TRIMURTI found! Shiva's three aspects. Token earned: 🔱",
+    zoomToDistrict: true
+  },
+  { 
+    state: 'Maharashtra',
+    district: 'Mumbai',
+    locationClue: "Final stop in Maharashtra's financial capital! Built in 1924, this <strong>iconic arch by the sea</strong> is where history changed. Which district?",
+    riddle: "🏆 I welcomed King George V but became the exit gate for colonizers in 1948. Standing tall by the Arabian Sea. What am I?", 
+    answer: 'gateway', 
+    fact: "✅ GATEWAY OF INDIA! Symbol of freedom and new beginnings! 🎉",
+    districtLevel: true
+  }
+];
+
+let currentLevel = 0;
+let tokensCollected = 0;
+let phase = 'location';
+let mapLevel = 'state';
+let stateMapData = null;
+
+const width = document.getElementById('map-container').offsetWidth;
+const height = document.getElementById('map-container').offsetHeight;
+const svg = d3.select("#india-map").attr("viewBox", `0 0 ${width} ${height}`);
+let g = svg.append("g");
+
+const stateURL = "india_final.geojson";
+const maharashtraDistrictURL = "https://cdn.jsdelivr.net/gh/udit-001/india-maps-data@bcbcba3/geojson/states/maharashtra.geojson";
+
+loadStateMap();
+
+function loadStateMap() {
+  mapLevel = 'state';
+  g.selectAll("*").remove();
+  
+  // Remove any existing tooltips
+  d3.selectAll('.state-name-tooltip').remove();
+  
+  // Create tooltip element
+  const tooltip = d3.select('body').append('div')
+    .attr('class', 'state-name-tooltip')
+    .style('position', 'absolute')
+    .style('display', 'none');
+  
+  d3.json(stateURL).then(data => {
+    stateMapData = data;
+    const projection = d3.geoMercator().fitSize([width, height], data);
+    const path = d3.geoPath().projection(projection);
+
+    g.selectAll("path")
+      .data(data.features)
+      .enter()
+      .append("path")
+      .attr("d", path)
+      .attr("class", "state")
+      .attr("data-state", d => d.properties.NAME_1 || d.properties.st_nm)
+      .on("click", (event, d) => {
+        const stateName = d.properties.NAME_1 || d.properties.st_nm;
+        handleStateClick(stateName);
+      })
+      .on("mouseover", function(event, d) {
+        d3.select(this).style("fill", "#ffd97d");
+        const stateName = d.properties.NAME_1 || d.properties.st_nm;
+        tooltip
+          .style('display', 'block')
+          .html(stateName)
+          .style('left', (event.pageX + 10) + 'px')
+          .style('top', (event.pageY - 28) + 'px');
+      })
+      .on("mousemove", function(event) {
+        tooltip
+          .style('left', (event.pageX + 10) + 'px')
+          .style('top', (event.pageY - 28) + 'px');
+      })
+      .on("mouseout", function() {
+        d3.select(this).style("fill", null);
+        tooltip.style('display', 'none');
+      });
+
+    showLocationClue();
+  }).catch(err => console.error("State map load error:", err));
+}
+
+// Replace the loadDistrictMap function with this updated version:
+function loadDistrictMap() {
+  mapLevel = 'district';
+  phase = 'location';  // ← MOVE THIS LINE INSIDE THE FUNCTION
+  g.selectAll("*").remove();
+  
+  // Remove any existing tooltips
+  d3.selectAll('.district-name-tooltip').remove();
+  
+  // Create tooltip element
+  const tooltip = d3.select('body').append('div')
+    .attr('class', 'district-name-tooltip')
+    .style('position', 'absolute')
+    .style('display', 'none');
+  
+  d3.json(maharashtraDistrictURL).then(data => {
+    const projection = d3.geoMercator().fitSize([width, height], data);
+    const path = d3.geoPath().projection(projection);
+
+    g.selectAll("path")
+      .data(data.features)
+      .enter()
+      .append("path")
+      .attr("d", path)
+      .attr("class", "district")
+      .attr("data-district", d => d.properties.NAME_2 || d.properties.district)
+      .on("click", (event, d) => {
+        const districtName = d.properties.NAME_2 || d.properties.district;
+        handleDistrictClick(districtName);
+      })
+      .on("mouseover", function(event, d) {
+        d3.select(this).style("fill", "#ffd97d");
+        const districtName = d.properties.NAME_2 || d.properties.district;
+        tooltip
+          .style('display', 'block')
+          .html(districtName)
+          .style('left', (event.pageX + 10) + 'px')
+          .style('top', (event.pageY - 28) + 'px');
+      })
+      .on("mousemove", function(event) {
+        tooltip
+          .style('left', (event.pageX + 10) + 'px')
+          .style('top', (event.pageY - 28) + 'px');
+      })
+      .on("mouseout", function() {
+        d3.select(this).style("fill", null);
+        tooltip.style('display', 'none');
+      });
+
+    // Show location clue immediately after loading districts
+    showLocationClue();
+    
+  }).catch(err => console.error("District map load error:", err));
+}
+
+function showLocationClue() { 
+  phase = 'location';  // ← ADD THIS LINE (if not already there)
+  const level = heritageRoute[currentLevel];
+  updateCluePanel(`<strong>🗺️ Location Clue #${currentLevel + 1}</strong><br><em>${level.locationClue}</em>`); 
+}
+
+
+function handleStateClick(stateName) {
+  const targetState = heritageRoute[currentLevel].state;
+  
+  if (phase === 'location' && mapLevel === 'state') {
+    if (stateName && stateName.includes(targetState)) {
+      updateCluePanel(`✅ Correct state! Now solve the cultural riddle...`);
+      setTimeout(showRiddle, 1500);
+    } else {
+      updateCluePanel(`❌ Wrong state! Read the clue carefully and try again.<br><small><em>${heritageRoute[currentLevel].locationClue}</em></small>`);
+    }
+  }
+}
+
+function handleDistrictClick(districtName) {
+  const targetDistrict = heritageRoute[currentLevel].district;
+  
+  if (phase === 'location' && mapLevel === 'district') {
+    // Accept any district containing "Mumbai" in the name
+    if (districtName && districtName.toLowerCase().includes('mumbai')) {
+      updateCluePanel(`✅ Correct district! Now solve the cultural riddle...`);
+      setTimeout(showRiddle, 1500);
+    } else {
+      updateCluePanel(`❌ Wrong district! Look for Mumbai/Mumbai Suburban region.<br><small><em>${heritageRoute[currentLevel].locationClue}</em></small><br><button id="back-btn">← Back to India Map</button>`);
+      setTimeout(() => {
+        document.getElementById('back-btn').onclick = loadStateMap;
+      }, 100);
+    }
+  }
+}
+
+
+function showRiddle() {
+  phase = 'riddle';
+  const level = heritageRoute[currentLevel];
+  updateCluePanel(`
+    <strong>${level.riddle}</strong><br>
+    <input type="text" id="answer-input" placeholder="Type your answer..." />
+    <br>
+    <button id="submit-btn">Submit Answer</button>
+  `);
+  
+  setTimeout(() => {
+    document.getElementById('submit-btn').onclick = checkAnswer;
+    document.getElementById('answer-input').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') checkAnswer();
+    });
+    document.getElementById('answer-input').focus();
+  }, 100);
+}
+
+function checkAnswer() {
+  const userAnswer = document.getElementById('answer-input').value.trim().toLowerCase();
+  const correctAnswer = heritageRoute[currentLevel].answer.toLowerCase();
+  
+  if (userAnswer.includes(correctAnswer) || correctAnswer.includes(userAnswer)) {
+    collectToken();
+  } else {
+    updateCluePanel(`❌ Incorrect! Try again.<br><small>Hint: Think about the clue...</small><br>
+      <strong>${heritageRoute[currentLevel].riddle}</strong><br>
+      <input type="text" id="answer-input" placeholder="Type your answer..." />
+      <br><button id="submit-btn">Submit Answer</button>`);
+    setTimeout(() => {
+      document.getElementById('submit-btn').onclick = checkAnswer;
+      document.getElementById('answer-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') checkAnswer();
+      });
+      document.getElementById('answer-input').focus();
+    }, 100);
+  }
+}
+
+function collectToken() {
+  const level = heritageRoute[currentLevel];
+  tokensCollected++;
+  updateCluePanel(`<strong>🎉 Token Collected!</strong><br>${level.fact}`);
+  
+  if (mapLevel === 'state') {
+    d3.selectAll('.state').filter(function() {
+      const name = d3.select(this).attr('data-state');
+      return name && name.includes(level.state);
+    }).classed('visited', true);
+  } else {
+  d3.selectAll('.district').filter(function() {
+    const name = d3.select(this).attr('data-district');
+    return name && name.toLowerCase().includes('mumbai');
+  }).classed('visited', true);
+}
+
+  document.getElementById('score').textContent = `Clue: ${currentLevel + 1}/7 | Tokens: ${tokensCollected}`;
+
+  if (currentLevel < heritageRoute.length - 1) {
+    setTimeout(() => {
+      currentLevel++;
+      
+      if (heritageRoute[currentLevel].zoomToDistrict) {
+        loadDistrictMap();
+      } else if (heritageRoute[currentLevel].districtLevel) {
+        showLocationClue();
+      } else {
+        if (mapLevel === 'district') {
+          loadStateMap();
+        } else {
+          showLocationClue();
+        }
+      }
+    }, 2800);
+  } else {
+    setTimeout(() => {
+      document.getElementById('win-modal').style.display = 'flex';
+    }, 2200);
+  }
+}
+
+function updateCluePanel(html) {
+  document.getElementById('clue-panel').innerHTML = html;
+}
+</script>
+</body>
+</html>

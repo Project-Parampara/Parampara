@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site 3D Model & Voice</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; text-align: center; background: black; color: white; }
+    .vr-container { width: 80%; max-width: 1000px; height: 400px; margin: 20px auto; border: 2px solid #FFD700; border-radius: 10px; overflow: hidden; }
+    iframe { width: 100%; height: 100%; border: none; }
+    .controls { margin-top: 10px; }
+    .controls button, .controls select { padding: 8px 12px; margin: 5px; font-size: 14px; border-radius: 5px; border: none; cursor: pointer; }
+    .controls button { background: #4caf50; color: white; font-weight: bold; }
+    .controls button:hover { background: #45a049; }
+    .controls select { background: white; color: black; }
+    .vr-caption { font-size: 13px; font-weight: normal; margin: 5px; color: #ddd; }
+    .vr-caption a { font-weight: bold; color: #1CAAD9; text-decoration: none; }
+    .back-btn { margin-top: 20px; padding: 8px 18px; font-weight: bold; border-radius: 5px; background: #ff9800; color: white; border: none; cursor: pointer;}
+    .back-btn:hover { background: #e67e22;}
+  </style>
+</head>
+<body>
+  <button class="back-btn" onclick="window.history.back()">← Back</button>
+  <h1 id="placeTitle">3D Viewer</h1>
+  <div class="vr-container" id="vrContainer"></div>
+  <div class="vr-caption" id="vrCaption"></div>
+  <div class="controls">
+    <select id="langSelect">
+      <option value="en">English</option>
+      <option value="kn">ಕನ್ನಡ</option>
+      <option value="hi">हिंदी</option>
+    </select>
+    <button id="playVoice">▶ Play Voice</button>
+    <button id="pauseVoice">⏸ Pause</button>
+    <button id="stopVoice">⏹ Stop</button>
+  </div>
+  
+  <script>
+    function getParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+    const district = getParam('district') || 'Goa';
+    const site = getParam('site') || 'Basilica of Bom Jesus';
+
+    const vrData = {
+   
+        "North Goa":{
+        "Basilica of Bom Jesus": {
+          url: "https://3dwarehouse.sketchup.com/embed/906bb7782d4ce98e629bc1320ab60604?token=O2flnZyAmFw=&binaryName=s21",
+          caption: `<a href="https://3dwarehouse.sketchup.com/model/906bb7782d4ce98e629bc1320ab60604" target="_blank">Basilica of Bom Jesus</a> — 3D Model from SketchUp 3D Warehouse`,
+          audio: {
+            en: "The Basilica of Bom Jesus in Goa is a UNESCO World Heritage Site, famous for housing the mortal remains of St. Francis Xavier and showcasing exquisite Baroque architecture.",
+            kn: "ಗೋವಾದ ಬೊಮ್ ಜೀಸಸ್ ಬ್ಯಾಸಿಲಿಕಾ ಯುನೆಸ್ಕೋ ವಿಶ್ವ ಪರಂಪರೆ ತಾಣವಾಗಿದ್ದು, ಸಂತ ಫ್ರಾನ್ಸಿಸ್ ಜೇವಿಯರ್ ಅವರ ಅವಶೇಷಗಳನ್ನು ಹೊಂದಿದೆ ಮತ್ತು ಬರೋಕ್ ಶೈಲಿಯ 건축ಕಲೆಗೆ ಪ್ರಸಿದ್ಧವಾಗಿದೆ.",
+            hi: "गोवा का बोम जीसस चर्च एक यूनेस्को विश्व धरोहर स्थल है, जो सेंट फ्रांसिस जेवियर के अवशेषों और बारोक वास्तुकला के लिए प्रसिद्ध है।"
+          }
+        },
+        "Aguada Fort": {
+          url: "https://sketchfab.com/models/69ac80a8e0654649ac86b27d48f18327/embed",
+          caption: `<a href="https://sketchfab.com/3d-models/fort-aguada--goa-69ac80a8e0654649ac86b27d48f18327" target="_blank">Fort Aguada, Goa</a> — Model by yammahajan0312 on Sketchfab`,
+          audio: {
+            en: "Fort Aguada is a 17th-century Portuguese fort in Goa overlooking the Arabian Sea. It once served as a crucial defense point and a lighthouse guiding ships to safety.",
+            kn: "ಅಗುಡಾ ಕೋಟೆ ಗೋವಾದಲ್ಲಿ ಅರೇಬಿಯನ್ ಸಮುದ್ರದ ತೀರದಲ್ಲಿರುವ 17ನೇ ಶತಮಾನದ ಪೋರ್ಚುಗೀಸ್ ಕೋಟೆಯಾಗಿದೆ.",
+            hi: "फोर्ट अगुआड़ा गोवा में अरब सागर के किनारे स्थित 17वीं शताब्दी का पुर्तगाली किला है।"
+          }
+        },
+        "Baga Beach": {
+          url: "https://sketchfab.com/models/77bc9575b55947cc907e390ca9efd280/embed",
+          caption: `<a href="https://sketchfab.com/3d-models/rock-reef-and-beach-77bc9575b55947cc907e390ca9efd280" target="_blank">Baga Beach, Goa</a> — Model by Metazeon on Sketchfab`,
+          audio: {
+            en: "Baga Beach in Goa is one of India's most popular coastal destinations, famous for its golden sands, vibrant nightlife, and water sports along the Arabian Sea.",
+            kn: "ಗೋವಾದ ಬಾಗಾ ಬೀಚ್ ಬಂಗಾರದ ಮರಳು, ರಾತ್ರಿಯ ಜೀವನ ಮತ್ತು ನೀರಿನ ಕ್ರೀಡೆಗಳಿಗೆ ಪ್ರಸಿದ್ಧವಾಗಿದೆ.",
+            hi: "गोवा का बागा बीच सुनहरी रेत, शानदार नाइटलाइफ़ और जलक्रीड़ाओं के लिए जाना जाता है।"
+          }
+        },
+        "Calangute Beach": {
+          url: "https://sketchfab.com/models/36680a8026314a959ea0adb77f019912/embed",
+          caption: `<a href="https://sketchfab.com/3d-models/rock-reef-promontory-cape-foreland-36680a8026314a959ea0adb77f019912" target="_blank">Calangute Beach, Goa</a> — Model by Metazeon on Sketchfab`,
+          audio: {
+            en: "Calangute Beach, often called the Queen of Beaches in Goa, is known for its wide sandy stretch, lively shacks, and water adventures.",
+            kn: "ಕ್ಯಾಲಂಗುಟ್ ಬೀಚ್ ಅಗಲವಾದ ಮರಳಿನ ತೀರ ಮತ್ತು ಜಲಕ್ರೀಡೆಗಳಿಗಾಗಿ ಪ್ರಸಿದ್ಧವಾಗಿದೆ.",
+            hi: "कैलंगुट बीच अपनी चौड़ी रेतीली तटरेखा और जलक्रीड़ाओं के लिये प्रसिद्ध है।"
+          }
+        }
+        },
+        "South Goa":{
+               "Dudhsagar Falls": {
+          url: "https://sketchfab.com/models/b1852a8dfb514592b313810bfa42dd9a/embed",
+          caption: `<a href="https://sketchfab.com/3d-models/waterfall-in-slovenia-b1852a8dfb514592b313810bfa42dd9a" target="_blank">Dudhsagar Falls (model)</a> — HyDroneS on Sketchfab`,
+          audio: {
+            en: "Dudhsagar Falls, located on the Mandovi River in Goa, is one of India's tallest waterfalls — its name means 'Sea of Milk'.",
+            kn: "ದುಧ್‌ಸಾಗರ್ ಜಲಪಾತ 'ಹಾಲಿನ ಸಮುದ್ರ' ಎಂದು ಕರೆಯಲಾಗುತ್ತದೆ.",
+            hi: "दूधसागर झरना 'दूध का सागर' के नाम से जाना जाता है।"
+          }
+        },
+        "Palolem Beach": {
+          url: "https://sketchfab.com/models/bdcd31375efc441b8bb6892d3680301c/embed",
+          caption: `<a href="https://sketchfab.com/3d-models/rock-reef-small-island-and-beach-bdcd31375efc441b8bb6892d3680301c" target="_blank">Palolem Beach, Goa</a> — Metazeon on Sketchfab`,
+          audio: {
+            en: "Palolem Beach in South Goa is famous for its crescent-shaped coastline, calm waters and laid-back vibe.",
+            kn: "ಪಾಲೊಲೆಂ ಬೀಚ್ ಆರಾಮದಾಯಕ ವಾತಾವರಣಕ್ಕಾಗಿ ಪ್ರಸಿದ್ಧವಾಗಿದೆ.",
+            hi: "पालोलेम बीच अपनी शांत और सुरम्य तटरेखा के लिये प्रसिद्ध है।"
+          }
+        },
+        "Anjuna Beach": {
+          url: "https://sketchfab.com/models/bdcd31375efc441b8bb6892d3680301c/embed",
+          caption: `<a href="https://sketchfab.com/3d-models/rock-reef-small-island-and-beach-bdcd31375efc441b8bb6892d3680301c" target="_blank">Anjuna Beach, Goa</a> — Metazeon on Sketchfab`,
+          audio: {
+            en: "Anjuna Beach is known for its bohemian vibe, rocky coastline and flea markets.",
+            kn: "ಅಂಜುನಾ ಬೀಚ್ ತನ್ನ ಬೋಹೇಮಿಯನ್ ವಾತಾವರಣ ಮತ್ತು ಫ್ಲೀ ಮಾರುಕಟ್ಟೆಗಳಿಗೆ ಪ್ರಸಿದ್ಧವಾಗಿದೆ.",
+            hi: "अंजुना बीच अपनी बोहेमियन संस्कृति और फ्ली मार्केट के लिये मशहूर है।"
+          }
+        },
+        "Colva Beach": {
+          url: "https://sketchfab.com/models/72e7fb6b25014695959af8edcc5a1ada/embed",
+          caption: `<a href="https://sketchfab.com/3d-models/rock-reef-promontory-cape-foreland-72e7fb6b25014695959af8edcc5a1ada" target="_blank">Colva Beach, Goa</a> — Metazeon on Sketchfab`,
+          audio: {
+            en: "Colva Beach is a long white-sand beach in South Goa known for peaceful sunsets and long walks.",
+            kn: "ಕೊಲ್ವಾ ಬೀಚ್ ದೀರ್ಘವಾದ ಬಿಳಿ ಮರಳಿನ ತೀರಕ್ಕಾಗಿ ಪ್ರಸಿದ್ಧವಾಗಿದೆ.",
+            hi: "कोलवा बीच लंबी सफेद रेत और शांत वातावरण के लिये जाना जाता है।"
+          }
+        }
+      },   
+
+     
+      "Mysuru": {
+        "Chamundeshwari Temple": {
+          url: "",
+          caption: "Chamundeshwari Temple in Mysuru",
+          audio: {
+            en: "Hilltop temple dedicated to Goddess Chamundi.",
+            kn: "ಚಾಮುಂಡೇಶ್ವರಿ ದೇವಿ ಅವರಿಗೆ ಸಮರ್ಪಿತ ಪರ್ವತಾಶ್ರಯ ದೇವಾಲಯ.",
+            hi: "शक्ति देवी को समर्पित पहाड़ी मंदिर।"
+          }
+        },
+        "Nanjundeshwara Temple": {
+          url: "",
+          caption: "Nanjundeshwara Temple in Mysuru",
+          audio: {
+            en: "Temple on the banks of Kapila River.",
+            kn: "ಕಪಿಲಾ ನದಿಯ ತೀರದ ದೇವಾಲಯ.",
+            hi: "कपिला नदी के किनारे मंदिर।"
+          }
+        },
+        "Mysore Palace": {
+          url: "https://sketchfab.com/models/0439ee6964c94a10bf9767088469bb94/embed",
+          caption: `<a href="https://sketchfab.com/3d-models/mysore-palace-0439ee6964c94a10bf9767088469bb94" target="_blank">Mysore Palace</a> — Model by ryangarnett on Sketchfab`,
+          audio: {
+            en: "Mysore Palace is the royal residence of the Wodeyar dynasty, famous for its Indo-Saracenic architecture and grand Dasara celebrations.",
+            kn: "ಮೈಸೂರು ಅರಮನೆ — ವೋಡೆಯಾರ್ ವಂಶದ ರಾಜವಾಸ.",
+            hi: "मैसूर पैलेस वोडेयार वंश का शाही निवास है।"
+          }
+        }
+      },
+      "Kolar": {
+        "Kolar Gold Fields (KGF)": {
+          url: "https://sketchfab.com/models/962cde22a76f42bd856616473510e9df/embed",
+          caption: `<a href="https://sketchfab.com/3d-models/toquepala-mine-peru-962cde22a76f42bd856616473510e9df" target="_blank">KGF (Toquepala Mine)</a> — Model by Dr Carlos Bartesaghi Koc`,
+          audio: {
+            en: "KGF is a historic gold mining town in Kolar district, Karnataka, famous for its mines.",
+            kn: "ಕೆಜಿಎಫ್ — ಐತಿಹಾಸಿಕ ಗಣಿಗಾರಿಕಾ ಪಟ್ಟಣ.",
+            hi: "केजीएफ ऐतिहासिक खान वाला शहर है।"
+          }
+        }
+      },
+      "Mandya": {
+        "Krishnarajasagara Dam": {
+          url: "https://sketchfab.com/models/6044b374ecee4b819f5d68f1ec85c047/embed",
+          caption: `<a href="https://sketchfab.com/3d-models/dam-6044b374ecee4b819f5d68f1ec85c047" target="_blank">KRS Dam</a> — Model by Scanamatics`,
+          audio: {
+            en: "Krishna Raja Sagara Dam (KRS Dam) in Mandya district, Karnataka, is a major reservoir and tourist attraction.",
+            kn: "ಕೆಆರ್‌ಎಸ್ ಡ್ಯಾಮ್ — ಪ್ರಮುಖ ಜಲಾಶಯ ಮತ್ತು ಪ್ರವಾಸಿ ಆಕರ್ಷಣೆ.",
+            hi: "केआरएस बांध एक प्रमुख जलाशय है।"
+          }
+        }
+      },
+      "Ballari": {
+        "Virupaksha Temple": {
+          url: "https://sketchfab.com/models/563b5a9961f547439c8df3a794019fdf/embed",
+          caption: `<a href="https://sketchfab.com/3d-models/virupaksha-temple-landscape-563b5a9961f547439c8df3a794019fdf" target="_blank">Virupaksha Temple</a> — Model by keshav2005`,
+          audio: {
+            en: "Virupaksha Temple Landscape in Ballari district, Karnataka.",
+            kn: "ಬಳ್ಳಾರಿ ಜಿಲ್ಲೆಯ ವಿರುಪಕ್ಷ ದೇವಸ್ಥಾನದ ದೃಶ್ಯ.",
+            hi: "विरुपाक्ष मंदिर का दृश्य।"
+          }
+        }
+      },
+      "Belagavi": {
+        "St. Mary's Church": {
+          url: "https://sketchfab.com/models/9628a111cea84ba69b22bbb3734a33db/embed",
+          caption: `<a href="https://sketchfab.com/3d-models/marienkirche-9628a111cea84ba69b22bbb3734a33db" target="_blank">Marienkirche (St. Mary Church)</a> — Model by noe-3d.at`,
+          audio: {
+            en: "St. Mary Church in Belagavi district, Karnataka.",
+            kn: "ಬೆಳಗಾವಿ ಜಿಲ್ಲೆಯ ಸೇಂಟ್ ಮೇರಿ ಚರ್ಚ್.",
+            hi: "बेलगावी का सेंट मैरी चर्च।"
+          }
+        }
+      },
+      "Bengaluru Urban": {
+        "St. Mary's Basilica": {
+          url: "https://sketchfab.com/models/96a4416f2083476d91beb2cf458a1db8/embed",
+          caption: `<a href="https://sketchfab.com/3d-models/koscio-sw-jozefa-w-krakowie-podgorze-polska-96a4416f2083476d91beb2cf458a1db8" target="_blank">St. Joseph Church</a> — Model by Atlas 3D`,
+          audio: {
+            en: "St. Joseph Church in Bengaluru Urban district, Karnataka.",
+            kn: "ಬೆಂಗಳೂರು ನಗರದ ಸೆಂಟ್ ಜೋಸೆಫ್ ಚರ್ಚ್.",
+            hi: "बेंगलुरु का सेंट जोसेफ चर्च।"
+          }
+        }
+      },
+      "Dharwad": {
+        "Siddharooda Math": {
+          url: "https://sketchfab.com/models/09f5cd2d5242448e84175bd00dd66692/embed",
+          caption: `<a href="https://sketchfab.com/3d-models/swami-samarth-maharaj-09f5cd2d5242448e84175bd00dd66692" target="_blank">Swami Samarth Maharaj</a> — Model by Karan.Malhotra`,
+          audio: {
+            en: "Swami Samarth Maharaj temple in Dharwad district, Karnataka.",
+            kn: "ಧಾರವಾಡದ ಸ್ವಾಮಿ ಸಮರ್ತ ಮಹಾರಾಜ್ ದೇವಸ್ಥಾನ.",
+            hi: "धारवाड़ का स्वामी समर्थ मंदिर।"
+          }
+        }
+      },
+       "Coorg": {
+         "Golden Temple (Namdroling Monastery)": {
+       url: "https://sketchfab.com/models/fb4de2f6462f4e47b8fca38335fd59f5/embed",
+      caption: `<a href="https://sketchfab.com/3d-models/replica-golden-temple-fb4de2f6462f4e47b8fca38335fd59f5" target="_blank">Golden Temple (Namdroling Monastery), Coorg</a> — Model by <a href="https://sketchfab.com/surajkm" target="_blank">Cyborgsince90s</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+      audio: {
+      en: "The Golden Temple in Coorg, officially known as Namdroling Monastery, is one of the largest Tibetan settlements in South India. It is famous for its golden Buddha statues and peaceful monastery atmosphere.",
+      kn: "ಕೂರ್ಗಿನ ಗೋಲ್ಡನ್ ಟೆಂಪಲ್ ಅಥವಾ ನಾಮ್ದ್ರೋಲಿಂಗ್ ಮಠ ದಕ್ಷಿಣ ಭಾರತದ ಅತಿದೊಡ್ಡ ಟಿಬೆಟಿಯನ್ ಆಶ್ರಮಗಳಲ್ಲಿ ಒಂದಾಗಿದೆ. ಇದು ಚಿನ್ನದ ಬುದ್ಧ ಪ್ರತಿಮೆಗಳು ಮತ್ತು ಶಾಂತ ವಾತಾವರಣಕ್ಕಾಗಿ ಪ್ರಸಿದ್ಧವಾಗಿದೆ.",
+      hi: "कूर्ग का गोल्डन टेंपल, जिसे नामड्रोलिंग मठ कहा जाता है, दक्षिण भारत के सबसे बड़े तिब्बती मठों में से एक है। यह अपनी सुनहरी बुद्ध प्रतिमाओं और शांत वातावरण के लिए प्रसिद्ध है।"
+    }
+  }
+},
+      "Bidar": {
+        "Bidar Fort": {
+          url: "https://sketchfab.com/models/f1822a22fa584fdabcf1105ad863f29f/embed",
+          caption: `<a href="https://sketchfab.com/3d-models/tomb-of-humayun-shah-bidar-f1822a22fa584fdabcf1105ad863f29f" target="_blank">Tomb of Humayun Shah (Bidar)</a> — Model by incogdesigner`,
+          audio: {
+            en: "Tomb of Humayun Shah in Bidar district, Karnataka.",
+            kn: "ಬೀದರ್ ಜಿಲ್ಲಾ ಹೂಮಾಯೂನ್ ಷಾ ಸಮಾಧಿ.",
+            hi: "बीडर जिले का हुमायूं शाह का मकबरा।"
+          }
+        }
+  
+      },
+
+     
+        "Central Delhi":{
+        "India Gate": {
+  url: "https://sketchfab.com/models/0642b13699f54ff79ef4085ae5294954/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/simpoly-india-gate-0642b13699f54ff79ef4085ae5294954" target="_blank">India Gate, New Delhi</a> — Model by <a href="https://sketchfab.com/Premisul" target="_blank">Premisul</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "India Gate, located in New Delhi, is a war memorial built to honor the Indian soldiers who lost their lives during World War I. Designed by Sir Edwin Lutyens, this grand arch stands as a symbol of bravery and national pride.",
+    kn: "ದೆಹಲಿ ನಗರದ ಇಂಡಿಯಾ ಗೇಟ್ ಪ್ರಥಮ ವಿಶ್ವಯುದ್ಧದಲ್ಲಿ ಬಲಿಯಾದ ಭಾರತೀಯ ಸೈನಿಕರ ಸ್ಮರಣಾರ್ಥ ನಿರ್ಮಿಸಲಾದ ಸ್ಮಾರಕವಾಗಿದೆ. ಸರ್ ಎಡ್ವಿನ್ ಲಟಿಯನ್ಸ್ ವಿನ್ಯಾಸಗೊಳಿಸಿದ ಈ ಅದ್ಭುತ ಕಮಾನು ಧೈರ್ಯ ಮತ್ತು ರಾಷ್ಟ್ರೀಯ ಹೆಮ್ಮೆಯ ಸಂಕೇತವಾಗಿದೆ.",
+    hi: "नई दिल्ली में स्थित इंडिया गेट प्रथम विश्व युद्ध में शहीद हुए भारतीय सैनिकों की याद में बनाया गया युद्ध स्मारक है। सर एडविन लुटियन्स द्वारा डिजाइन किया गया यह भव्य द्वार वीरता और राष्ट्रीय गर्व का प्रतीक है।"
+  }
+},
+        "Rashtrapati Bhavan": {
+  url: "https://sketchfab.com/models/9189f8f9d0ac44d6bc28a91b36428aaa/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/rashrapathi-bhavan-low-poly-9189f8f9d0ac44d6bc28a91b36428aaa" target="_blank">Rashtrapati Bhavan (Low Poly)</a> — Model by <a href="https://sketchfab.com/raghava" target="_blank">Raghava</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "Rashtrapati Bhavan in New Delhi is the official residence of the President of India. This monumental complex blends classical and Indian architectural styles and sits on the Raisina Hill overlooking the city.",
+    kn: "ನವದೆಲ್ಹಿಯಲ್ಲಿ ಇರುವ ರಾಷ್ಟ್ರಪತಿ ಭವನ ಭಾರತದ ರಾಷ್ಟ್ರಪತಿ ಅವರ ಅಧಿಕೃತ ವಾಸಸ್ಥಾನ. ಇದು ಭಾರತೀಯ ಮತ್ತು ಪಾಶ್ಚಾತ್ಯ ಶೈಲಿಗಳ ಮಿಶ್ರ ವಾಸ್ತುಶಿಲ್ಪವನ್ನು ಹೊಂದಿದೆ.",
+    hi: "नई दिल्ली में स्थित राष्ट्रपति भवन भारत के राष्ट्रपति का आधिकारिक आवास है। यह शाही परिसर भारतीय और पश्चिमी शैलियों के वास्तुशिल्प का सुंदर मेल दिखाता है।"
+  }
+},
+"Connaught Place": {
+  url: "https://3dwarehouse.sketchup.com/embed/0db78097-f954-49fa-98b2-398415c18f82?token=YLZ-AlkBues=&binaryName=s21",
+  caption: `<a href="https://3dwarehouse.sketchup.com/model/0db78097-f954-49fa-98b2-398415c18f82" target="_blank">Connaught Place, New Delhi</a> — 3D Model from <a href="https://3dwarehouse.sketchup.com" target="_blank">SketchUp 3D Warehouse</a>`,
+  audio: {
+    en: "Connaught Place, located in the heart of New Delhi, is one of the city's most famous commercial and heritage centers. Known for its Georgian-style architecture, circular design, and lively shopping streets, it remains a cultural and business hub of the capital.",
+    kn: "ದೆಹಲಿ ನಗರದ ಹೃದಯಭಾಗದಲ್ಲಿರುವ ಕಾನಾಟ್ ಪ್ಲೇಸ್ ಅತ್ಯಂತ ಪ್ರಸಿದ್ಧ ವ್ಯಾಪಾರ ಮತ್ತು ಪರಂಪರೆಯ ಕೇಂದ್ರವಾಗಿದೆ. ಇದರ ವೃತ್ತಾಕಾರದ ವಿನ್ಯಾಸ ಮತ್ತು ಆಕರ್ಷಕ ವಾಸ್ತುಶಿಲ್ಪಕ್ಕಾಗಿ ಪ್ರಸಿದ್ಧವಾಗಿದೆ.",
+    hi: "नई दिल्ली के बीचोंबीच स्थित कनॉट प्लेस शहर का प्रमुख वाणिज्यिक और ऐतिहासिक क्षेत्र है। यह अपने गोलाकार डिजाइन और सुंदर औपनिवेशिक वास्तुकला के लिए प्रसिद्ध है।"
+  }
+},
+"National Museum": {
+  url: "https://sketchfab.com/models/e9c81d67a50b4958bfb3ff5a8e513b4b/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/national-museum-of-modern-art-new-delhi-e9c81d67a50b4958bfb3ff5a8e513b4b" target="_blank">National Museum of Modern Art, New Delhi</a> — Model by <a href="https://sketchfab.com/ashishlodhi981" target="_blank">Ashish Lodhi</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "The National Museum of Modern Art in New Delhi showcases India's rich heritage of modern and contemporary art. It houses a vast collection of paintings, sculptures, and photographs representing diverse artistic traditions.",
+    kn: "ದೆಹಲಿ ನಗರದ ಆಧುನಿಕ ಕಲಾ ಸಂಗ್ರಹಾಲಯವು ಭಾರತದ ಆಧುನಿಕ ಮತ್ತು ಸಮಕಾಲೀನ ಕಲೆಯ ವೈಭವವನ್ನು ಪ್ರದರ್ಶಿಸುತ್ತದೆ. ಇದು ಚಿತ್ರಗಳು, ಶಿಲ್ಪಗಳು ಮತ್ತು ಛಾಯಾಚಿತ್ರಗಳ ವಿಶಾಲ ಸಂಗ್ರಹವನ್ನು ಹೊಂದಿದೆ.",
+    hi: "नई दिल्ली का राष्ट्रीय आधुनिक कला संग्रहालय भारत की आधुनिक और समकालीन कला की समृद्ध विरासत को प्रदर्शित करता है। यहाँ चित्रों, मूर्तियों और फोटोग्राफ़ का विशाल संग्रह है।"
+  }
+},
+"Gurudwara Bangla Sahib": {
+  url: "https://3dwarehouse.sketchup.com/embed/ada6d74789cf1873fee1e0a4220b8da?token=9spKS0UfB-4=&binaryName=s21",
+  caption: `<a href="https://3dwarehouse.sketchup.com/model/ada6d74789cf1873fee1e0a4220b8da" target="_blank">Gurudwara Bangla Sahib, New Delhi</a> — 3D Model from <a href="https://3dwarehouse.sketchup.com" target="_blank">SketchUp 3D Warehouse</a>`,
+  audio: {
+    en: "Gurudwara Bangla Sahib in New Delhi is one of the most prominent Sikh gurdwaras in India, known for its golden dome and serene Sarovar. Built in the 17th century, it is associated with Guru Har Krishan, the eighth Sikh Guru.",
+    kn: "ದೆಹಲಿ ನಗರದಲ್ಲಿರುವ ಗುರುದ್ವಾರ ಬಂಗ್ಲಾ ಸಾಹಿಬ್ ಭಾರತದ ಪ್ರಮುಖ ಸಿಖ್ ದೇವಾಲಯಗಳಲ್ಲಿ ಒಂದಾಗಿದೆ. ಇದು ಚಿನ್ನದ ಗುಂಬಜ್ ಮತ್ತು ಶಾಂತ ಸರೋವರಕ್ಕಾಗಿ ಪ್ರಸಿದ್ಧವಾಗಿದೆ. ಇದು 17ನೇ ಶತಮಾನದಲ್ಲಿ ನಿರ್ಮಾಣಗೊಂಡಿದ್ದು ಎಂಟನೇ ಸಿಖ್ ಗುರು ಹರ ಕೃಷನ್ ಅವರಿಗೆ ಸಂಬಂಧಿಸಿದೆ.",
+    hi: "नई दिल्ली में स्थित गुरुद्वारा बंगला साहिब भारत के सबसे प्रसिद्ध सिख गुरुद्वारों में से एक है। इसकी सुनहरी गुंबद और शांत सरोवर प्रसिद्ध हैं। यह 17वीं सदी में गुरु हरकृष्ण से जुड़ा हुआ है।"
+  }
+}
+},
+"South Delhi":{
+"Qutub Minar": {
+  url: "https://sketchfab.com/models/cf4f8f1bcdbd4cb49056c688f8739e77/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/qutub-minar-cf4f8f1bcdbd4cb49056c688f8739e77" target="_blank">Qutub Minar</a> — Model by <a href="https://sketchfab.com/anishroyalinc" target="_blank">AnishRoyalinc</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "Qutub Minar, located in Delhi, is a UNESCO World Heritage Site and one of India’s tallest minarets, standing at 73 meters. Built in the early 13th century by Qutb-ud-din Aibak and later completed by Iltutmish, it symbolizes the beginning of Muslim rule in India.",
+    kn: "ದೆಹಲಿ ನಗರದ ಕುತ್ಬ್ ಮಿನಾರ್ ಯುನೆಸ್ಕೋ ವಿಶ್ವ ಪರಂಪರೆ ತಾಣವಾಗಿದ್ದು, ಭಾರತದ ಅತ್ಯಂತ ಎತ್ತರದ ಮಿನಾರ್‌ಗಳಲ್ಲಿ ಒಂದಾಗಿದೆ. ಇದನ್ನು 13ನೇ ಶತಮಾನದಲ್ಲಿ ಕುತ್ತಬ್-ಉದ್-ದಿನ್ ಐಬಕ್ ನಿರ್ಮಿಸಿ ಇಲ್ತುತ್ಮಿಶ್ ಪೂರ್ಣಗೊಳಿಸಿದರು.",
+    hi: "दिल्ली में स्थित कुतुब मीनार एक यूनेस्को विश्व धरोहर स्थल है और भारत की सबसे ऊँची मीनारों में से एक है। इसका निर्माण 13वीं शताब्दी में कुतुब-उद-दीन ऐबक ने शुरू किया और इल्तुतमिश ने पूरा किया।"
+  }
+},
+"Lotus Temple": {
+  url: "https://sketchfab.com/models/0a81d18db3c947fbbdc8d60edd1ef323/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/lotus-temple-0a81d18db3c947fbbdc8d60edd1ef323" target="_blank">Lotus Temple</a> — Model by <a href="https://sketchfab.com/jvillar" target="_blank">jvillar</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "The Lotus Temple in New Delhi is a Bahá'í House of Worship, renowned for its flower-like architectural design. Open to all faiths, it symbolizes unity, peace, and purity. Its white marble petals make it one of the most iconic landmarks of India.",
+    kn: "ದೆಹಲಿ ನಗರದ ಲೋಟಸ್ ದೇವಸ್ಥಾನ ಬಹಾಯಿ ಧರ್ಮದ ಆರಾಧನಾ ಮಂದಿರವಾಗಿದ್ದು, ಹೂವಿನ ಆಕಾರದ ವಿನ್ಯಾಸಕ್ಕಾಗಿ ಪ್ರಸಿದ್ಧವಾಗಿದೆ. ಇದು ಎಲ್ಲ ಧರ್ಮಗಳಿಗೂ ತೆರೆಯಲ್ಪಟ್ಟಿದ್ದು, ಏಕತೆ, ಶಾಂತಿ ಮತ್ತು ಶುದ್ಧತೆಯ ಸಂಕೇತವಾಗಿದೆ.",
+    hi: "नई दिल्ली का लोटस टेंपल बहाई उपासना स्थल है, जो अपने कमल के आकार की अनोखी वास्तुकला के लिए प्रसिद्ध है। यह सभी धर्मों के लिए खुला है और एकता, शांति और पवित्रता का प्रतीक है।"
+  }
+},
+"Humayun’s Tomb": {
+  url: "https://sketchfab.com/models/592c6356517b4199bd88e5caf68da36d/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/humayun-tomb-delhi-592c6356517b4199bd88e5caf68da36d" target="_blank">Humayun’s Tomb, Delhi</a> — Model by <a href="https://sketchfab.com/afjalymail78692" target="_blank">AFJAL ANSARI</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "Humayun’s Tomb in New Delhi is a UNESCO World Heritage Site and the first garden-tomb built in India. Commissioned by Empress Bega Begum in the 16th century, it inspired the later Mughal architectural marvels like the Taj Mahal.",
+    kn: "ದೆಹಲಿ ನಗರದಲ್ಲಿರುವ ಹೂಮಾಯೂನ್ ಸಮಾಧಿ ಭಾರತದ ಮೊದಲ ತೋಟ ಸಮಾಧಿಯಾಗಿದ್ದು, ಯುನೆಸ್ಕೋ ವಿಶ್ವ ಪರಂಪರೆ ತಾಣವಾಗಿದೆ. 16ನೇ ಶತಮಾನದಲ್ಲಿ ಬೆಗಾ ಬೇಗುಮ್ ಅವರಿಂದ ನಿರ್ಮಿಸಲಾದ ಈ ಸಮಾಧಿಯು ತಾಜ್ ಮಹಲ್‌ಗಳಂತಹ ಮುಘಲ್ ವಾಸ್ತುಶಿಲ್ಪದ ಪ್ರೇರಣೆಯಾಗಿತ್ತು.",
+    hi: "नई दिल्ली में स्थित हुमायूँ का मकबरा भारत का पहला बाग़ वाला मकबरा है और यूनेस्को विश्व धरोहर स्थल है। इसे 16वीं सदी में बेगा बेगम ने बनवाया था, और इसने ताजमहल जैसी मुग़ल वास्तुकला को प्रेरित किया।"
+  }
+
+},
+"Red Fort": {
+  url: "https://3dwarehouse.sketchup.com/embed/db873c66d177fa62f81ca56fe0bd79bc?token=ambCs4ekfW8=&binaryName=s21",
+  caption: `<a href="https://3dwarehouse.sketchup.com/model/db873c66d177fa62f81ca56fe0bd79bc" target="_blank">Red Fort, New Delhi</a> — 3D Model from <a href="https://3dwarehouse.sketchup.com" target="_blank">SketchUp 3D Warehouse</a>`,
+  audio: {
+    en: "The Red Fort in New Delhi is a UNESCO World Heritage Site and a symbol of India’s independence. Built by Mughal Emperor Shah Jahan in the 17th century, it is known for its massive red sandstone walls and intricate Mughal architecture.",
+    kn: "ದೆಹಲಿ ನಗರದ ಲಾಲ್ ಕಿಲ್ಲಾ ಅಥವಾ ಕೆಂಪು ಕೋಟೆ ಯುನೆಸ್ಕೋ ವಿಶ್ವ ಪರಂಪರೆ ತಾಣವಾಗಿದ್ದು, ಭಾರತದ ಸ್ವಾತಂತ್ರ್ಯದ ಸಂಕೇತವಾಗಿದೆ. ಮುಘಲ್ ಸಾಮ್ರಾಟ ಶಾಹ್ ಜಹಾನ್ 17ನೇ ಶತಮಾನದಲ್ಲಿ ಇದನ್ನು ನಿರ್ಮಿಸಿದರು.",
+    hi: "दिल्ली का लाल किला यूनेस्को विश्व धरोहर स्थल और भारत की आज़ादी का प्रतीक है। इसे 17वीं सदी में मुगल सम्राट शाहजहाँ ने बनवाया था और यह लाल बलुआ पत्थर की भव्य दीवारों के लिए प्रसिद्ध है।"
+  }
+}
+      },
+
+  "Thiruvananthapuram":{
+  "Padmanabhaswamy Temple": {
+  url: "https://sketchfab.com/models/764f3a3192c84f0f9ff2a0aa5c075dc2/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/sree-padmanabhaswamy-temple-kerala-764f3a3192c84f0f9ff2a0aa5c075dc2" target="_blank">Sree Padmanabhaswamy Temple, Kerala</a> — Model by <a href="https://sketchfab.com/urmilakshirsagar1945" target="_blank">urmilakshirsagar1945</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "Sree Padmanabhaswamy Temple, located in Thiruvananthapuram, Kerala, is one of the richest and most revered Hindu temples in India. Dedicated to Lord Vishnu, it is famous for its Dravidian-style architecture and immense treasures discovered in its vaults.",
+    kn: "ಕೇರಳದ ತಿರುವನಂತಪುರದಲ್ಲಿರುವ ಶ್ರೀ ಪದ್ಮನಾಭಸ್ವಾಮಿ ದೇವಾಲಯವು ಭಾರತದ ಅತ್ಯಂತ ಶ್ರೀಮಂತ ಮತ್ತು ಪ್ರಸಿದ್ಧ ಹಿಂದೂ ದೇವಾಲಯಗಳಲ್ಲಿ ಒಂದಾಗಿದೆ. ಇದು ಶ್ರೀ ವಿಷ್ಣುವಿಗೆ ಸಮರ್ಪಿತವಾಗಿದ್ದು, ಅದರ ದ್ರಾವಿಡ ಶೈಲಿಯ ವಾಸ್ತುಶಿಲ್ಪ ಮತ್ತು ಅದ್ಭುತ ಖಜಾನೆಗೆ ಪ್ರಸಿದ್ಧವಾಗಿದೆ.",
+    hi: "केरल के तिरुवनंतपुरम में स्थित श्री पद्मनाभस्वामी मंदिर भारत के सबसे समृद्ध और प्रसिद्ध हिंदू मंदिरों में से एक है। भगवान विष्णु को समर्पित यह मंदिर अपनी द्रविड़ शैली की वास्तुकला और विशाल खज़ाने के लिए प्रसिद्ध है।"
+  }
+},
+"Kovalam Beach": {
+  url: "https://3dwarehouse.sketchup.com/embed/uec8d93c9-a036-421f-a563-133013265286?token=l5SBZC8z94Y=&binaryName=s21",
+  caption: `<a href="https://3dwarehouse.sketchup.com/model/uec8d93c9-a036-421f-a563-133013265286" target="_blank">Kovalam Beach, Kerala</a> — 3D Model from <a href="https://3dwarehouse.sketchup.com" target="_blank">SketchUp 3D Warehouse</a>`,
+  audio: {
+    en: "Kovalam Beach, located near Thiruvananthapuram in Kerala, is one of India’s most famous coastal destinations. Known for its crescent-shaped shoreline, serene waves, and the iconic lighthouse, it attracts tourists from all over the world.",
+    kn: "ಕೇರಳದ ತಿರುವನಂತಪುರದ ಸಮೀಪದಲ್ಲಿರುವ ಕೋವളം ಬೀಚ್ ಭಾರತದ ಅತ್ಯಂತ ಪ್ರಸಿದ್ಧ ಕಡಲತೀರಗಳಲ್ಲಿ ಒಂದಾಗಿದೆ. ಅದರ ಅರ್ಧಚಂದ್ರಾಕಾರದ ತೀರ, ಶಾಂತ ಅಲೆಗಳು ಮತ್ತು ಪ್ರಸಿದ್ಧ ದೀಪಸ್ತಂಭಕ್ಕಾಗಿ ಇದು ಪ್ರಸಿದ್ಧವಾಗಿದೆ.",
+    hi: "केरल के तिरुवनंतपुरम के पास स्थित कोवलम बीच भारत के सबसे प्रसिद्ध समुद्र तटों में से एक है। यह अपने अर्धचंद्राकार तट, शांत लहरों और प्रसिद्ध लाइटहाउस के लिए प्रसिद्ध है।"
+  }
+}
+},
+"Kannur":{
+"Kannur Lighthouse": {
+  url: "https://sketchfab.com/models/5011cc9834be458eb42b4ae9a22148a3/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/soru-ulemine-tuletorn-detailsem-estonia-5011cc9834be458eb42b4ae9a22148a3" target="_blank">Kannur Lighthouse (3D Model)</a> — Model by <a href="https://sketchfab.com/3Dinformation" target="_blank">3Di</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "Kannur Lighthouse, located on the coast of Kerala, is one of the oldest lighthouses on the Arabian Sea. Built in the early 20th century, it offers a panoramic view of the sea and the historic town of Kannur.",
+    kn: "ಕೇರಳದ ಕರಾವಳಿಯಲ್ಲಿ ಇರುವ ಕಣ್ಣೂರು ಲೈಟ್ಹೌಸ್ ಅರೇಬಿಯನ್ ಸಮುದ್ರದ ಅತ್ಯಂತ ಹಳೆಯ ದೀಪಸ್ತಂಭಗಳಲ್ಲಿ ಒಂದಾಗಿದೆ. 20ನೇ ಶತಮಾನದ ಆರಂಭದಲ್ಲಿ ನಿರ್ಮಿಸಲಾದ ಇದು ಸಮುದ್ರ ಮತ್ತು ಕಣ್ಣೂರು ಪಟ್ಟಣದ ಸುಂದರ ನೋಟವನ್ನು ನೀಡುತ್ತದೆ.",
+    hi: "केरल के तट पर स्थित कन्नूर लाइटहाउस अरब सागर के सबसे पुराने प्रकाशस्तंभों में से एक है। 20वीं सदी की शुरुआत में बना यह लाइटहाउस समुद्र और कन्नूर शहर का सुंदर दृश्य प्रस्तुत करता है।"
+  }
+}
+      },
+    
+        "Gangtok":{
+        "Tsomgo Lake": {
+  url: "https://sketchfab.com/models/11708835626c4b3da8935fb5b2a8b3bc/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/highland-river-terrain-11708835626c4b3da8935fb5b2a8b3bc" target="_blank">Tsomgo Lake (3D Terrain Model)</a> — Model by <a href="https://sketchfab.com/falk" target="_blank">Falk Lochmann</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "Tsomgo Lake, also known as Changu Lake, is a glacial lake located about 40 kilometers from Gangtok in Sikkim. Surrounded by steep mountains and often frozen during winter, the lake is considered sacred by the Sikkimese people and reflects the serene beauty of the Himalayas.",
+    kn: "ಸಿಕ್ಕಿಂ ರಾಜ್ಯದ ಗ್ಯಾಂಗ್ಟಾಕ್‌ನಿಂದ ಸುಮಾರು 40 ಕಿಮೀ ದೂರದಲ್ಲಿರುವ ಝಾಂಗೋ ಸರೋವರವನ್ನು ಹಿಮನದಿಯ ಸರೋವರ ಎಂದು ಕರೆಯಲಾಗುತ್ತದೆ. ಇದು ಪರ್ವತಗಳಿಂದ ಆವರಿಸಲ್ಪಟ್ಟಿದ್ದು, ಚಳಿಗಾಲದಲ್ಲಿ ಹಿಮದಿಂದ ಮುಚ್ಚಲ್ಪಟ್ಟಿರುತ್ತದೆ. ಇದು ಸಿಕ್ಕಿಂ ನಿವಾಸಿಗಳ ಪವಿತ್ರ ಸ್ಥಳವಾಗಿದ್ದು ಹಿಮಾಲಯದ ಶಾಂತ ಸೌಂದರ್ಯವನ್ನು ಪ್ರತಿಬಿಂಬಿಸುತ್ತದೆ.",
+    hi: "सिक्किम की राजधानी गंगटोक से लगभग 40 किलोमीटर दूर स्थित त्सोमगो झील, जिसे चांगू झील भी कहा जाता है, एक हिमनदीय झील है। बर्फ से ढके ऊँचे पर्वतों से घिरी यह झील सर्दियों में जम जाती है और सिक्किम के लोगों के लिए पवित्र मानी जाती है। यह हिमालय की शांत सुंदरता को प्रतिबिंबित करती है।"
+  }
+}
+},
+"Gyalshing":{
+"Rabdentse Ruins": {
+  url: "https://sketchfab.com/models/026ac5900aeb4df7b9e101e430b0bd5b/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/teatro-romano-di-teano-italy-026ac5900aeb4df7b9e101e430b0bd5b" target="_blank">Rabdentse Ruins (3D Representation)</a> — Model by <a href="https://sketchfab.com/juanbrualla" target="_blank">Arqueomodel3D</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "Rabdentse Ruins, located near Pelling in West Sikkim, are the remains of the second capital of the former Kingdom of Sikkim, established in the 17th century. These ruins stand as silent witnesses to Sikkim’s royal history, overlooking the beautiful Kanchenjunga range.",
+    kn: "ಸಿಕ್ಕಿಂ ರಾಜ್ಯದ ಪಶ್ಚಿಮ ಭಾಗದ ಪೆಲ್ಲಿಂಗ್ ಸಮೀಪದಲ್ಲಿರುವ ರಾಬ್ಡೆಂಟ್ಸ್ ಅವಶೇಷಗಳು 17ನೇ ಶತಮಾನದ ಸಿಕ್ಕಿಂ ಸಾಮ್ರಾಜ್ಯದ ಎರಡನೇ ರಾಜಧಾನಿಯ ಅವಶೇಷಗಳಾಗಿವೆ. ಇವು ಕಂಚನಜಂಗಾ ಶ್ರೇಣಿಯ ಅದ್ಭುತ ದೃಶ್ಯವನ್ನು ನೀಡುತ್ತವೆ ಮತ್ತು ಸಿಕ್ಕಿಂನ ಇತಿಹಾಸದ ನಿಶ್ಯಬ್ದ ಸಾಕ್ಷಿಗಳಾಗಿವೆ.",
+    hi: "सिक्किम के पश्चिमी हिस्से में पेलिंग के पास स्थित राबडेंटसे के अवशेष, सिक्किम साम्राज्य की दूसरी राजधानी के खंडहर हैं, जिसकी स्थापना 17वीं सदी में हुई थी। ये खंडहर कंचनजंगा पर्वत श्रृंखला की खूबसूरत पृष्ठभूमि के साथ सिक्किम के शाही इतिहास के मौन साक्षी हैं।"
+  }
+}
+},
+"Mangan":{
+"Lachen Valley": {
+  url: "https://sketchfab.com/models/6e68b8e58a7c4287b03e2ad2e01711c4/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/das-cigunung-salem-6e68b8e58a7c4287b03e2ad2e01711c4" target="_blank">Lachen Valley (3D Terrain Model)</a> — Model by <a href="https://sketchfab.com/fajral" target="_blank">Fajr Al</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "Lachen Valley, located in North Sikkim, is a breathtaking Himalayan valley surrounded by snow-capped peaks and alpine meadows. It serves as the gateway to Gurudongmar Lake and is home to the Lachenpas, known for their unique Buddhist culture and warm hospitality.",
+    kn: "ಸಿಕ್ಕಿಂ ರಾಜ್ಯದ ಉತ್ತರ ಭಾಗದಲ್ಲಿರುವ ಲಾಚೆನ್ ಕಣಿವೆ ಹಿಮಾಚ್ಛಾದಿತ ಪರ್ವತಗಳು ಮತ್ತು ಹೂಗಳಿಂದ ತುಂಬಿದ ಆಲ್ಪೈನ್ ಮೇದಿನಗಳಿಂದ ಆವರಿಸಲ್ಪಟ್ಟ ಅದ್ಭುತ ಕಣಿವೆ. ಇದು ಗುರುಡಾಂಗ್ಮಾರ್ ಸರೋವರಕ್ಕೆ ದ್ವಾರವಾಗಿದ್ದು, ವಿಶಿಷ್ಟ ಬೌದ್ಧ ಸಂಸ್ಕೃತಿ ಮತ್ತು ಆತಿಥ್ಯಕ್ಕಾಗಿ ಪ್ರಸಿದ್ಧವಾದ ಲಾಚೆನ್ ಜನಾಂಗದ ನಿವಾಸವಾಗಿದೆ.",
+    hi: "उत्तर सिक्किम में स्थित लाचेन घाटी एक खूबसूरत हिमालयी घाटी है, जो बर्फ से ढकी पर्वत चोटियों और फूलों से भरी घास की घाटियों से घिरी हुई है। यह गुरुडोंगमार झील का प्रवेश द्वार है और यहां के लाचेनपा लोग अपनी विशिष्ट बौद्ध संस्कृति और आतिथ्य के लिए प्रसिद्ध हैं।"
+  }
+}
+},
+"Namchi":{
+"Tendong Hill": {
+  url: "https://sketchfab.com/models/6dff907d427f4c9f8d301075f8019c82/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/mountain-range-01-6dff907d427f4c9f8d301075f8019c82" target="_blank">Tendong Hill (3D Terrain Model)</a> — Model by <a href="https://sketchfab.com/solararchitect" target="_blank">solararchitect</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "Tendong Hill in Sikkim is an important sacred mountain for the Lepcha community and a popular trekking destination. It is associated with the Tendong Lho Rumfaat legend — a great flood that the local people survived by taking refuge on the hill. Tendong is valued for its rich biodiversity, cool forests, and panoramic Himalayan views.",
+    kn: "ಸಿಕ್ಕಿಂನ ತೇಂಡಾಂಗ್ ಬೆಟ್ಟವು ಲೆಪ್ಚಾ ಸಮುದಾಯಕ್ಕೆ ಪವಿತ್ರವಾದುದು ಮತ್ತು ಜನಪ್ರಿಯ ಟ್ರೆಕ್ಕಿಂಗ್ ಗುರಿಯಾಗಿಯೂಿದೆ. 'ತೇಂಡಾಂಗ್ ಲೋ ರುಮ್ಫಾಟ್' ಎಂಬ ಮಹಾಪ್ರಳಯ ಕಥೆಯೊಂದಿಗೆ ಇದು ಸಂಬಂದಿಸಿದೆ — ಸ್ಥಳೀಯರು ಈ ಬೆಟ್ಟದ ಮೇಲೆ ಶರಣವಾಗಿ ಜೀವ ಉಳಿಸಿಕೊಂಡರು. ತೇಂಡಾಂಗ್ ತನ್ನ ಶ್ರೀಮಂತ ಜೀವವಿವಿಧತೆ, ತಂಪಾದ ಕಾಡುಗಳು ಮತ್ತು ಹಿಮಾಲಯದ ವ್ಯಾಪಕ ದೃಶ್ಯಗಳಿಗಾಗಿ ಪ್ರಸಿದ್ಧವಾಗಿದೆ.",
+    hi: "सिक्किम का तेंडॉन्ग हिल लेपचा समुदाय के लिए एक पवित्र पर्वत है और लोकप्रिय ट्रेकिंग स्थल भी है। यह 'तेंडॉन्ग लो रुम्फाट' महाप्रलय कथा से जुड़ा हुआ है — जिसमें स्थानीय लोग इस पहाड़ी पर शरण लेकर बचे थे। तेंडॉन्ग अपनी समृद्ध जैव विविधता, ठंडी जंगलों और हिमालय के मनोरम दृश्यों के लिये जाना जाता है।"
+  }
+}
+
+},
+
+  "Ambala":{
+  "Pine Forest": {
+  url: "https://sketchfab.com/models/ece69535f7584e099488f65f2072264e/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/pine-forest-ece69535f7584e099488f65f2072264e" target="_blank">Pine Forest (3D Model)</a> — Model by <a href="https://sketchfab.com/fangzhangmnm" target="_blank">fangzhangmnm</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "The Pine Forests of Sikkim are serene stretches of evergreen trees spread across the hillsides. Known for their cool air, the whispering sound of the wind, and mist-covered paths, these forests provide a peaceful retreat for nature lovers and trekkers. Pine trees play a vital role in maintaining the region’s ecosystem.",
+    kn: "ಸಿಕ್ಕಿಂನ ಪೈನ್ ಅರಣ್ಯಗಳು ಹಸಿರಾಗಿರುವ ಮರಗಳಿಂದ ತುಂಬಿರುವ ಶಾಂತ ಪ್ರದೇಶಗಳಾಗಿವೆ. ಶೀತಲ ಗಾಳಿ, ಗಾಳಿಯ ಸದ್ದು ಮತ್ತು ಮಂಜು ಮುಸುಕಿದ ದಾರಿಗಳಿಂದ ಇವು ಪ್ರಸಿದ್ಧವಾಗಿವೆ. ಪ್ರಕೃತಿ ಪ್ರೇಮಿಗಳು ಮತ್ತು ಟ್ರೆಕ್ಕರ್‌ಗಳಿಗೆ ಇವು ವಿಶ್ರಾಂತಿಯ ತಾಣವಾಗಿವೆ. ಪೈನ್ ಮರಗಳು ಈ ಪ್ರದೇಶದ ಪರಿಸರ ಸಮತೋಲನ ಕಾಯ್ದುಕೊಳ್ಳುವಲ್ಲಿ ಪ್ರಮುಖ ಪಾತ್ರವಹಿಸುತ್ತವೆ.",
+    hi: "सिक्किम के पाइन वन शांत और सदाबहार पेड़ों से भरे हुए हैं। ठंडी हवा, हवा की सरसराहट और धुंध से ढके रास्तों के लिए ये प्रसिद्ध हैं। ये वन प्रकृति प्रेमियों और ट्रेकर्स के लिए शांति का स्थान हैं। पाइन पेड़ इस क्षेत्र के पर्यावरणीय संतुलन को बनाए रखने में महत्वपूर्ण भूमिका निभाते हैं।"
+  }
+},
+"Sri Mullana Sahib": {
+  url: "https://sketchfab.com/models/99db0c15bd22483f831f768a226a589b/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/gurdwara-sri-rori-sahib-jahman-99db0c15bd22483f831f768a226a589b" target="_blank">Sri Mullana Sahib (3D Model)</a> — Model by <a href="https://sketchfab.com/SilkCities" target="_blank">Silk Cities</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "Sri Mullana Sahib, located in Punjab, is a revered Sikh Gurudwara known for its spiritual serenity and historical significance. It attracts devotees from across the region who come to offer prayers and seek blessings. The shrine stands as a symbol of faith, peace, and devotion in Sikhism.",
+    kn: "ಪಂಜಾಬಿನ ಶ್ರೀ ಮುಲ್ಲಾನಾ ಸಾಹಿಬ್ ಗುರುದ್ವಾರವು ಧಾರ್ಮಿಕ ಶಾಂತಿ ಮತ್ತು ಐತಿಹಾಸಿಕ ಮಹತ್ವಕ್ಕಾಗಿ ಪ್ರಸಿದ್ಧವಾಗಿದೆ. ಭಕ್ತರು ಇಲ್ಲಿ ಪ್ರಾರ್ಥನೆ ಮಾಡಲು ಮತ್ತು ಆಶೀರ್ವಾದ ಪಡೆಯಲು ಬರುತ್ತಾರೆ. ಇದು ಸಿಖ್ ಧರ್ಮದ ನಂಬಿಕೆ, ಶಾಂತಿ ಮತ್ತು ಭಕ್ತಿಯ ಸಂಕೇತವಾಗಿದೆ.",
+    hi: "पंजाब में स्थित श्री मुल्लाना साहिब एक प्रसिद्ध सिख गुरुद्वारा है, जो अपनी आध्यात्मिक शांति और ऐतिहासिक महत्व के लिए जाना जाता है। यहाँ दूर-दूर से श्रद्धालु आकर अरदास करते हैं और आशीर्वाद प्राप्त करते हैं। यह गुरुद्वारा सिख धर्म में श्रद्धा, शांति और भक्ति का प्रतीक है।"
+  }
+},
+"Baba Banda Bahadur Gurudwara": {
+  url: "https://sketchfab.com/models/b5fa3c933ad94b50a294ca266d2ac342/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/sikh-warrior-statue-of-banda-bahadur-b5fa3c933ad94b50a294ca266d2ac342" target="_blank">Baba Banda Bahadur Gurudwara (3D Model)</a> — Model by <a href="https://sketchfab.com/bilawal" target="_blank">bilawal</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "Baba Banda Bahadur Gurudwara in Punjab is dedicated to the great Sikh warrior Baba Banda Singh Bahadur, who led a historic uprising against Mughal rule in the early 18th century. The Gurudwara commemorates his bravery, leadership, and sacrifice in defending Sikh faith and justice.",
+    kn: "ಪಂಜಾಬಿನ ಬಾಬಾ ಬಂಡಾ ಬಹಾದುರ್ ಗುರುದ್ವಾರವು ಮಹಾನ್ ಸಿಖ್ ಯೋಧ ಬಾಬಾ ಬಂಡಾ ಸಿಂಗ್ ಬಹಾದುರ್ ಅವರಿಗೆ ಸಮರ್ಪಿತವಾಗಿದೆ. ಅವರು 18ನೇ ಶತಮಾನದ ಆರಂಭದಲ್ಲಿ ಮುಘಲ್ ಆಳ್ವಿಕೆಯ ವಿರುದ್ಧ ನಡೆದ ಐತಿಹಾಸಿಕ ಬಂಡಾಯವನ್ನು ಮುನ್ನಡೆಸಿದರು. ಈ ಗುರುದ್ವಾರವು ಅವರ ಧೈರ್ಯ, ನಾಯಕತ್ವ ಮತ್ತು ತ್ಯಾಗವನ್ನು ಸ್ಮರಿಸುತ್ತದೆ.",
+    hi: "पंजाब में स्थित बाबा बंदा बहादुर गुरुद्वारा महान सिख योद्धा बाबा बंदा सिंह बहादुर को समर्पित है, जिन्होंने 18वीं सदी की शुरुआत में मुग़ल शासन के खिलाफ ऐतिहासिक विद्रोह का नेतृत्व किया था। यह गुरुद्वारा उनके साहस, नेतृत्व और बलिदान की स्मृति में बनाया गया है।"
+  }
+}
+},
+"Bhiwani":{
+"New Guriya Mahadev Mandir": {
+  url: "https://3dwarehouse.sketchup.com/embed/d0fc9234-7dfd-4e4c-a54f-d0ceaaf3a74b?token=z_uiq7QxqWQ=&binaryName=s21",
+  caption: `<a href="https://3dwarehouse.sketchup.com/model/d0fc9234-7dfd-4e4c-a54f-d0ceaaf3a74b" target="_blank">New Guriya Mahadev Mandir (3D Model)</a> — from <a href="https://3dwarehouse.sketchup.com" target="_blank">SketchUp 3D Warehouse</a>`,
+  audio: {
+    en: "New Guriya Mahadev Mandir is a sacred Hindu temple dedicated to Lord Shiva, known for its peaceful atmosphere and architectural simplicity. The temple attracts devotees who come to offer prayers and seek blessings from Mahadev, symbolizing devotion and spiritual purity.",
+    kn: "ನ್ಯೂ ಗುರುಯ ಮಹಾದೇವ ಮಂದಿರವು ಭಗವಾನ್ ಶಿವನಿಗೆ ಸಮರ್ಪಿತ ಪವಿತ್ರ ಹಿಂದೂ ದೇವಾಲಯವಾಗಿದೆ. ಇದು ಶಾಂತ ವಾತಾವರಣ ಮತ್ತು ಸರಳವಾದ ವಾಸ್ತುಶಿಲ್ಪಕ್ಕಾಗಿ ಪ್ರಸಿದ್ಧವಾಗಿದೆ. ಭಕ್ತರು ಇಲ್ಲಿ ಪ್ರಾರ್ಥನೆ ಮತ್ತು ಆಶೀರ್ವಾದಕ್ಕಾಗಿ ಬರುತ್ತಾರೆ, ಇದು ಭಕ್ತಿ ಮತ್ತು ಆಧ್ಯಾತ್ಮಿಕ ಶುದ್ಧತೆಯ ಸಂಕೇತವಾಗಿದೆ.",
+    hi: "न्यू गूरिया महादेव मंदिर भगवान शिव को समर्पित एक पवित्र हिंदू मंदिर है। यह अपने शांत वातावरण और सादे वास्तुशिल्प के लिए जाना जाता है। भक्त यहाँ प्रार्थना और आशीर्वाद के लिए आते हैं, जो भक्ति और आध्यात्मिक पवित्रता का प्रतीक है।"
+  }
+},
+"Harappan Archaeological Site": {
+  url: "https://sketchfab.com/models/a98eb43db09d419db4df3d96c6fd0c31/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/harappan-site-a98eb43db09d419db4df3d96c6fd0c31" target="_blank">Harappan Archaeological Site (3D Model)</a> — Model by <a href="https://sketchfab.com/immersive24" target="_blank">Immersive</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "The Harappan Archaeological Site represents one of the world’s earliest urban civilizations, part of the Indus Valley Civilization that flourished around 2500 BCE. Known for its advanced town planning, drainage systems, and craftsmanship, Harappa reveals the sophistication of ancient South Asian societies.",
+    kn: "ಹರಪ್ಪ ಪುರಾತತ್ವ ಸ್ಥಳವು ಜಗತ್ತಿನ ಪ್ರಾಚೀನ ನಗರ ನಾಗರಿಕತೆಗಳಲ್ಲಿ ಒಂದಾದ ಸಿಂಧು ಕಣಿವೆ ನಾಗರಿಕತೆಯ ಭಾಗವಾಗಿದೆ. ಕ್ರಿ.ಪೂ. 2500 ರ ವೇಳೆಗೆ ವೃದ್ಧಿಯಾಗಿದೆ. ಅದರ ಸುಧಾರಿತ ನಗರ ಯೋಜನೆ, ಒಳಚರಂಡಿ ವ್ಯವಸ್ಥೆ ಮತ್ತು ಕೈಗಾರಿಕಾ ನೈಪುಣ್ಯಕ್ಕಾಗಿ ಪ್ರಸಿದ್ಧವಾಗಿದೆ.",
+    hi: "हड़प्पा पुरातात्विक स्थल विश्व की सबसे प्राचीन नगरीय सभ्यताओं में से एक — सिंधु घाटी सभ्यता का हिस्सा है, जो लगभग 2500 ईसा पूर्व फली-फूली। उन्नत नगर नियोजन, जल निकासी प्रणाली और शिल्प कौशल के लिए प्रसिद्ध, यह स्थल प्राचीन भारतीय सभ्यता की उन्नति का प्रतीक है।"
+  }
+}
+},
+"Fatehabad":{
+"Mughal Panipat": {
+  url: "https://sketchfab.com/models/7956cb14af724713ad441348e2670d2e/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/hajiganj-fort-mughal-architecture-7956cb14af724713ad441348e2670d2e" target="_blank">Hajiganj Fort – Mughal Architecture (Panipat Representation)</a> — Model by <a href="https://sketchfab.com/jawad.abedin" target="_blank">Jawad Abedin</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "Panipat, located in Haryana, holds great historical importance as the site of three major battles that shaped Indian history. The Mughal architectural style seen in forts like Hajiganj reflects the empire’s strength and artistry during the 16th and 17th centuries.",
+    kn: "ಹರಿಯಾಣ ರಾಜ್ಯದ ಪಾನಿಪತ್ ಮೂರು ಪ್ರಮುಖ ಯುದ್ಧಗಳ ಸ್ಥಳವಾಗಿದ್ದು, ಭಾರತದ ಇತಿಹಾಸವನ್ನು ರೂಪಿಸಿದ ಪ್ರಮುಖ ಸ್ಥಳವಾಗಿದೆ. ಹಜಿಗಂಜ್ ಕೋಟೆಯಂತಹ ಮುಘಲ್ ವಾಸ್ತುಶಿಲ್ಪವು 16ನೇ ಮತ್ತು 17ನೇ ಶತಮಾನಗಳಲ್ಲಿ ಸಾಮ್ರಾಜ್ಯದ ಶಕ್ತಿ ಮತ್ತು ಕಲೆಗಳನ್ನು ಪ್ರತಿಬಿಂಬಿಸುತ್ತದೆ.",
+    hi: "हरियाणा का पानीपत भारत के इतिहास में तीन महान युद्धों का स्थल रहा है। हाजीगंज किले जैसी मुगल वास्तुकला 16वीं और 17वीं सदी में साम्राज्य की शक्ति और कला का प्रतीक है।"
+  }
+}
+
+},
+
+  "Bishnupur":{
+"Imphal War Cemetery": {
+  url: "https://3dwarehouse.sketchup.com/embed/6c6fa145fa7dd8ba4beb212213f2377?token=gELfQs1Ew8c=&binaryName=s21",
+  caption: `<a href="https://3dwarehouse.sketchup.com/model/6c6fa145fa7dd8ba4beb212213f2377" target="_blank">Imphal War Cemetery (3D Model)</a> — from <a href="https://3dwarehouse.sketchup.com" target="_blank">SketchUp 3D Warehouse</a>`,
+  audio: {
+    en: "The Imphal War Cemetery in Manipur commemorates the soldiers of the Allied Forces who lost their lives during the Battle of Imphal in World War II. Maintained by the Commonwealth War Graves Commission, it stands as a solemn reminder of courage and sacrifice.",
+    kn: "ಮಣಿಪುರದ ಇಂಫಾಲ್ ಯುದ್ಧ ಸಮಾಧಿ ದ್ವಿತೀಯ ವಿಶ್ವಯುದ್ಧದ ಸಮಯದಲ್ಲಿ ಇಂಫಾಲ್ ಯುದ್ಧದಲ್ಲಿ ಪ್ರಾಣ ತ್ಯಾಗ ಮಾಡಿದ ಮೈತ್ರಿ ಪಡೆಗಳ ಯೋಧರ ಸ್ಮಾರಕವಾಗಿದೆ. ಇದು ಧೈರ್ಯ ಮತ್ತು ತ್ಯಾಗದ ಸಂಕೇತವಾಗಿದೆ.",
+    hi: "मणिपुर का इंफाल युद्ध स्मारक द्वितीय विश्व युद्ध के दौरान इंफाल की लड़ाई में शहीद हुए मित्र राष्ट्रों के सैनिकों की याद में बनाया गया है। यह साहस और बलिदान का प्रतीक है।"
+  }
+}
+},
+"Imphal East":{
+"Kangla Fort": {
+  url: "https://sketchfab.com/models/c8c7ccb3404b4b5d81488fcdb49ccae5/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/stylized-model-of-kangla-gate-manipur-india-c8c7ccb3404b4b5d81488fcdb49ccae5" target="_blank">Stylized Model of Kangla Gate, Manipur</a> — Model by <a href="https://sketchfab.com/ytrishul" target="_blank">ytrishul</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "Kangla Fort, located in Imphal, Manipur, served as the ancient capital of the Meitei rulers. Known for its iconic Kangla Gate and the sacred Kangla Sha statues, the fort stands as a symbol of Manipur’s royal heritage, spirituality, and resilience.",
+    kn: "ಮಣಿಪುರದ ಇಂಫಾಲ್‌ನಲ್ಲಿರುವ ಕಂಗ್ಲಾ ಕೋಟೆ ಮೈತೈ ರಾಜರ ಪ್ರಾಚೀನ ರಾಜಧಾನಿಯಾಗಿತ್ತು. ಪ್ರಸಿದ್ಧ ಕಂಗ್ಲಾ ಗೇಟ್ ಮತ್ತು ಪವಿತ್ರ ಕಂಗ್ಲಾ ಶಾ ಮೂರ್ತಿಗಳಿಗಾಗಿ ಇದು ಪ್ರಸಿದ್ಧವಾಗಿದೆ. ಮಣಿಪುರದ ರಾಜವಂಶೀಯ ಪರಂಪರೆ ಮತ್ತು ಧಾರ್ಮಿಕ ನಂಬಿಕೆಗಳ ಸಂಕೇತವಾಗಿದೆ.",
+    hi: "मणिपुर की राजधानी इंफाल में स्थित कांगला किला मेइती राजाओं की प्राचीन राजधानी था। अपने प्रसिद्ध कांगला द्वार और पवित्र कांगला शा मूर्तियों के लिए जाना जाने वाला यह किला मणिपुर की समृद्ध विरासत और आध्यात्मिकता का प्रतीक है।"
+  }
+}
+},
+"Senapati":{
+"Stone Circles": {
+  url: "https://sketchfab.com/models/7c197b263a1a4db1b2b3eb15df782989/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/stone-circle-altar-7c197b263a1a4db1b2b3eb15df782989" target="_blank">Stone Circle Altar</a> — Model by <a href="https://sketchfab.com/macijeekk" target="_blank">Macijeekk</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "The ancient Stone Circles found across Northeast India are megalithic monuments built by early tribal communities. These stone structures were often used as burial markers, ritual altars, or symbols of clan heritage, representing a deep spiritual connection with ancestors and nature.",
+    kn: "ಈಶಾನ್ಯ ಭಾರತದ ವಿವಿಧ ಭಾಗಗಳಲ್ಲಿ ಕಂಡುಬರುವ ಪುರಾತನ ಕಲ್ಲು ವಲಯಗಳು ಪ್ರಾಚೀನ ಜನಾಂಗಗಳಿಂದ ನಿರ್ಮಿಸಲಾದ ಮೇಗಲಿಥಿಕ್ ಸ್ಮಾರಕಗಳಾಗಿವೆ. ಇವು ಪೂರ್ವಜರ ಆರಾಧನೆ ಮತ್ತು ಪ್ರಕೃತಿಯೊಂದಿಗೆ ಆತ್ಮೀಯ ಸಂಪರ್ಕವನ್ನು ಸೂಚಿಸುತ್ತವೆ.",
+    hi: "पूर्वोत्तर भारत में पाए जाने वाले प्राचीन पत्थर के वृत्त (स्टोन सर्कल) प्राचीन जनजातीय समुदायों द्वारा बनाए गए मेगालिथिक स्मारक हैं। इनका उपयोग दफ़न स्थलों, अनुष्ठानिक वेदियों या वंशीय प्रतीकों के रूप में किया जाता था, जो पूर्वजों और प्रकृति से आध्यात्मिक संबंध दर्शाते हैं।"
+  }
+}
+
+},
+
+  "East Garo Hills":{
+  "Dawki River": {
+  url: "https://sketchfab.com/models/af063698f63e427fbdb2d5bf15d978ca/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/mountain-road-scene-af063698f63e427fbdb2d5bf15d978ca" target="_blank">Mountain Road Scene (3D Representation)</a> — Model by <a href="https://sketchfab.com/Katydid." target="_blank">Katydid</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "The Dawki River, also known as the Umngot River, flows between India and Bangladesh in Meghalaya. Famous for its crystal-clear waters that make boats appear to float on air, it is surrounded by lush hills and is one of the cleanest rivers in India.",
+    kn: "ಮೆಘಾಲಯದಲ್ಲಿರುವ ಡೌಕಿ ಅಥವಾ ಉಮಂಗೋಟ್ ನದಿ ಭಾರತ ಮತ್ತು ಬಾಂಗ್ಲಾದೇಶದ ಗಡಿಯಲ್ಲಿ ಹರಿಯುತ್ತದೆ. ಇದರ ಸ್ಫಟಿಕದಂತಹ ಸ್ವಚ್ಛ ನೀರು ದೋಣಿಗಳು ಗಾಳಿಯಲ್ಲಿ ತೇಲುವಂತೆ ಕಾಣಿಸುತ್ತದೆ. ಇದು ಭಾರತದ ಅತ್ಯಂತ ಶುದ್ಧ ನದಿಗಳಲ್ಲಿ ಒಂದಾಗಿದೆ.",
+    hi: "मेघालय में स्थित डाउकी या उमंगोट नदी भारत और बांग्लादेश की सीमा के बीच बहती है। अपनी कांच जैसी साफ़ जलधारा के कारण प्रसिद्ध, इसमें नावें हवा में तैरती हुई प्रतीत होती हैं। यह भारत की सबसे स्वच्छ नदियों में से एक है।"
+  }
+}
+},
+"West Garo Hills":{
+"Siju Cave": {
+  url: "https://sketchfab.com/models/48a370136f9f40bda9dbfc1bc9153ffe/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/voxel-ice-cave-the-padre-game-48a370136f9f40bda9dbfc1bc9153ffe" target="_blank">Voxel Ice Cave (3D Representation)</a> — Model by <a href="https://sketchfab.com/ThePadre" target="_blank">ThePadre</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "Siju Cave, located in the South Garo Hills of Meghalaya, is one of the longest limestone caves in India. Known for its impressive stalactites, stalagmites, and natural limestone formations, it is often called the 'Bat Cave' due to its large bat population. The cave is a marvel of nature and an important ecological site.",
+    kn: "ಮೆಘಾಲಯದ ದಕ್ಷಿಣ ಗಾರೋ ಪರ್ವತ ಪ್ರದೇಶದಲ್ಲಿರುವ ಸಿಜು ಗುಹೆ ಭಾರತದ ಅತ್ಯಂತ ಉದ್ದವಾದ ಚೂನಾಪತ್ರೆ ಗುಹೆಗಳಲ್ಲೊಂದಾಗಿದೆ. ಇದರ ವಿಶಾಲವಾದ ಗುಹಾ ರಚನೆಗಳು ಮತ್ತು ಬಾವುಟಗಳ ವಾಸಸ್ಥಾನ ಇದನ್ನು ಪ್ರಕೃತಿಯ ಅದ್ಭುತವೆಂದು ಮಾಡುತ್ತದೆ.",
+    hi: "मेघालय के दक्षिण गारो हिल्स में स्थित सिजू गुफा भारत की सबसे लंबी चूना पत्थर की गुफाओं में से एक है। अपनी प्राकृतिक संरचनाओं और बड़ी चमगादड़ आबादी के कारण इसे 'बैट केव' भी कहा जाता है। यह एक अद्भुत प्राकृतिक और पारिस्थितिक स्थल है।"
+  }
+}
+
+},
+
+  "Agra":{
+"Taj Mahal": {
+  url: "https://sketchfab.com/models/33149233cefd492b9abdd50fe5a8c921/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/taj-mahal-33149233cefd492b9abdd50fe5a8c921" target="_blank">Taj Mahal</a> — Model by <a href="https://sketchfab.com/uday14viru" target="_blank">uday14viru</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "The Taj Mahal, located in Agra, Uttar Pradesh, is one of the Seven Wonders of the World. Built by Mughal Emperor Shah Jahan in memory of his wife Mumtaz Mahal in the 17th century, it is a UNESCO World Heritage Site renowned for its white marble architecture and intricate craftsmanship.",
+    kn: "ಉತ್ತರ ಪ್ರದೇಶದ ಆಗ್ರಾದಲ್ಲಿ ಇರುವ ತಾಜ್ ಮಹಲ್ ವಿಶ್ವದ ಏಳು ಅದ್ಭುತಗಳಲ್ಲಿ ಒಂದಾಗಿದೆ. ಇದನ್ನು 17ನೇ ಶತಮಾನದಲ್ಲಿ ಮುಘಲ್ ಸಾಮ್ರಾಟ ಶಾಹ್ ಜಹಾನ್ ಅವರು ತಮ್ಮ ಪತ್ನಿ ಮುಮ್ತಾಜ್ ಮಹಲ್ ಅವರ ಸ್ಮರಣಾರ್ಥ ನಿರ್ಮಿಸಿದರು. ಇದು ಯುನೆಸ್ಕೋ ವಿಶ್ವ ಪರಂಪರೆ ತಾಣವಾಗಿದ್ದು, ಅದರ ಬಿಳಿ ಶಿಲೆಯ ವಾಸ್ತುಶಿಲ್ಪಕ್ಕಾಗಿ ಪ್ರಸಿದ್ಧವಾಗಿದೆ.",
+    hi: "उत्तर प्रदेश के आगरा में स्थित ताजमहल विश्व के सात अजूबों में से एक है। इसे 17वीं सदी में मुगल सम्राट शाहजहाँ ने अपनी पत्नी मुमताज़ महल की याद में बनवाया था। सफेद संगमरमर की यह इमारत यूनेस्को विश्व धरोहर स्थल है और अपनी अद्भुत शिल्पकला के लिए प्रसिद्ध है।"
+  }
+},
+"Agra Fort": {
+  url: "https://3dwarehouse.sketchup.com/embed/7adcc1b3c71fdd60a9f1261f85b4bbaf?token=-DmJNi9kvB0=&binaryName=s21",
+  caption: `<a href="https://3dwarehouse.sketchup.com/model/7adcc1b3c71fdd60a9f1261f85b4bbaf" target="_blank">Agra Fort</a> — 3D Model from <a href="https://3dwarehouse.sketchup.com" target="_blank">SketchUp 3D Warehouse</a>`,
+  audio: {
+    en: "Agra Fort, located in Agra, Uttar Pradesh, is a UNESCO World Heritage Site and one of India’s most important Mughal forts. Built by Emperor Akbar in the 16th century, it served as the main residence of the Mughal emperors until the capital shifted to Delhi. Its red sandstone walls and grand palaces reflect the height of Mughal architecture.",
+    kn: "ಉತ್ತರ ಪ್ರದೇಶದ ಆಗ್ರಾದಲ್ಲಿ ಇರುವ ಆಗ್ರಾ ಕೋಟೆ ಯುನೆಸ್ಕೋ ವಿಶ್ವ ಪರಂಪರೆ ತಾಣವಾಗಿದ್ದು, ಭಾರತದ ಪ್ರಮುಖ ಮುಘಲ್ ಕೋಟೆಗಳಲ್ಲಿ ಒಂದಾಗಿದೆ. 16ನೇ ಶತಮಾನದಲ್ಲಿ ಅಕಬರ್ ಸಾಮ್ರಾಟ ನಿರ್ಮಿಸಿದ ಈ ಕೋಟೆ ಮುಘಲ್ ಸಾಮ್ರಾಟರ ಮುಖ್ಯ ವಾಸಸ್ಥಾನವಾಗಿತ್ತು.",
+    hi: "उत्तर प्रदेश के आगरा में स्थित आगरा किला एक यूनेस्को विश्व धरोहर स्थल है और भारत के प्रमुख मुगल किलों में से एक है। इसे 16वीं सदी में सम्राट अकबर ने बनवाया था, और यह दिल्ली राजधानी बनने से पहले मुगल सम्राटों का मुख्य निवास स्थान था।"
+  }
+}
+},
+"Lucknow":{
+"Rumi Darwaza": {
+  url: "https://sketchfab.com/models/b1f0aef17c634f05842f226a8a2f7cc8/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/rumi-darwaza-lucknow-b1f0aef17c634f05842f226a8a2f7cc8" target="_blank">Rumi Darwaza, Lucknow</a> — Model by <a href="https://sketchfab.com/sneh." target="_blank">MMI</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "Rumi Darwaza, located in Lucknow, Uttar Pradesh, is an iconic gateway built in 1784 by Nawab Asaf-ud-Daula. Standing 60 feet tall, it is a fine example of Awadhi architecture, inspired by the gateways of Istanbul, and symbolizes the grandeur of Lucknow’s royal heritage.",
+    kn: "ಉತ್ತರ ಪ್ರದೇಶದ ಲಖ್ನೋವ್‌ನಲ್ಲಿರುವ ರೂಮಿ ದರ್ವಾಜಾ 1784ರಲ್ಲಿ ನವಾಬ್ ಆಸಾಫ್-ಉದ್-ದೌಲಾ ಅವರಿಂದ ನಿರ್ಮಿಸಲಾಯಿತು. 60 ಅಡಿ ಎತ್ತರದ ಈ ಬಾಗಿಲು ಅವಧಿ ಶೈಲಿಯ ವಾಸ್ತುಶಿಲ್ಪದ ಅದ್ಭುತ ಉದಾಹರಣೆಯಾಗಿದ್ದು, ಲಖ್ನೋವ್‌ನ ವೈಭವವನ್ನು ಪ್ರತಿನಿಧಿಸುತ್ತದೆ.",
+    hi: "उत्तर प्रदेश के लखनऊ में स्थित रूमी दरवाजा 1784 में नवाब आसफ-उद-दौला द्वारा बनवाया गया था। 60 फीट ऊँचा यह द्वार अवधी वास्तुकला का उत्कृष्ट उदाहरण है और लखनऊ की शाही विरासत का प्रतीक माना जाता है।"
+  }
+}
+},
+"Jhansi":{
+"Jhansi Fort": {
+  url: "https://sketchfab.com/models/2bad6cb7f74e437281e93840e2519b43/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/jhansi-fort-jhansi-up-2bad6cb7f74e437281e93840e2519b43" target="_blank">Jhansi Fort, Uttar Pradesh</a> — Model by <a href="https://sketchfab.com/sneh." target="_blank">MMI</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "Jhansi Fort, located in Jhansi, Uttar Pradesh, is a historic fortress built in the 17th century by Raja Bir Singh Deo of Orchha. It played a key role during the First War of Indian Independence in 1857 under the leadership of Rani Lakshmibai. The fort stands as a symbol of bravery and resistance against British rule.",
+    kn: "ಉತ್ತರ ಪ್ರದೇಶದ ಝಾನ್ಸಿಯಲ್ಲಿರುವ ಝಾನ್ಸಿ ಕೋಟೆಯನ್ನು 17ನೇ ಶತಮಾನದಲ್ಲಿ ಓರ್ಚಾದ ರಾಜ ಬೀರಸಿಂಗ್ ದೇವ್ ಅವರು ನಿರ್ಮಿಸಿದರು. ಇದು 1857ರ ಭಾರತದ ಪ್ರಥಮ ಸ್ವಾತಂತ್ರ್ಯ ಹೋರಾಟದಲ್ಲಿ ರಾಣಿ ಲಕ್ಷ್ಮೀಬಾಯಿ ಅವರ ನಾಯಕತ್ವದಲ್ಲಿ ಪ್ರಮುಖ ಪಾತ್ರವಹಿಸಿತು. ಈ ಕೋಟೆ ಶೌರ್ಯ ಮತ್ತು ಸ್ವಾತಂತ್ರ್ಯದ ಸಂಕೇತವಾಗಿದೆ.",
+    hi: "उत्तर प्रदेश के झाँसी में स्थित झाँसी किला 17वीं सदी में ओरछा के राजा बीरसिंह देव द्वारा बनवाया गया था। यह 1857 के प्रथम स्वतंत्रता संग्राम में रानी लक्ष्मीबाई के नेतृत्व में संघर्ष का प्रमुख केंद्र रहा। यह किला साहस और स्वतंत्रता का प्रतीक है।"
+  }
+}
+},
+"Mathura":{
+"Kusum Sarovar": {
+  url: "https://sketchfab.com/models/9a15320e240b45c9a9b23df2275d268a/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/kusumvan-sarovar-9a15320e240b45c9a9b23df2275d268a" target="_blank">Kusum Sarovar</a> — Model by <a href="https://sketchfab.com/GeoXLiDARonAI" target="_blank">GeoXLiDARonAI</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "Kusum Sarovar, located near Govardhan in Mathura district of Uttar Pradesh, is a beautiful sandstone monument and sacred water tank. Associated with the legends of Radha and Krishna, it features elegant chhatris built by the Jat rulers of Bharatpur in the 18th century.",
+    kn: "ಉತ್ತರ ಪ್ರದೇಶದ ಮಥುರಾ ಜಿಲ್ಲೆಯ ಗೋವರ್ಧನ ಸಮೀಪದಲ್ಲಿರುವ ಕುಸುಮ್ ಸರೋವರವು ಸುಂದರ ಮರಳುಗಲ್ಲಿನ ಸ್ಮಾರಕ ಮತ್ತು ಪವಿತ್ರ ಕೆರೆಯಾಗಿದೆ. ಇದು ರಾಧಾ ಮತ್ತು ಕೃಷ್ಣರ ಪೌರಾಣಿಕ ಕಥೆಗಳಿಗೆ ಸಂಬಂಧಿಸಿದ್ದು, 18ನೇ ಶತಮಾನದಲ್ಲಿ ಭರತಪುರದ ಜಾಟ್ ಆಡಳಿತಗಾರರು ನಿರ್ಮಿಸಿದ ಅಂದವಾದ ಛತ್ರಿಗಳಿಂದ ಅಲಂಕರಿಸಲಾಗಿದೆ.",
+    hi: "उत्तर प्रदेश के मथुरा ज़िले में गोवर्धन के पास स्थित कुसुम सरोवर एक सुंदर बलुआ पत्थर का स्मारक और पवित्र सरोवर है। यह राधा और कृष्ण की कथाओं से जुड़ा हुआ है और इसे 18वीं सदी में भरतपुर के जाट शासकों ने भव्य छतरियों के साथ बनवाया था।"
+  }
+}
+},
+"Ayodhya":{
+"Ram Janmabhoomi": {
+  url: "https://sketchfab.com/models/aeac510879414942875fc6e76e1e8d12/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/ram-janmbhoomi-tample-aeac510879414942875fc6e76e1e8d12" target="_blank">Ram Janmabhoomi Temple, Ayodhya</a> — Model by <a href="https://sketchfab.com/inheritage" target="_blank">Inheritage Foundation</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "The Ram Janmabhoomi Temple in Ayodhya, Uttar Pradesh, marks the birthplace of Lord Rama, one of the most revered deities in Hinduism. Recently reconstructed in grand style, the temple stands as a symbol of faith, unity, and cultural heritage, attracting devotees from across the world.",
+    kn: "ಉತ್ತರ ಪ್ರದೇಶದ ಅಯೋಧ್ಯೆಯಲ್ಲಿರುವ ರಾಮ ಜನ್ಮಭೂಮಿ ದೇವಸ್ಥಾನವು ಶ್ರೀರಾಮನ ಜನ್ಮಸ್ಥಳವೆಂದು ಪರಿಗಣಿಸಲ್ಪಡುತ್ತದೆ. ಇತ್ತೀಚೆಗೆ ಅದ್ಭುತವಾಗಿ ಪುನರ್‌ನಿರ್ಮಿಸಲಾದ ಈ ದೇವಸ್ಥಾನವು ನಂಬಿಕೆ, ಏಕತೆ ಮತ್ತು ಸಾಂಸ್ಕೃತಿಕ ಪರಂಪರೆಯ ಸಂಕೇತವಾಗಿದೆ.",
+    hi: "उत्तर प्रदेश के अयोध्या में स्थित राम जन्मभूमि मंदिर भगवान श्रीराम के जन्मस्थान के रूप में पूजनीय है। भव्य रूप से पुनर्निर्मित यह मंदिर श्रद्धा, एकता और भारतीय सांस्कृतिक विरासत का प्रतीक है और दुनिया भर से भक्तों को आकर्षित करता है।"
+  }
+}
+},
+"Shahjahanpur":{
+"Jama Masjid Shahjahanpur": {
+  url: "https://3dwarehouse.sketchup.com/embed/5d68e1daf9f7cdf377cc0c541e15fdb9?token=QNbpo2zN4j4=&binaryName=s21",
+  caption: `<a href="https://3dwarehouse.sketchup.com/model/5d68e1daf9f7cdf377cc0c541e15fdb9" target="_blank">Jama Masjid, Shahjahanpur</a> — 3D Model from <a href="https://3dwarehouse.sketchup.com" target="_blank">SketchUp 3D Warehouse</a>`,
+  audio: {
+    en: "The Jama Masjid in Shahjahanpur, Uttar Pradesh, is an architectural gem built during the Mughal era. Featuring intricate domes and minarets, it reflects the grandeur and symmetry typical of Mughal architecture. The mosque continues to serve as a vital center of worship and community gatherings.",
+    kn: "ಉತ್ತರ ಪ್ರದೇಶದ ಶಾಹಜಹಾನ್ಪುರದಲ್ಲಿರುವ ಜಾಮಾ ಮಸೀದಿ ಮುಘಲ್ ಯುಗದಲ್ಲಿ ನಿರ್ಮಿಸಲಾದ ವಾಸ್ತುಶಿಲ್ಪದ ರತ್ನವಾಗಿದೆ. ಅದ್ಭುತ ಗುಂಬಜಗಳು ಮತ್ತು ಮಿನಾರ್‌ಗಳು ಮುಘಲ್ ಶೈಲಿಯ ವೈಭವವನ್ನು ಪ್ರತಿಬಿಂಬಿಸುತ್ತವೆ. ಈ ಮಸೀದಿ ಇಂದಿಗೂ ಪೂಜೆ ಮತ್ತು ಸಮುದಾಯ ಸಭೆಗಳ ಪ್ರಮುಖ ಕೇಂದ್ರವಾಗಿದೆ.",
+    hi: "उत्तर प्रदेश के शाहजहाँपुर में स्थित जामा मस्जिद मुगल काल में निर्मित एक अद्भुत स्थापत्य कृति है। इसकी भव्य गुंबदें और मीनारें मुगल वास्तुकला की सुंदरता और समरूपता को दर्शाती हैं। यह मस्जिद आज भी इबादत और समुदायिक मेलजोल का प्रमुख केंद्र है।"
+  }
+}
+},
+"Varanasi":{
+  "Kashi Vishwanath Temple": {
+  url: "https://sketchfab.com/models/9066339c9b904f1ca091e9ff2357a5e5/embed",
+  caption: `<a href="https://sketchfab.com/3d-models/kashi-vishwanath-temple-9066339c9b904f1ca091e9ff2357a5e5" target="_blank">Kashi Vishwanath Temple, Varanasi</a> — Model by <a href="https://sketchfab.com/NeowLite" target="_blank">NeowLite</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  audio: {
+    en: "Kashi Vishwanath Temple in Varanasi, Uttar Pradesh, is one of the most sacred temples in Hinduism, dedicated to Lord Shiva. The temple stands on the western bank of the Ganges and has been a center of pilgrimage, spirituality and culture for centuries.",
+    kn: "ಉತ್ತರ ಪ್ರದೇಶದ ವಾರಣಾಸಿಯಲ್ಲಿ ಇರುವ ಕಾಶಿ ವಿಶ್ವನಾಥ ದೇವಸ್ಥಾನ ಶಿವನಿಗೆ ಸಮರ್ಪಿತವಾದ ಅತ್ಯಂತ ಪವಿತ್ರ ದೇವಸ್ಥಾನಗಳಲ್ಲಿ ಒಂದಾಗಿದೆ. ಇದು ಗಂಗಾ ನದಿಯ ಪಶ್ಚಿಮ ತೀರದ ಮೇಲೆ ನಿರ್ಮಿತವಾಗಿದೆ ಮತ್ತು ಶತಮಾನಗಳಿಂದ ಯಾತ್ರಾ, ಅಧ್ಯಾತ್ಮಿಕ ಮತ್ತು ಸಾಂಸ್ಕೃತಿಕ ಕೇಂದ್ರವಾಗಿದೆ.",
+    hi: "उत्तर प्रदेश के वाराणसी में स्थित काशी विश्वनाथ मंदिर हिंदू धर्म के सबसे पवित्र मंदिरों में से एक है और यह भगवान शिव को समर्पित है। यह गंगा नदी के पश्चिमी तट पर स्थित है और सदियों से तीर्थयात्रा व आध्यात्मिक केंद्र रहा है।"
+  }
+}
+
+},
+
+"Amritsar":{
+  "Golden Temple ": {
+    url: "https://sketchfab.com/models/626c0ca5d84f45bca4ba8725f12bfcc9/embed",
+    caption: `<a href="https://sketchfab.com/3d-models/golden-temple-626c0ca5d84f45bca4ba8725f12bfcc9" target="_blank">Golden Temple, Amritsar</a> — Model by <a href="https://sketchfab.com/sonalveer42" target="_blank">sonalveer42</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+    audio: {
+      en: "The Golden Temple, also known as Harmandir Sahib, is the holiest shrine of Sikhism located in Amritsar, Punjab. The temple’s stunning gold-plated architecture and its reflection in the sacred pool make it a symbol of peace and spiritual devotion.",
+      kn: "ಅಮೃತಸರದಲ್ಲಿರುವ ಗೋಲ್ಡನ್ ಟೆಂಪಲ್ ಅಥವಾ ಹರ್ಮಂದಿರ್ ಸಾಹಿಬ್ ಸಿಖ್ ಧರ್ಮದ ಪವಿತ್ರ ಸ್ಥಳವಾಗಿದೆ. ಇದರ ಚಿನ್ನದ ಮುಚ್ಚಿದ ವಾಸ್ತುಶಿಲ್ಪ ಮತ್ತು ಪವಿತ್ರ ಸರೋವರದಲ್ಲಿನ ಪ್ರತಿಬಿಂಬ ಅದ್ಭುತವಾಗಿದೆ.",
+      hi: "स्वर्ण मंदिर, जिसे हरमंदिर साहिब भी कहा जाता है, अमृतसर, पंजाब में स्थित सिख धर्म का सबसे पवित्र स्थल है। इसका सुनहरी वास्तुकला और सरोवर में प्रतिबिंब इसकी आध्यात्मिक शांति का प्रतीक है।"
+    }
+  },
+
+  "Jallianwala Bagh": {
+    url: "https://sketchfab.com/models/1a136321dfa5400ba1f6460c291a4236/embed",
+    caption: `<a href="https://sketchfab.com/3d-models/jallianwala-bagh-1a136321dfa5400ba1f6460c291a4236" target="_blank">Jallianwala Bagh, Amritsar</a> — Model by <a href="https://sketchfab.com/sneh." target="_blank">MMI</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+    audio: {
+      en: "Jallianwala Bagh in Amritsar is a historic public garden that commemorates the tragic massacre of hundreds of innocent Indians by British forces in 1919. It stands as a symbol of India's struggle for independence and sacrifice for freedom.",
+      kn: "ಅಮೃತಸರದಲ್ಲಿರುವ ಜಲಿಯನ್‌ವಾಲಾ ಬಾಗ್ 1919 ರಲ್ಲಿ ಬ್ರಿಟಿಷರಿಂದ ನಡೆದ ನರಮೇಧವನ್ನು ಸ್ಮರಿಸುವ ಐತಿಹಾಸಿಕ ಉದ್ಯಾನವಾಗಿದೆ. ಇದು ಭಾರತದ ಸ್ವಾತಂತ್ರ್ಯ ಹೋರಾಟ ಮತ್ತು ತ್ಯಾಗದ ಸಂಕೇತವಾಗಿದೆ.",
+      hi: "अमृतसर का जलियांवाला बाग 1919 में ब्रिटिश सैनिकों द्वारा निर्दोष भारतीयों के नरसंहार की याद में बनाया गया ऐतिहासिक स्थल है। यह भारत की आज़ादी और बलिदान का प्रतीक है।"
+    }
+  }
+  },
+  "Attari":{
+    "Wagah Border": {
+  "url": "https://sketchfab.com/models/c77f8d7ff88541988c8c8ccb50266702/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/wagha-border-lahore-3d-model-by-sg-gamer-c77f8d7ff88541988c8c8ccb50266702" target="_blank">Wagah Border (Lahore–Amritsar Border)</a> — Model by <a href="https://sketchfab.com/shoaibahmed2276" target="_blank">shoaibahmed2276</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "The Wagah Border is the ceremonial boundary between India and Pakistan, famous for its daily flag-lowering ceremony symbolizing patriotism and peace.",
+    "hi": "वाघा बॉर्डर भारत और पाकिस्तान के बीच की सीमा है, जो अपनी रोज़ाना होने वाली बीटिंग रिट्रीट परेड के लिए प्रसिद्ध है।",
+    "pa": "ਵਾਘਾ ਬਾਰਡਰ ਭਾਰਤ ਤੇ ਪਾਕਿਸਤਾਨ ਦੀ ਸੀਮਾ ਹੈ, ਜਿੱਥੇ ਹਰ ਰੋਜ਼ ਝੰਡਾ ਥੱਲੇ ਕਰਨ ਦੀ ਸਮਾਰੋਹ ਮਨਾਈ ਜਾਂਦੀ ਹੈ।"
+  }
+}
+},
+
+  "Chittor":{
+  "Tirupati Balaji Temple": {
+  "url": "https://sketchfab.com/models/3c9db0a38545449181b75bff6373ec26/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/balaji2-3c9db0a38545449181b75bff6373ec26" target="_blank">Tirupati Balaji Temple</a> — Model by <a href="https://sketchfab.com/kirubakaran320" target="_blank">Vivek Matheswaran</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "The Tirupati Balaji Temple, located in Andhra Pradesh, is one of the most visited pilgrimage centers in the world. Dedicated to Lord Venkateswara, it is renowned for its grand architecture, spiritual significance, and sacred rituals.",
+    "hi": "आंध्र प्रदेश में स्थित तिरुपति बालाजी मंदिर दुनिया के सबसे अधिक देखे जाने वाले तीर्थ स्थलों में से एक है। यह भगवान वेंकटेश्वर को समर्पित है और अपनी भव्य वास्तुकला और आध्यात्मिक महत्व के लिए प्रसिद्ध है।",
+    "te": "ఆంధ్రప్రదేశ్‌లోని తిరుపతి బాలాజీ ఆలయం ప్రపంచంలోనే అత్యధికంగా సందర్శించే తీర్థక్షేత్రాల్లో ఒకటి. ఇది శ్రీ వేంకటేశ్వర స్వామివారికి అంకితం చేయబడింది మరియు తన అద్భుతమైన నిర్మాణం మరియు ఆధ్యాత్మిక ప్రాముఖ్యతకు ప్రసిద్ధి చెందింది."
+  }
+}
+  },
+"Guntur":{
+"Amaravati Stupa": {
+  "url": "https://sketchfab.com/models/711eab86569a4ad1b024911a31dbe8af/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/amaravati-double-sided-relief-711eab86569a4ad1b024911a31dbe8af" target="_blank">Amaravati Stupa Relief</a> — Model by <a href="https://sketchfab.com/britishmuseum" target="_blank">The British Museum</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "The Amaravati Stupa, located in Andhra Pradesh, is an ancient Buddhist monument built during the Satavahana dynasty. It is renowned for its intricate carvings depicting scenes from the life of Buddha and early Buddhist art.",
+    "hi": "आंध्र प्रदेश में स्थित अमरावती स्तूप सातवाहन राजवंश के समय का एक प्राचीन बौद्ध स्मारक है। यह बुद्ध के जीवन की घटनाओं को दर्शाने वाली अपनी उत्कृष्ट नक्काशियों के लिए प्रसिद्ध है।",
+    "te": "ఆంధ్రప్రదేశ్‌లోని అమరావతి స్థూపం శాతవాహన వంశ కాలంలో నిర్మించబడిన ప్రాచీన బౌద్ధ స్మారకం. బుద్ధుని జీవితం మరియు బౌద్ధ కళను ప్రతిబింబించే శిల్పాల కోసం ఇది ప్రసిద్ధి చెందింది."
+  }
+}
+
+},
+"Ahmedabad":{
+"Sabarmati Ashram": {
+  "url": "https://sketchfab.com/models/84a0bcd0e749419189472f8c94a82584/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/sabarmati-riverfront-84a0bcd0e749419189472f8c94a82584" target="_blank">Sabarmati Ashram and Riverfront</a> — Model by <a href="https://sketchfab.com/nmehta" target="_blank">nmehta</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "Sabarmati Ashram, located on the banks of the Sabarmati River in Ahmedabad, was the residence of Mahatma Gandhi. It served as the center of India's freedom movement, symbolizing peace, simplicity, and truth.",
+    "hi": "अहमदाबाद में साबरमती नदी के किनारे स्थित साबरमती आश्रम महात्मा गांधी का निवास स्थान था। यह भारत के स्वतंत्रता आंदोलन का केंद्र था और शांति, सादगी और सत्य का प्रतीक है।",
+    "gu": "અમદાવાદમાં સાબરમતી નદીના કાંઠે આવેલું સાબરમતી આશ્રમ મહાત્મા ગાંધીનું નિવાસસ્થાન હતું. તે ભારતના સ્વતંત્રતા આંદોલનનું કેન્દ્ર હતું અને શાંતિ, સાદગી અને સત્યનું પ્રતિક છે."
+  }
+}
+},
+"Amreli":{
+"Lakhota Palace": {
+  "url": "https://sketchfab.com/models/1893cef16bee46269068d8338bba9259/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/potala-palace-in-lhasa-tibet-1893cef16bee46269068d8338bba9259" target="_blank">Lakhota Palace (3D Visualization)</a> — Model by <a href="https://sketchfab.com/hongnguyen044" target="_blank">Hong Nguyen</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "Lakhota Palace, located in the center of Lakhota Lake in Jamnagar, Gujarat, is an island fort built in the 19th century by King Jam Ranmalji. It now serves as a museum showcasing ancient artifacts, sculptures, and manuscripts from the region’s royal history.",
+    "hi": "लखोटा पैलेस, जो गुजरात के जामनगर में लखोटा झील के बीच स्थित है, 19वीं शताब्दी में राजा जाम रणमलजी द्वारा बनाया गया था। अब यह एक संग्रहालय है जिसमें क्षेत्र के शाही इतिहास से जुड़ी प्राचीन वस्तुएं और मूर्तियाँ प्रदर्शित की जाती हैं।",
+    "gu": "લખોટા પેલેસ, જામનગરની લખોટા તળાવના મધ્યમાં આવેલું ટાપુ કિલ્લો છે, જે 19મી સદીમાં રાજા જામ રણમલજીએ બનાવ્યું હતું. આજકાલ તે એક મ્યુઝિયમ છે જેમાં પ્રાચીન શિલ્પો, હસ્તલિખિતો અને રાજવી ઇતિહાસના પુરાવાઓ દર્શાવવામાં આવે છે."
+  }
+}
+},
+"Anand":{
+  "Botanical Gardens": {
+  "url": "https://3dwarehouse.sketchup.com/embed/517633fe-4f99-4e09-a092-718af29ab257?token=nmbYQ1jqfv8=&binaryName=s21",
+  "caption": `<a href="https://3dwarehouse.sketchup.com/model/517633fe-4f99-4e09-a092-718af29ab257" target="_blank">Botanical Gardens (3D Model)</a> — on <a href="https://3dwarehouse.sketchup.com" target="_blank">3D Warehouse</a>`,
+  "audio": {
+    "en": "The Botanical Gardens are lush green spaces dedicated to the preservation and display of a wide variety of plant species. They serve as both a scientific research center and a peaceful retreat for nature lovers, featuring rare flora, themed sections, and scenic walking trails.",
+    "hi": "बोटैनिकल गार्डन हरे-भरे उद्यान हैं जहाँ विभिन्न प्रकार के पौधों और पेड़ों का संरक्षण और प्रदर्शन किया जाता है। यह वैज्ञानिक अनुसंधान का केंद्र होने के साथ-साथ प्रकृति प्रेमियों के लिए एक शांतिपूर्ण स्थान भी है।",
+    "ta": "பொட்டானிக்கல் கார்டன்கள் பல்வேறு தாவர வகைகளைப் பாதுகாக்கவும் காட்சிப்படுத்தவும் அர்ப்பணிக்கப்பட்ட பசுமையான பூங்காக்கள். இவை அறிவியல் ஆராய்ச்சி மையமாகவும் இயற்கையை நேசிக்கும் மக்களுக்கான அமைதியான தங்குமிடமாகவும் விளங்குகின்றன."
+  }
+}
+},
+"Jamnagar":{
+  "Dwarkadhish Temple": {
+  "url": "https://sketchfab.com/models/47c7088dfa504072be893650d204cfbe/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/indian--dwarka-temple-test2-fbx-47c7088dfa504072be893650d204cfbe" target="_blank">Dwarkadhish Temple, Dwarka</a> — Model by <a href="https://sketchfab.com/lowpolycart" target="_blank">lowpolycart</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "The Dwarkadhish Temple, also known as Jagat Mandir, is a sacred Hindu temple dedicated to Lord Krishna, who is worshipped here as 'King of Dwarka'. Built over 2,500 years ago, the temple stands on the banks of the Gomti River and is one of the Char Dham pilgrimage sites.",
+    "hi": "द्वारकाधीश मंदिर, जिसे जगत मंदिर भी कहा जाता है, भगवान कृष्ण को समर्पित एक पवित्र हिंदू मंदिर है, जहाँ उन्हें 'द्वारका के राजा' के रूप में पूजा जाता है। लगभग 2500 वर्ष पुराना यह मंदिर गोमती नदी के तट पर स्थित है और चार धाम यात्रा का एक प्रमुख केंद्र है।",
+    "gu": "દ્વારકાધીશ મંદિર, જેને જગત મંદિર તરીકે પણ ઓળખવામાં આવે છે, ભગવાન શ્રી કૃષ્ણને સમર્પિત પવિત્ર હિંદુ મંદિર છે. અહીં શ્રીકૃષ્ણને ‘દ્વારકા ના રાજા’ તરીકે પૂજવામાં આવે છે. આ મંદિર આશરે 2500 વર્ષ જૂનું છે અને ચાર ધામ યાત્રાના મુખ્ય સ્થાનોમાંનું એક છે."
+  }
+}
+},
+"Aizawl":{
+  "Solomon's Temple": {
+  "url": "https://sketchfab.com/models/ca7304c57de84d0b85148a245de08452/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/solomons-temple-ca7304c57de84d0b85148a245de08452" target="_blank">Solomon's Temple, Shillong</a> — Model by <a href="https://sketchfab.com/gbraendlein" target="_blank">bibel-in-3d.de</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "Solomon’s Temple in Shillong, Meghalaya, is a magnificent structure built by the followers of the Kohhran Thianghlim Church. The white stone temple, inspired by the biblical Solomon’s Temple, stands as a symbol of peace and spiritual unity amidst the lush green hills.",
+    "hi": "शिलॉंग, मेघालय में सोलोमन का मंदिर कोहरन थियांगह्लिम चर्च के अनुयायियों द्वारा बनाया गया एक भव्य भवन है। यह सफेद पत्थरों से निर्मित मंदिर बाइबल में वर्णित सोलोमन के मंदिर से प्रेरित है और शांति व आध्यात्मिक एकता का प्रतीक माना जाता है।",
+    "bn": "শিলং, মেঘালয়-এ সলোমনের মন্দির কোহরান থিয়াংহলিম চার্চের অনুসারীদের দ্বারা নির্মিত একটি মহৎ স্থাপত্য। সাদা পাথরে গঠিত এই মন্দির বাইবেলের সলোমনের মন্দির দ্বারা অনুপ্রাণিত এবং এটি শান্তি ও আধ্যাত্মিক ঐক্যের প্রতীক।"
+  }
+}
+},
+"Champhai":{
+  "Rih Dil Lake": {
+  "url": "https://sketchfab.com/models/8b12cb90ee254be5bc050b542936ddff/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/alpine-mountain-lake-world-machine-8b12cb90ee254be5bc050b542936ddff" target="_blank">Rih Dil Lake (3D Model)</a> — Model by <a href="https://sketchfab.com/gamewarming" target="_blank">gamewarming</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "Rih Dil, located near the Indo-Myanmar border, is a heart-shaped natural lake deeply revered by the Mizo people. Though geographically in Myanmar, it holds great spiritual and cultural importance in Mizoram, symbolizing the passage of souls to the afterlife in Mizo folklore.",
+    "hi": "रिह दिल झील, जो भारत-म्यांमार सीमा के पास स्थित है, हृदय के आकार की एक सुंदर प्राकृतिक झील है जिसे मिजो लोगों द्वारा पवित्र माना जाता है। यह झील म्यांमार में होने के बावजूद मिजोरम की संस्कृति और लोककथाओं में आत्मा की यात्रा के प्रतीक के रूप में पूजी जाती है।",
+    "mizo": "Rih Dil chu Indo-Myanmar border hnuaia a awm a ni a, hei hi Mizo hna te hnenah thianghlimna leh rilrûkna thil ngaihnawm tak a ni. Hei hi ram dangah a awm mahse, Mizoram mizo te hnenah Pathian ram thleng tûr kawng ang a ni a tih an ring bawk."
+  }
+}
+},
+"Kolasib":{
+  "Sinlung": {
+  "url": "https://sketchfab.com/models/6808e04dc4ce49d29b293d1740d9b4c4/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/sinlung-6808e04dc4ce49d29b293d1740d9b4c4" target="_blank">Sinlung, Mizoram</a> — Model by <a href="https://sketchfab.com/weerapong" target="_blank">I'm Bank</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "Sinlung, often regarded as the mythical origin place of the Mizo people, holds great cultural and historical significance. According to legend, it was from Sinlung that the Mizos emerged before migrating to their present homeland in the hills of Mizoram.",
+    "hi": "सिनलुंग को मिजो लोगों की पौराणिक उत्पत्ति का स्थान माना जाता है। किंवदंती के अनुसार, मिजो जनजाति यहीं से निकलकर मिजोरम की पहाड़ियों में अपने वर्तमान निवास स्थान पर पहुंची।",
+    "mizo": "Sinlung chu Mizo te hnenah thil thleng zawng zawng ropui ber a ni a, hetah chuan Mizo te chhanchhuahna chanchin thlir tak tak an nei. Thil mak taka an ring dân chuan, Mizoram ramah an thleng chuan Sinlung atangin an lo kal a ni tih an ring bawk."
+  }
+}
+},
+
+  "Chumukedima":{
+    "Dimapur Waterfalls": {
+  "url": "https://sketchfab.com/models/591b8802a6864c558202572f0fbd385f/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/nature-reclaimed-mecha-591b8802a6864c558202572f0fbd385f" target="_blank">Dimapur Waterfalls</a> — Model by <a href="https://sketchfab.com/brokemodeler" target="_blank">broke modeler</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "Dimapur Waterfalls, located in Nagaland, is a serene natural attraction surrounded by lush forests and rocky formations. The falls are a popular spot for both locals and tourists, offering a tranquil escape into nature’s beauty and the sound of cascading waters.",
+    "hi": "नागालैंड में स्थित दीमापुर जलप्रपात हरे-भरे जंगलों और चट्टानी संरचनाओं से घिरा एक शांत प्राकृतिक स्थल है। यह झरना स्थानीय लोगों और पर्यटकों के बीच लोकप्रिय है, जो प्रकृति की सुंदरता और झरते जल की मधुर ध्वनि का अनुभव प्रदान करता है।",
+    "naga": "Dimapur waterfalls chu Nagaland-ah a awm a, ramri ropui leh tlangpui te chhunga lo khatna nuam tak a ni. Hei hi mi zawng zawng te tan chibai tarlan leh inthlahna hmun ropui ber a ni a, tui chhuang leh chhûng tlangvalna hla a hmu theih bawk."
+  }
+}
+  
+},
+
+  "West Tripura":{
+  "Jagannath Temple": {
+  "url": "https://sketchfab.com/models/ae1add510f8745c484ef23e1413a52a6/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/the-ranchi-jagannath-temple-architecture-ae1add510f8745c484ef23e1413a52a6" target="_blank">Jagannath Temple</a> — Model by <a href="https://sketchfab.com/mishra.prasanna838" target="_blank">mishra.prasanna838</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "The Jagannath Temple in Puri, Odisha, is one of India’s most sacred Hindu temples dedicated to Lord Jagannath, an incarnation of Lord Vishnu. Famous for its annual Rath Yatra festival, the temple is a magnificent example of Kalinga architecture and spiritual devotion.",
+    "hi": "पुरी, ओडिशा में स्थित जगन्नाथ मंदिर भगवान विष्णु के अवतार भगवान जगन्नाथ को समर्पित भारत के सबसे पवित्र मंदिरों में से एक है। यह मंदिर अपने वार्षिक रथ यात्रा उत्सव और शानदार कलिंग स्थापत्य शैली के लिए प्रसिद्ध है।",
+    "or": "ପୁରୀରେ ଥିବା ଶ୍ରୀ ଜଗନ୍ନାଥ ମନ୍ଦିର ଭଗବାନ ବିଷ୍ଣୁଙ୍କ ଅବତାର ଶ୍ରୀ ଜଗନ୍ନାଥଙ୍କୁ ଉତ୍ସର୍ଗିତ ଏକ ପବିତ୍ର ସ୍ଥାନ । ଏହା ବାର୍ଷିକ ରଥଯାତ୍ରା ଉତ୍ସବ ଏବଂ କଳିଙ୍ଗ ଶୈଳୀର ଅଦ୍ଭୁତ ସ୍ଥାପତ୍ୟ ପାଇଁ ପ୍ରସିଦ୍ଧ ।"
+  }
+}
+  },
+    "Fourteen Goddess Temple": {
+  "url": "https://sketchfab.com/models/45fa803f2a10428183179c860c330a8a/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/ancient-hindu-temple-45fa803f2a10428183179c860c330a8a" target="_blank">Fourteen Goddess Temple</a> — Model by <a href="https://sketchfab.com/NeowLite" target="_blank">NeowLite</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "The Fourteen Goddess Temple, located near Old Agartala in Tripura, is dedicated to the worship of fourteen deities representing the different aspects of divine power. It is the site of the famous Kharchi Puja festival, celebrated with great devotion and cultural vibrance.",
+    "hi": "त्रिपुरा के पुराना अगरतला में स्थित चौदह देवी मंदिर चौदह देवताओं को समर्पित है, जो दिव्य शक्ति के विभिन्न रूपों का प्रतिनिधित्व करते हैं। यहाँ प्रसिद्ध खारची पूजा महोत्सव बड़ी श्रद्धा और सांस्कृतिक उत्साह के साथ मनाया जाता है।",
+    "tr": "ত্রিপুরার পুরাতন আগরতলার নিকটে অবস্থিত চৌদ্দ দেবতা মন্দিরটি চৌদ্দ দেব-দেবীর উপাসনার জন্য বিখ্যাত। এখানে প্রতি বছর খারচি পূজা উৎসব অত্যন্ত ভক্তি ও ঐতিহ্যের সঙ্গে উদযাপিত হয়।"
+  }
+},
+
+"Mumbai": {
+"Gateway of India": {
+  "url": "https://sketchfab.com/models/38a652e9f3bf49039026ef65ef61ac92/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/gateway-of-india-mumbai-38a652e9f3bf49039026ef65ef61ac92" target="_blank">Gateway of India</a> — Model by <a href="https://sketchfab.com/CyArk" target="_blank">CyArk</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "The Gateway of India, located in Mumbai, was built in 1924 to commemorate the visit of King George V and Queen Mary to India. Overlooking the Arabian Sea, it stands as a majestic symbol of colonial architecture and the city’s vibrant history.",
+    "hi": "मुंबई में स्थित गेटवे ऑफ इंडिया का निर्माण 1924 में किंग जॉर्ज पंचम और क्वीन मैरी की भारत यात्रा की स्मृति में किया गया था। अरब सागर के किनारे स्थित यह स्मारक औपनिवेशिक स्थापत्य और मुंबई के ऐतिहासिक वैभव का प्रतीक है।",
+    "mr": "मुंबईतील गेटवे ऑफ इंडिया हे 1924 मध्ये किंग जॉर्ज पाचवा आणि राणी मेरी यांच्या भारतभेटीच्या स्मरणार्थ बांधले गेले. अरब सागराच्या किनारी उभे असलेले हे स्मारक वसाहतीकालीन वास्तुकलेचे आणि मुंबईच्या इतिहासाचे प्रतीक आहे."
+  }
+},
+"Chhatrapati Shivaji Terminus": {
+  "url": "https://3dwarehouse.sketchup.com/embed/841f0bdb6c6d06064e794f21e3755cb8?token=znUotAMNFgE=&binaryName=s21",
+  "caption": `<a href="https://3dwarehouse.sketchup.com/model/841f0bdb6c6d06064e794f21e3755cb8" target="_blank">Chhatrapati Shivaji Terminus, Mumbai</a> — 3D Model from <a href="https://3dwarehouse.sketchup.com" target="_blank">SketchUp 3D Warehouse</a>`,
+  "audio": {
+    "en": "Chhatrapati Shivaji Terminus in Mumbai is a UNESCO World Heritage Site and one of India’s most iconic railway stations. Built in 1887 during the British era, it showcases an exquisite blend of Victorian Gothic and traditional Indian architectural styles.",
+    "hi": "मुंबई का छत्रपति शिवाजी टर्मिनस एक यूनेस्को विश्व धरोहर स्थल और भारत के सबसे प्रसिद्ध रेलवे स्टेशनों में से एक है। 1887 में ब्रिटिश काल में निर्मित, यह विक्टोरियन गोथिक और पारंपरिक भारतीय स्थापत्य शैलियों का सुंदर मिश्रण है।",
+    "mr": "मुंबईतील छत्रपती शिवाजी टर्मिनस हे युनेस्को जागतिक वारसा स्थळ आणि भारतातील सर्वात प्रसिद्ध रेल्वे स्थानकांपैकी एक आहे. 1887 मध्ये ब्रिटीश काळात बांधलेले हे स्थानक व्हिक्टोरियन गॉथिक आणि पारंपरिक भारतीय वास्तुकलेचे अप्रतिम मिश्रण दर्शवते."
+  }
+}
+},
+
+"Pune": {
+  "Pataleshwar Cave Temple": {
+  "url": "https://3dwarehouse.sketchup.com/embed/bf4d91dd45a453e3670bd3eeadf75013?token=pBOg9j8GZRI=&binaryName=s21",
+  "caption": `<a href="https://3dwarehouse.sketchup.com/model/bf4d91dd45a453e3670bd3eeadf75013" target="_blank">Pataleshwar Cave Temple, Pune</a> — 3D Model from <a href="https://3dwarehouse.sketchup.com" target="_blank">SketchUp 3D Warehouse</a>`,
+  "audio": {
+    "en": "The Pataleshwar Cave Temple in Pune, Maharashtra, is an ancient rock-cut temple dedicated to Lord Shiva. Carved out of a single basalt rock in the 8th century, it features a circular Nandi mandapa and intricate stone pillars that showcase early Rashtrakuta architecture.",
+    "hi": "पुणे, महाराष्ट्र में स्थित पातालेश्वर गुफा मंदिर भगवान शिव को समर्पित एक प्राचीन शैलकृत मंदिर है। 8वीं शताब्दी में एक ही बेसाल्ट चट्टान से निर्मित यह मंदिर नंदी मंडप और सुंदर पत्थर की नक्काशी के लिए प्रसिद्ध है।",
+    "mr": "पुणे, महाराष्ट्रातील पाताळेश्वर गुंफा मंदिर हे भगवान शिवाला अर्पण केलेले प्राचीन शिल्पकंद मंदिर आहे. ८व्या शतकात एका एकसंध दगडातून कोरलेले हे मंदिर नंदी मंडप आणि सुंदर दगडी खांबांसाठी ओळखले जाते."
+  }
+}
+
+},
+
+  "Raipur":{
+  "Buddha Statue": {
+  "url": "https://sketchfab.com/models/0a604c1ee9b245c7b2d797a910e53219/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/buddha-statue-0a604c1ee9b245c7b2d797a910e53219" target="_blank">Buddha Statue</a> — Model by <a href="https://sketchfab.com/lauwersmathias" target="_blank">Mathias</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "This serene Buddha statue represents peace, enlightenment, and compassion — the core teachings of Buddhism. The calm expression and meditative posture symbolize inner harmony and spiritual awakening.",
+    "hi": "यह शांत बुद्ध प्रतिमा शांति, ज्ञान और करुणा का प्रतीक है — जो बौद्ध धर्म के मूल उपदेश हैं। ध्यानमग्न मुद्रा और सौम्य भाव आत्मिक संतुलन और आध्यात्मिक जागृति को दर्शाते हैं।",
+    "mr": "ही शांत बुद्धमूर्ती शांती, ज्ञान आणि करुणेचे प्रतीक आहे — जे बौद्ध धर्माच्या मुख्य शिकवणी आहेत. ध्यानस्थ मुद्रा आणि शांत चेहरा अंतर्गत संतुलन आणि आध्यात्मिक जागृतीचे प्रतीक आहेत."
+  }
+}
+
+},
+
+  "Bhadrak":{
+  "Kapileswar Temple": {
+  "url": "https://sketchfab.com/models/e96d09cd407a4cdbb7fe71bc37614879/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/kapileshwara-temple-e96d09cd407a4cdbb7fe71bc37614879" target="_blank">Kapileswar Temple</a> — Model by <a href="https://sketchfab.com/FactumFoundation" target="_blank">Factum Foundation</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "The Kapileswar Temple, located in Odisha, is an ancient shrine dedicated to Lord Shiva. Built in the traditional Kalinga architectural style, it features intricate carvings and detailed stone work that reflect the region’s rich spiritual heritage.",
+    "hi": "कपिलेश्वर मंदिर, ओडिशा में स्थित एक प्राचीन शिव मंदिर है। यह पारंपरिक कलिंग वास्तुकला शैली में निर्मित है और इसमें सुंदर नक्काशी और पत्थर की कलाकारी देखी जा सकती है, जो क्षेत्र की समृद्ध आध्यात्मिक विरासत को दर्शाती है।",
+    "or": "କପିଲେଶ୍ୱର ମନ୍ଦିର ଓଡିଶାରେ ଅବସ୍ଥିତ ଏକ ପ୍ରାଚୀନ ଶିବ ମନ୍ଦିର ଅଟେ । ଏହା କଳିଙ୍ଗ ଶୈଳୀରେ ନିର୍ମିତ ଏବଂ ସୁନ୍ଦର ପାଥର କାମ ଏହାର ଆଧ୍ୟାତ୍ମିକ ସମୃଦ୍ଧିକୁ ପ୍ରକାଶ କରେ ।"
+  }
+}
+  
+},
+
+  "Chatra":{
+    "Jharkhand Palace": {
+  "url": "https://sketchfab.com/models/e75af38ef5504622b6fcf5982f798271/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/raj-mahal-royal-palace-e75af38ef5504622b6fcf5982f798271" target="_blank">Raj Mahal (Royal Palace), Jharkhand</a> — Model by <a href="https://sketchfab.com/chandan_p" target="_blank">chandan_p</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "The Raj Mahal, also known as the Royal Palace of Jharkhand, is a remarkable symbol of medieval Indian architecture. With its elegant arches, domes, and courtyards, it reflects the grandeur and royal heritage of the region’s erstwhile rulers.",
+    "hi": "राजमहल, जिसे झारखंड का शाही महल भी कहा जाता है, मध्यकालीन भारतीय वास्तुकला का एक अद्भुत उदाहरण है। इसके भव्य मेहराब, गुंबद और आंगन क्षेत्र के शासकों की शान और गौरव को दर्शाते हैं।",
+    "bn": "রাজমহল, যা ঝাড়খণ্ডের রাজপ্রাসাদ নামেও পরিচিত, মধ্যযুগীয় ভারতীয় স্থাপত্যের এক অনন্য নিদর্শন। এর মনোরম খিলান, গম্বুজ এবং প্রাঙ্গণ ঐ সময়ের রাজাদের ঐশ্বর্য ও ঐতিহ্য প্রকাশ করে।"
+  }
+}
+  },
+  "Godda":{
+"Rajmahal Hills": {
+  "url": "https://sketchfab.com/models/abb617d43d73404a9c5b32dd6f671c51/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/ancient-rajmahal-royal-palace-abb617d43d73404a9c5b32dd6f671c51" target="_blank">Ancient Rajmahal (Royal Palace)</a> — Model by <a href="https://sketchfab.com/Meha8698" target="_blank">Pradip8698</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "The Rajmahal Hills, located in the Santhal Pargana region of Jharkhand, are among the oldest geological formations in India. These hills, rich in fossils and basalt rock, once formed the capital of the Bengal Subah under Mughal rule. The nearby ancient Rajmahal Palace adds a royal touch to this historic landscape.",
+    "hi": "राजमहल पहाड़ियाँ, झारखंड के संथाल परगना क्षेत्र में स्थित हैं और भारत की सबसे प्राचीन भूगर्भीय संरचनाओं में से एक हैं। ये पहाड़ियाँ जीवाश्मों और बेसाल्ट चट्टानों से समृद्ध हैं। मुगल काल में यह बंगाल सूबे की राजधानी भी रही थी। समीप स्थित प्राचीन राजमहल महल इस ऐतिहासिक क्षेत्र की शान बढ़ाता है।",
+    "bn": "রাজমহল পাহাড় ঝাড়খণ্ডের সাঁওতাল পরগনা অঞ্চলে অবস্থিত এবং এটি ভারতের প্রাচীনতম ভূতাত্ত্বিক গঠনগুলির একটি। এই পাহাড়গুলো জীবাশ্ম এবং ব্যাসাল্ট পাথরে সমৃদ্ধ। মুঘল যুগে এটি বাংলা সুবাহের রাজধানী ছিল। কাছের প্রাচীন রাজমহল প্রাসাদ এই ঐতিহাসিক প্রাকৃতিক দৃশ্যকে রাজকীয় মহিমা দেয়।"
+  }
+}
+  
+},
+
+"Poonch":{
+"Valley of Seven Lakes": {
+  "url": "https://sketchfab.com/models/263921a54e0c41d3b0b859899a3b5506/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/valley-263921a54e0c41d3b0b859899a3b5506" target="_blank">Valley of Seven Lakes</a> — Model by <a href="https://sketchfab.com/Aadil.Fell" target="_blank">Adil.Fell</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "The Valley of Seven Lakes, located in North Sikkim, is a breathtaking destination surrounded by snow-capped mountains and pristine alpine meadows. Each lake in this valley holds its own unique color and legend, making it one of the most mystical and scenic regions of the Himalayas.",
+    "hi": "सात झीलों की घाटी, उत्तर सिक्किम में स्थित, बर्फ से ढकी पर्वत श्रृंखलाओं और हरे-भरे घास के मैदानों से घिरी एक अद्भुत जगह है। इस घाटी की हर झील का अपना अलग रंग और पौराणिक कथा है, जो इसे हिमालय के सबसे रहस्यमय और सुंदर स्थलों में से एक बनाती है।",
+    "ne": "सात तालहरूको उपत्यका, उत्तर सिक्किममा अवस्थित, हिमालयका हिउँले ढाकिएका पर्वतहरू र हरियो घाँसे मैदानले घेरेको एक सुन्दर स्थल हो। प्रत्येक तालको आफ्नै रंग र कथा छ, जसले यसलाई हिमालयको सबैभन्दा रहस्यमय र मनमोहक क्षेत्रहरू मध्ये एक बनाउँछ।"
+  }
+}
+},
+
+"Doda":{
+"Jai Valley": {
+  "url": "https://sketchfab.com/models/55f453a3815048368cd2cdb503656e58/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/india-jammu-and-cachemire-55f453a3815048368cd2cdb503656e58" target="_blank">Jai Valley, Jammu & Kashmir</a> — Model by <a href="https://sketchfab.com/xfischer" target="_blank">Xavier Fischer - Elevation API</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "Jai Valley, located near Bhaderwah in Jammu and Kashmir, is a serene and picturesque valley often called the 'Mini Kashmir' of Doda district. Surrounded by lush pine forests, gurgling streams, and snow-capped mountains, it is a hidden paradise for trekkers and nature lovers.",
+    "hi": "जै घाटी, जो जम्मू और कश्मीर के भद्रवाह के पास स्थित है, डोडा जिले का 'मिनी कश्मीर' कहलाती है। यह घाटी घने देवदार के जंगलों, कल-कल करती धाराओं और बर्फ से ढके पर्वतों से घिरी हुई है — यह प्रकृति प्रेमियों और ट्रेकर्स के लिए एक छिपा हुआ स्वर्ग है।",
+    "ur": "جئے ویلی، جو جموں و کشمیر کے بھدرواہ کے قریب واقع ہے، ڈوڈا ضلع کا 'منی کشمیر' کہلاتا ہے۔ یہ وادی گھنے دیودار کے جنگلات، بہتی ندیوں اور برف پوش پہاڑوں سے گھری ہوئی ہے، جو فطرت سے محبت کرنے والوں کے لیے ایک چھپا ہوا جنت ہے۔"
+  }
+}
+
+},
+
+  "Shimla": {
+    "Kufri": {
+  "url": "https://sketchfab.com/models/84311cec65e04f80923767d31e569f42/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/mountain-scan-kufri-84311cec65e04f80923767d31e569f42" target="_blank">Mountain Scan – Kufri</a> — Model by <a href="https://sketchfab.com/arjun934" target="_blank">arjun934</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "Kufri, a charming hill station near Shimla in Himachal Pradesh, is known for its panoramic views of the Himalayas and snow-covered slopes. It’s a popular destination for skiing, horse riding, and nature walks, offering a serene escape amidst dense deodar and pine forests.",
+    "hi": "कुफरी, हिमाचल प्रदेश के शिमला के पास स्थित एक खूबसूरत हिल स्टेशन है, जो हिमालय के मनोरम दृश्यों और बर्फ से ढकी ढलानों के लिए प्रसिद्ध है। यह स्कीइंग, घुड़सवारी और प्रकृति सैर के लिए एक लोकप्रिय स्थल है, जहाँ देवदार और चीड़ के घने जंगलों के बीच सुकून भरा वातावरण मिलता है।",
+    "pa": "ਕੁਫਰੀ, ਹਿਮਾਚਲ ਪ੍ਰਦੇਸ਼ ਦੇ ਸ਼ਿਮਲਾ ਦੇ ਨੇੜੇ ਸਥਿਤ ਇੱਕ ਸੁਹਣਾ ਹਿੱਲ ਸਟੇਸ਼ਨ ਹੈ। ਇਹ ਹਿਮਾਲਿਆ ਦੇ ਦ੍ਰਿਸ਼ਾਂ ਅਤੇ ਬਰਫ਼ ਨਾਲ ਢੱਕੀਆਂ ਢਲਾਣਾਂ ਲਈ ਮਸ਼ਹੂਰ ਹੈ। ਇੱਥੇ ਸਕੀਇੰਗ, ਘੁੜਸਵਾਰੀ ਅਤੇ ਕੁਦਰਤੀ ਸੈਰਾਂ ਲਈ ਯਾਤਰੀ ਆਉਂਦੇ ਹਨ।"
+  }
+}
+  },
+
+  "Kullu" : {
+    "Bijli Mahadev Temple": {
+  "url": "https://sketchfab.com/models/6ba1b41a6bca40a7bc0a4f8e4e854806/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/lord-shiva-hindu-god-3d-model-6ba1b41a6bca40a7bc0a4f8e4e854806" target="_blank">Bijli Mahadev Temple</a> — Model by <a href="https://sketchfab.com/metusharkhairnar" target="_blank">Tushar Khairnar</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "The Bijli Mahadev Temple, located in the Kullu Valley of Himachal Pradesh, is one of the most sacred shrines dedicated to Lord Shiva. Perched atop a hill, it offers a panoramic view of the Parvati and Beas valleys. The temple is famous for the lightning strikes that periodically shatter the Shiva Lingam, symbolizing divine power — it is then restored using butter by the temple priests.",
+    "hi": "बिजली महादेव मंदिर, हिमाचल प्रदेश की कुल्लू घाटी में स्थित भगवान शिव को समर्पित एक पवित्र स्थल है। यह मंदिर पहाड़ी की चोटी पर स्थित है और पार्वती व ब्यास घाटियों का मनोरम दृश्य प्रस्तुत करता है। माना जाता है कि समय-समय पर बिजली यहाँ गिरती है और शिवलिंग को तोड़ देती है — इसके बाद पुजारी इसे मक्खन से पुनः जोड़ते हैं, जो दिव्य शक्ति का प्रतीक है।",
+    "pa": "ਬਿਜਲੀ ਮਹਾਦੇਵ ਮੰਦਰ, ਹਿਮਾਚਲ ਪ੍ਰਦੇਸ਼ ਦੀ ਕੁੱਲੂ ਘਾਟੀ ਵਿੱਚ ਸਥਿਤ, ਭਗਵਾਨ ਸ਼ਿਵ ਨੂੰ ਸਮਰਪਿਤ ਸਭ ਤੋਂ ਪਵਿੱਤਰ ਧਾਮਾਂ ਵਿੱਚੋਂ ਇੱਕ ਹੈ। ਇਹ ਪਹਾੜ ਦੀ ਚੋਟੀ 'ਤੇ ਸਥਿਤ ਹੈ ਤੇ ਪਾਰਵਤੀ ਤੇ ਬਿਆਸ ਘਾਟੀਆਂ ਦਾ ਸੁੰਦਰ ਨਜ਼ਾਰਾ ਦਿੰਦਾ ਹੈ। ਹਰ ਕੁਝ ਸਮੇਂ ਬਾਅਦ ਇੱਥੇ ਬਿਜਲੀ ਡਿੱਗਦੀ ਹੈ ਜੋ ਸ਼ਿਵਲਿੰਗ ਨੂੰ ਟੁੱਟ ਦਿੰਦੀ ਹੈ — ਜਿਸ ਨੂੰ ਮੰਦਰ ਦੇ ਪੰਡਿਤ ਮੱਖਣ ਨਾਲ ਦੁਬਾਰਾ ਜੋੜਦੇ ਹਨ।"
+  }
+}
+  },
+
+    "Patna":{
+      "Fourteen Goddess Temple": {
+  "url": "https://sketchfab.com/models/45fa803f2a10428183179c860c330a8a/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/ancient-hindu-temple-45fa803f2a10428183179c860c330a8a" target="_blank">Fourteen Goddess Temple</a> — Model by <a href="https://sketchfab.com/NeowLite" target="_blank">NeowLite</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "The Fourteen Goddess Temple, located near Old Agartala in Tripura, is dedicated to the worship of fourteen deities representing the different aspects of divine power. It is the site of the famous Kharchi Puja festival, celebrated with great devotion and cultural vibrance.",
+    "hi": "त्रिपुरा के पुराना अगरतला में स्थित चौदह देवी मंदिर चौदह देवताओं को समर्पित है, जो दिव्य शक्ति के विभिन्न रूपों का प्रतिनिधित्व करते हैं। यहाँ प्रसिद्ध खारची पूजा महोत्सव बड़ी श्रद्धा और सांस्कृतिक उत्साह के साथ मनाया जाता है।",
+    "tr": "ত্রিপুরার পুরাতন আগরতলার নিকটে অবস্থিত চৌদ্দ দেবতা মন্দিরটি চৌদ্দ দেব-দেবীর উপাসনার জন্য বিখ্যাত। এখানে প্রতি বছর খারচি পূজা উৎসব অত্যন্ত ভক্তি ও ঐতিহ্যের সঙ্গে উদযাপিত হয়।"
+  }
+}
+    },
+    "Nalanda":{
+      "Nalanda University Ruins": {
+  "url": "https://sketchfab.com/models/351d2dd76fa84bf5b63d9d9a68d1e476/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/nalanda-gedige-351d2dd76fa84bf5b63d9d9a68d1e476" target="_blank">Nalanda University Ruins</a> — Model by <a href="https://sketchfab.com/Arc3d" target="_blank">Manoj Mihiranga</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "The Nalanda University Ruins, located in Bihar, India, represent one of the world’s oldest centers of learning. Established in the 5th century CE, Nalanda attracted scholars and students from across Asia. The ancient campus featured monasteries, temples, and lecture halls, symbolizing India’s intellectual and spiritual heritage.",
+    "hi": "नालंदा विश्वविद्यालय के खंडहर, बिहार में स्थित, दुनिया के सबसे प्राचीन शिक्षण केंद्रों में से एक का प्रतिनिधित्व करते हैं। 5वीं शताब्दी ईस्वी में स्थापित यह विश्वविद्यालय एशिया भर के विद्वानों और छात्रों को आकर्षित करता था। प्राचीन परिसर में मठ, मंदिर और अध्ययन सभागार शामिल थे, जो भारत की बौद्धिक और आध्यात्मिक विरासत का प्रतीक हैं।",
+    "pa": "ਨਾਲੰਦਾ ਯੂਨੀਵਰਸਿਟੀ ਦੇ ਖੰਡਰ, ਬਿਹਾਰ ਵਿੱਚ ਸਥਿਤ, ਸੰਸਾਰ ਦੇ ਸਭ ਤੋਂ ਪੁਰਾਤਨ ਸਿੱਖਿਆ ਕੇਂਦਰਾਂ ਵਿੱਚੋਂ ਇੱਕ ਹਨ। ਪੰਜਵੀਂ ਸਦੀ ਵਿੱਚ ਸਥਾਪਤ, ਇਸ ਵਿਦਿਆਲੇ ਨੇ ਏਸ਼ੀਆ ਦੇ ਵਿਦਵਾਨਾਂ ਅਤੇ ਵਿਦਿਆਰਥੀਆਂ ਨੂੰ ਆਕਰਸ਼ਿਤ ਕੀਤਾ। ਇੱਥੇ ਦੇ ਮਠ, ਮੰਦਰ ਅਤੇ ਪਾਠਸ਼ਾਲਾਵਾਂ ਭਾਰਤ ਦੀ ਬੌਧਿਕ ਅਤੇ ਆਧਿਆਤਮਿਕ ਵਿਰਾਸਤ ਦਾ ਪ੍ਰਤੀਕ ਹਨ।"
+  }
+}
+
+  },
+ 
+"cachar":{
+  "Barak Valley": {
+  "url": "https://sketchfab.com/models/6e68b8e58a7c4287b03e2ad2e01711c4/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/das-cigunung-salem-6e68b8e58a7c4287b03e2ad2e01711c4" target="_blank">Barak Valley</a> — Model by <a href="https://sketchfab.com/fajral" target="_blank">Fajr Al</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "The Barak Valley, located in southern Assam, is named after the Barak River that flows through it. It is a lush and fertile region surrounded by hills, rich tea gardens, and diverse flora and fauna. The valley is known for its cultural harmony among Bengali, Manipuri, and tribal communities, making it a vibrant part of northeastern India.",
+    "hi": "बराक घाटी, जो असम के दक्षिणी भाग में स्थित है, का नाम बराक नदी के नाम पर पड़ा है जो इस क्षेत्र से होकर बहती है। यह एक हरी-भरी और उपजाऊ घाटी है, जिसके चारों ओर पहाड़ियाँ, चाय के बागान और विविध वनस्पतियाँ हैं। यह घाटी बंगाली, मणिपुरी और जनजातीय समुदायों के सांस्कृतिक मेल के लिए प्रसिद्ध है।",
+    "as": "বড়াক upত্যকা অসমৰ দক্ষিণ অংশত অৱস্থিত, যাৰ নাম বড়াক নদীৰ পৰা আহিছে। ই পাহাৰ, চাহ বাগিচা আৰু বিভিন্ন প্ৰজাতিৰ গছ-বৃক্ষৰে ঘেৰাও কৰা এক সেউজীয়া অঞ্চল। এই upত্যকা বেংগলি, মণিপুৰী আৰু উপজাতীয় সমাজৰ সাংস্কৃতিক মিলনৰ বাবে জনাজাত।"
+  }
+}
+  },
+    "Nainital":{
+      "Snow View Point": {
+  "url": "https://sketchfab.com/models/87be8a9684464b12a6c0e2c9e39b4e71/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/snow-mountain-pack-world-machine-type2-87be8a9684464b12a6c0e2c9e39b4e71" target="_blank">Snow View Point</a> — Model by <a href="https://sketchfab.com/gamewarming" target="_blank">gamewarming</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "Snow View Point, located in Nainital, Uttarakhand, offers a breathtaking panoramic view of the snow-capped peaks of the Himalayas, including Nanda Devi, Trishul, and Nanda Kot. It is one of the most popular tourist attractions, accessible by ropeway, and provides a serene experience amidst the beauty of nature.",
+    "hi": "स्नो व्यू पॉइंट, नैनीताल, उत्तराखंड में स्थित, हिमालय की बर्फ से ढकी चोटियों — नंदा देवी, त्रिशूल और नंदा कोट — का मनमोहक दृश्य प्रस्तुत करता है। यह सबसे लोकप्रिय पर्यटन स्थलों में से एक है, जो रोपवे द्वारा पहुंचा जा सकता है और प्राकृतिक सौंदर्य के बीच शांति का अनुभव कराता है।",
+    "uk": "स्नो व्यू प्वाइंट नैनीताल को बिच मा छ, जहाँ बाट हिमालय का हिउँले छोपिएका नन्दा देवी, त्रिशुल र नन्दा कोट शिखरहरू देखिन्छन्। यो एकदम प्रसिद्ध स्थान हो, जसमा रोपवे बाट पुग्न सकिन्छ, र प्रकृतिको सुन्दरतामाझ शान्त अनुभव प्राप्त हुन्छ।"
+  }
+}
+    },
+    "Kedarnath":{
+      "Kedarnath Temple": {
+  "url": "https://sketchfab.com/models/6302b352710b45e8a50e09d9bbc3f7a5/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/kedarnath-temple-6302b352710b45e8a50e09d9bbc3f7a5" target="_blank">Kedarnath Temple</a> — Model by <a href="https://sketchfab.com/CG-3D-HUB" target="_blank">CG-3D-HUB</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "Kedarnath Temple, located in the Garhwal Himalayas of Uttarakhand, is one of the most sacred Hindu shrines dedicated to Lord Shiva. It is a part of the Char Dham pilgrimage and stands at an altitude of 3,583 meters near the Mandakini River. Surrounded by snow-clad peaks, the temple is a symbol of devotion, endurance, and spiritual tranquility.",
+    "hi": "केदारनाथ मंदिर, उत्तराखंड के गढ़वाल हिमालय में स्थित, भगवान शिव को समर्पित सबसे पवित्र हिंदू तीर्थस्थलों में से एक है। यह चार धाम यात्रा का हिस्सा है और समुद्र तल से 3,583 मीटर की ऊँचाई पर मंदाकिनी नदी के किनारे स्थित है। बर्फ से ढकी चोटियों से घिरा यह मंदिर भक्ति, धैर्य और आध्यात्मिक शांति का प्रतीक है।",
+    "uk": "केदारनाथ मन्दिर उत्तराखण्डका गढ़वाल हिमालयमा अवस्थित भगवान शिवलाई समर्पित एक पवित्र तीर्थस्थल हो। यो चार धाम यात्राको हिस्सा हो र समुन्द्र सतहदेखि ३,५८३ मिटर उचाइमा मन्दाकिनी नदीको किनारमा छ। हिमले छोपिएका शिखरहरूले घेरेको यो मन्दिर श्रद्धा, साहस र आध्यात्मिक शान्तिको प्रतीक हो।"
+  }
+}
+  
+      },
+     
+        "Hyderabad":{
+          "Charminar": {
+  "url": "https://sketchfab.com/models/82603f1fe3ed4c31b37786e2bc2b63b0/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/charminar-hyderabad-82603f1fe3ed4c31b37786e2bc2b63b0" target="_blank">Charminar, Hyderabad</a> — Model by <a href="https://sketchfab.com/upto21" target="_blank">Dolores</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "The Charminar, located in the heart of Hyderabad, Telangana, is one of India’s most iconic monuments. Built in 1591 by Sultan Muhammad Quli Qutb Shah, it features four grand minarets representing Islam’s four caliphs. The monument stands as a symbol of Hyderabad’s rich history, blending Persian, Indian, and Islamic architectural styles.",
+    "hi": "चारमीनार, जो तेलंगाना के हैदराबाद के केंद्र में स्थित है, भारत के सबसे प्रसिद्ध स्मारकों में से एक है। इसे 1591 में सुल्तान मोहम्मद कुली कुतुब शाह ने बनवाया था। इसकी चार मीनारें इस्लाम के चार खलीफाओं का प्रतीक हैं। यह स्मारक हैदराबाद के समृद्ध इतिहास और फ़ारसी, भारतीय तथा इस्लामी स्थापत्य शैली के मिश्रण का प्रतीक है।",
+    "te": "చార్మినార్, తెలంగాణలోని హైదరాబాద్ నగర హృదయంలో ఉన్న ప్రసిద్ధ చారిత్రక కట్టడం. 1591లో సుల్తాన్ మహమ్మద్ కులీ ఖుత్బ్ షా దీనిని నిర్మించాడు. నాలుగు మినార్లు ఇస్లాం మతంలోని నలుగురు ఖలీఫాలను సూచిస్తాయి. ఇది హైదరాబాద్ చరిత్ర, ఇస్లామిక్, భారతీయ, మరియు పర్షియన్ నిర్మాణ శైలుల సమ్మేళనానికి సంకేతం."
+  }
+},
+"Golconda Fort": {
+  "url": "https://sketchfab.com/models/4e088c7dcd094270813f59fe43821726/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/create-golconda-fort-4e088c7dcd094270813f59fe43821726" target="_blank">Golconda Fort, Hyderabad</a> — Model by <a href="https://sketchfab.com/sohithkontham5" target="_blank">sohithkontham5</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "Golconda Fort, located in Hyderabad, Telangana, is one of India's most magnificent fortress complexes. Originally built by the Kakatiya dynasty in the 13th century, it later became the capital of the Qutb Shahi kingdom. Known for its acoustic marvels, royal palaces, and grand gates, Golconda was once the center of the diamond trade, where famous gems like the Kohinoor were stored.",
+    "hi": "गोलकोंडा किला, हैदराबाद, तेलंगाना में स्थित भारत के सबसे भव्य किलों में से एक है। इसे मूल रूप से 13वीं शताब्दी में काकतीय वंश ने बनाया था और बाद में यह कुतुब शाही साम्राज्य की राजधानी बना। अपनी ध्वनिक अद्भुतता, शाही महलों और विशाल द्वारों के लिए प्रसिद्ध यह किला कभी हीरों के व्यापार का केंद्र था, जहाँ कोहिनूर जैसे प्रसिद्ध रत्न रखे जाते थे।",
+    "te": "గోల్కొండ కోట, తెలంగాణ రాష్ట్రంలోని హైదరాబాద్ నగరంలో ఉన్న ప్రసిద్ధ కోట. దీన్ని మొదట 13వ శతాబ్దంలో కాకతీయ వంశం నిర్మించింది. తరువాత ఇది కుతుబ్‌షాహీ రాజవంశ రాజధానిగా మారింది. శబ్ద ప్రతిధ్వని అద్భుతాలు, రాజమహలాలు మరియు విస్తృత ద్వారాల కోసం ప్రసిద్ధి చెందిన ఈ కోట, ఒకప్పుడు కోహినూర్ వంటి ప్రసిద్ధ వజ్రాలు నిల్వ ఉన్న వజ్ర వ్యాపార కేంద్రంగా ఉండేది."
+  }
+}
+        
+      },
+      
+        "Chennai":{
+          "Marina Beach": {
+  "url": "https://sketchfab.com/models/e48a8891878440928034b85829fb1b13/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/marina-e48a8891878440928034b85829fb1b13" target="_blank">Marina Beach, Chennai</a> — Model by <a href="https://sketchfab.com/aatizs" target="_blank">Aatizs</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "Marina Beach, located in Chennai, Tamil Nadu, is India’s longest natural urban beach and the second longest in the world. Stretching over 13 kilometers along the Bay of Bengal, it is a popular spot for locals and tourists alike. The beach is also known for its historical monuments, including statues of Mahatma Gandhi and poets, making it both a scenic and cultural landmark.",
+    "hi": "मरीना बीच, चेन्नई, तमिलनाडु में स्थित, भारत का सबसे लंबा प्राकृतिक शहरी समुद्र तट है और विश्व में दूसरा सबसे लंबा है। यह बंगाल की खाड़ी के किनारे लगभग 13 किलोमीटर तक फैला है। यह स्थानीय निवासियों और पर्यटकों के लिए एक प्रमुख आकर्षण स्थल है। यहाँ महात्मा गांधी और कई कवियों की मूर्तियाँ स्थित हैं, जो इसे एक ऐतिहासिक और सांस्कृतिक स्थल बनाती हैं।",
+    "ta": "மெரினா கடற்கரை, தமிழ்நாட்டின் சென்னை நகரில் அமைந்துள்ளது. இது இந்தியாவின் நீளமான இயற்கை நகர்ப்புற கடற்கரை மற்றும் உலகில் இரண்டாவது நீளமானது. வங்காள விரிகுடாவின் கரையில் 13 கிலோமீட்டர் நீளத்திற்கு பரவியுள்ளது. இது உள்ளூர் மக்கள் மற்றும் சுற்றுலாப் பயணிகளுக்குப் பிரபலமான இடமாகும். மகாத்மா காந்தி மற்றும் பல கவிஞர்களின் சிலைகள் இங்கே உள்ளதால், இது அழகும் வரலாற்றும் கலந்த இடமாக திகழ்கிறது."
+  }
+}
+        },
+        "Nilgiris":{
+          "Ooty Botanical Garden": {
+  "url": "https://3dwarehouse.sketchup.com/embed/bb7a3cec-775a-4059-a82b-5b99eaac036c?token=iLufL0dIXtU=&binaryName=s21",
+  "caption": `<a href="https://3dwarehouse.sketchup.com/model/bb7a3cec-775a-4059-a82b-5b99eaac036c" target="_blank">Ooty Botanical Garden, Tamil Nadu</a> — 3D Model from SketchUp 3D Warehouse`,
+  "audio": {
+    "en": "The Ooty Botanical Garden, located in the beautiful hill station of Ooty, Tamil Nadu, was established in 1848. Spread over 55 acres, it is home to thousands of exotic and indigenous plant species. The garden is famous for its terraced layout, vibrant flowerbeds, and a fossilized tree that is over 20 million years old, making it a paradise for nature lovers and botanists.",
+    "hi": "ऊटी बॉटनिकल गार्डन, तमिलनाडु के सुंदर हिल स्टेशन ऊटी में स्थित है और इसकी स्थापना 1848 में की गई थी। 55 एकड़ में फैला यह उद्यान हजारों विदेशी और देशी पौधों की प्रजातियों का घर है। इसकी आकर्षक टेरेस संरचना, रंगीन फूलों की क्यारियाँ और 2 करोड़ वर्ष पुराना जीवाश्म वृक्ष इसे प्रकृति प्रेमियों के लिए स्वर्ग बनाते हैं।",
+    "ta": "ஊட்டி தாவரவியல் பூங்கா, தமிழ்நாட்டின் அழகிய மலைநகரமான ஊட்டியில் அமைந்துள்ளது. இது 1848 ஆம் ஆண்டில் நிறுவப்பட்டது. 55 ஏக்கர் பரப்பளவில் விரிந்துள்ள இங்கு ஆயிரக்கணக்கான உள்நாட்டு மற்றும் வெளிநாட்டு தாவர வகைகள் உள்ளன. அதன் படிநிலைக் கட்டமைப்பு, வண்ணமயமான மலர்த் தோட்டங்கள் மற்றும் 2 கோடி ஆண்டுகள் பழமையான பாறை மரம் இதனை இயற்கை நேசிகளுக்கான சொர்க்கமாக ஆக்குகிறது."
+  }
+}
+      },
+
+  "Chittorgarh":{
+    "Chittorgarh Fort": {
+  "url": "https://sketchfab.com/models/a6219e07d0a14bccb21a955349bf6153/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/chittorgarh-fort-india-a6219e07d0a14bccb21a955349bf6153" target="_blank">Chittorgarh Fort, Rajasthan</a> — Model by <a href="https://sketchfab.com/thx-1" target="_blank">thx-1</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "Chittorgarh Fort, located in Rajasthan, is one of the largest and most magnificent forts in India. Built in the 7th century by the Maurya rulers, it was later the capital of Mewar. The fort is known for its seven massive gateways, the Vijay Stambha (Tower of Victory), and the Kirti Stambha (Tower of Fame). It stands as a symbol of Rajput valor, sacrifice, and pride.",
+    "hi": "चित्तौड़गढ़ किला, राजस्थान में स्थित, भारत के सबसे विशाल और भव्य किलों में से एक है। इसे 7वीं शताब्दी में मौर्य शासकों ने बनवाया था और बाद में यह मेवाड़ की राजधानी बना। यह किला अपने सात विशाल द्वारों, विजय स्तंभ और कीर्ति स्तंभ के लिए प्रसिद्ध है। यह राजपूत वीरता, बलिदान और गौरव का प्रतीक माना जाता है।",
+    "ra": "चित्तौड़गढ़ क़िला राजस्थान रो गौरव है। यो मेवाड़ रो राजधानी रह्यो अने 7वीं सदी में मौर्य शासकां द्वारा बनायो गयो। इ क़िला अपने सात दरवाज़ा, विजय स्तंभ अने कीर्ति स्तंभ खातर प्रसिद्ध है। यो राजपूत वीरता, त्याग अने शौर्य रो अमर प्रतीक है।"
+  }
+},
+"Rani Padmini’s Palace": {
+  "url": "https://sketchfab.com/models/abb617d43d73404a9c5b32dd6f671c51/embed",
+  "caption": `<a href="https://sketchfab.com/3d-models/ancient-rajmahal-royal-palace-abb617d43d73404a9c5b32dd6f671c51" target="_blank">Rani Padmini’s Palace, Chittorgarh</a> — Model by <a href="https://sketchfab.com/Meha8698" target="_blank">Pradip8698</a> on <a href="https://sketchfab.com" target="_blank">Sketchfab</a>`,
+  "audio": {
+    "en": "Rani Padmini’s Palace, located inside the Chittorgarh Fort of Rajasthan, is an architectural marvel surrounded by a beautiful lotus pond. It is believed to be the residence of Queen Padmini, renowned for her beauty, intelligence, and valor. The palace holds immense historical importance as it was the site where Alauddin Khilji caught a glimpse of the queen’s reflection, sparking the tragic siege of Chittorgarh.",
+    "hi": "रानी पद्मिनी का महल राजस्थान के चित्तौड़गढ़ किले के भीतर स्थित है और यह एक सुंदर कमल तालाब से घिरा हुआ है। माना जाता है कि यह रानी पद्मिनी का निवास स्थान था, जो अपनी सुंदरता, बुद्धिमत्ता और वीरता के लिए प्रसिद्ध थीं। यह वही स्थान है जहाँ अलाउद्दीन खिलजी ने रानी का प्रतिबिंब देखा था, जिससे चित्तौड़गढ़ के दुखद युद्ध की शुरुआत हुई।",
+    "ra": "राणी पद्मिनी रो महल चित्तौड़गढ़ क़िले में स्थित है अने यो एक सुंदर कमल तलाब सुथो घेरायो है। म्हणो जाय है के यो राणी पद्मिनी रो निवास थावो थो — जिनकी सुंदरता अने शौर्य खातर यो इतिहासिक स्थल प्रसिद्ध है। यहीं अलाउद्दीन खिलजी नै राणी को परछांवो देखायो, जण सूं चित्तौड़गढ़ रो युद्ध आरंभ थायो।"
+  }
+}
+  }
+};
+    // update title safely
+    document.getElementById('placeTitle').textContent = (site && district) ? `${site} (${district})` : '3D Viewer';
+
+    function selectVoice(langCode) {
+      const voices = speechSynthesis.getVoices();
+      return voices.find(v => v.lang.toLowerCase().startsWith(langCode.toLowerCase())) || null;
+    }
+
+    function showVR() {
+      const container = document.getElementById('vrContainer');
+      const captionDiv = document.getElementById('vrCaption');
+      const siteData = (vrData[district] && vrData[district][site]) ? vrData[district][site] : null;
+
+      if (siteData && siteData.url) {
+        // use template literal and escape properly
+        container.innerHTML = `<iframe src="${siteData.url}" allow="autoplay; fullscreen; vr; xr-spatial-tracking" allowfullscreen></iframe>`;
+        captionDiv.innerHTML = siteData.caption;
+      } else {
+        container.innerHTML = "<p style='color:white;'>No AR/VR model available for this site.</p>";
+        captionDiv.innerHTML = "";
+      }
+    }
+
+    showVR();
+
+    let utterance = null;
+    document.getElementById('playVoice').addEventListener('click', () => {
+      const lang = document.getElementById('langSelect').value;
+      const siteData = (vrData[district] && vrData[district][site]) ? vrData[district][site] : null;
+      const text = (siteData && siteData.audio && siteData.audio[lang]) ? siteData.audio[lang] : '';
+
+      if (!text) return alert("No audio text available for this site/language.");
+
+      if (utterance) speechSynthesis.cancel();
+      utterance = new SpeechSynthesisUtterance(text);
+
+      const langCode = lang === 'en' ? 'en-IN' : (lang === 'hi' ? 'hi-IN' : 'kn-IN');
+      utterance.lang = langCode;
+
+      const voice = selectVoice(langCode);
+      if (voice) utterance.voice = voice;
+
+      speechSynthesis.speak(utterance);
+    });
+
+    document.getElementById('pauseVoice').addEventListener('click', () => speechSynthesis.pause());
+    document.getElementById('stopVoice').addEventListener('click', () => speechSynthesis.cancel());
+
+    // ensure voices are loaded in browsers that populate later
+    window.speechSynthesis.onvoiceschanged = () => {};
+  </script>
+</body>
+</html>

@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz: Heritage & Culture of India</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #101010;
+      color: #fffbe6;
+      position: relative;
+    }
+    .background {
+      background: url('/images/india.jpeg') no-repeat center center;
+      position: fixed;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
+      z-index: 0;
+      opacity: 0.18;
+      object-fit: cover;
+      pointer-events: none;
+    }
+    .quiz-container {
+      position: relative;
+      z-index: 2;
+      max-width: 540px;
+      margin: 70px auto 0 auto;
+      background: rgba(26, 18, 5, 0.93);
+      padding: 36px 28px 40px 28px;
+      min-height: 390px;
+      border-radius: 16px;
+      box-shadow: 0 4px 40px 0 rgba(0,0,0,0.33);
+      border: 2px solid #bc841c;
+    }
+    .quiz-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Georgia', serif;
+      margin-bottom: 8px;
+    }
+    .logo {
+      font-size: 2.3em;
+      color: #ffbb33;
+      letter-spacing: 2px;
+      font-weight: 700;
+    }
+    .scorebox {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 6px 0 20px 0;
+      font-size: 1.08em;
+    }
+    .scorebox span {
+      background: #3a2d08;
+      color: #ffe082;
+      padding: 4px 13px;
+      border-radius: 7px;
+      font-weight: bold;
+    }
+    .progress {
+      flex: 1;
+      text-align: right;
+      color: #ffd700ad;
+      font-size: 1.09em;
+      background: none;
+      border-radius: 0;
+      padding: 0;
+    }
+    .question {
+      font-size: 1.13em;
+      margin-bottom: 18px;
+      font-weight: 600;
+      color: #fdebbe;
+      min-height: 58px;
+      line-height: 1.5;
+    }
+    .options button {
+      display: block;
+      width: 100%;
+      background: #241a05;
+      color: #ffe082;
+      border: 1px solid #ffbb33;
+      padding: 12px 10px;
+      margin: 8px 0;
+      border-radius: 7px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: all 0.14s;
+      text-align: left;
+    }
+    .options button.selected, .options button:hover {
+      background: linear-gradient(90deg,#ffeb9c 12%,#ffd738 100%);
+      color: #432d02;
+      border-color: #ffe082;
+      font-weight: 700;
+    }
+    .options button.correct {
+      background: #1b5e20;
+      border-color: #7aff75;
+      color: #7aff75;
+    }
+    .options button.incorrect {
+      background: #5e1b1b;
+      border-color: #ff8175;
+      color: #ff8175;
+    }
+    #next-btn, #restart-btn {
+      width: 100%;
+      background: #ffd738;
+      color: #432d02;
+      border: none;
+      padding: 13px 0;
+      margin-top: 15px;
+      border-radius: 7px;
+      font-size: 1.09em;
+      cursor: pointer;
+      font-weight: 700;
+      letter-spacing: 1px;
+      transition: background 0.17s;
+    }
+    #next-btn:hover, #restart-btn:hover {
+      background: #ffbb33;
+    }
+    #next-btn:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+    .feedback {
+      min-height: 54px;
+      margin: 13px 0 0 0;
+      font-size: 1.13em;
+      font-weight: bold;
+      color: #fff6b0;
+      word-break: break-word;
+      white-space: pre-line;
+      display: block;
+    }
+    .correct { 
+      color: #7aff75;
+      font-weight: bold;
+    }
+    .incorrect { 
+      color: #ff8175;
+      font-weight: bold;
+    }
+    .result-box {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .score {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #ffd54f;
+      margin: 18px 0 10px 0;
+    }
+    .hiscore {
+      font-size: 1.13em;
+      color: #ffeb3b;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    .explanation {
+      font-size: .98em;
+      background: #362a0c;
+      color: #fffbe2;
+      margin-top: 6px;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-weight: normal;
+      line-height: 1.5;
+      display: block;
+    }
+    #state-select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 7px;
+      font-size: 1em;
+      margin: 15px 0 20px 0;
+      border: 2px solid #ffbb33;
+      background: #241a05;
+      color: #ffe082;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    #state-select:hover {
+      border-color: #ffd738;
+    }
+    #state-select:focus {
+      outline: none;
+      border-color: #ffd738;
+      box-shadow: 0 0 8px rgba(255, 215, 56, 0.3);
+    }
+    #state-select option {
+      background: #241a05;
+      color: #ffe082;
+      padding: 8px;
+    }
+    .loading {
+      color: #ffd738;
+      font-weight: bold;
+      text-align: center;
+      margin: 20px 0;
+      font-size: 1.1em;
+    }
+    .error-message {
+      background: #5e1b1b;
+      border: 1px solid #ff8175;
+      color: #ffb3a8;
+      padding: 12px;
+      border-radius: 7px;
+      margin: 10px 0;
+      text-align: center;
+      font-weight: bold;
+    }
+    .state-label {
+      color: #ffbb33;
+      font-weight: bold;
+      margin: 10px 0 8px 0;
+      font-size: 0.95em;
+    }
+    .back-btn {
+      margin: 20px;
+      padding: 10px 16px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #ffd738;
+      color: #432d02;
+      border: none;
+      border-radius: 7px;
+      font-family: 'Georgia', serif;
+      transition: background 0.17s;
+    }
+    .back-btn:hover {
+      background-color: #ffbb33;
+    }
+    ol {
+      text-align: left;
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+    @media (max-width: 700px) {
+      .quiz-container { 
+        margin: 0; 
+        border-radius: 0; 
+        box-shadow: none;
+        padding: 20px 16px;
+      }
+      .background { top: 50px;}
+      .logo {
+        font-size: 1.8em;
+      }
+      #state-select {
+        font-size: 0.95em;
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <img class="background" src="india.jpeg" alt="India Heritage" />
+  <button class="back-btn" onclick="window.location.href='indexes.html'">← Back</button>
+
+  <div class="quiz-container">
+    <div class="quiz-header">
+      <span class="logo">🪔 Parampara Quiz</span>
+      <span class="progress" id="progress"></span>
+    </div>
+
+    <!-- State selection dropdown -->
+    <div class="state-label">Select a State to Begin:</div>
+    <select id="state-select" aria-label="Select Indian state for quiz">
+      <option value="" disabled selected>Choose your state...</option>
+      <option value="Andhra Pradesh">Andhra Pradesh</option>
+      <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+      <option value="Assam">Assam</option>
+      <option value="Bihar">Bihar</option>
+      <option value="Chhattisgarh">Chhattisgarh</option>
+      <option value="Delhi">Delhi</option>
+      <option value="Goa">Goa</option>
+      <option value="Gujarat">Gujarat</option>
+      <option value="Haryana">Haryana</option>
+      <option value="Himachal Pradesh">Himachal Pradesh</option>
+      <option value="Jammu & Kashmir">Jammu & Kashmir</option>
+      <option value="Jharkhand">Jharkhand</option>
+      <option value="Karnataka">Karnataka</option>
+      <option value="Kerala">Kerala</option>
+      <option value="Madhya Pradesh">Madhya Pradesh</option>
+      <option value="Maharashtra">Maharashtra</option>
+      <option value="Manipur">Manipur</option>
+      <option value="Meghalaya">Meghalaya</option>
+      <option value="Mizoram">Mizoram</option>
+      <option value="Nagaland">Nagaland</option>
+      <option value="Odisha">Odisha</option>
+      <option value="Punjab">Punjab</option>
+      <option value="Rajasthan">Rajasthan</option>
+      <option value="Sikkim">Sikkim</option>
+      <option value="Tamil Nadu">Tamil Nadu</option>
+      <option value="Telangana">Telangana</option>
+      <option value="Tripura">Tripura</option>
+      <option value="Uttarakhand">Uttarakhand</option>
+      <option value="Uttar Pradesh">Uttar Pradesh</option>
+      <option value="West Bengal">West Bengal</option>
+    </select>
+
+    <div class="scorebox" style="display:none;" id="scorebox">
+      <span>Score: <span id="currScore">0</span></span>
+      <span>🏆 High Score: <span id="highScore">0</span></span>
+    </div>
+
+    <div id="error-container"></div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button id="next-btn" style="display:block;">Next ➔</button>
+    <div id="results" class="result-box"></div>
+  </div>
+
+<script>
+  const API_BASE_URL = 'http://localhost:4000';
+  let quizData = [];
+  let currentQuestion = 0, score = 0, selectedOption = null, answers = [];
+  const highScoreKeyPrefix = "parampara_quiz_highscore_";
+  let highScore = 0;
+  let selectedState = null;
+
+  const stateSelect = document.getElementById('state-select');
+  const scoreBox = document.getElementById('scorebox');
+  const errorContainer = document.getElementById('error-container');
+  const nextBtn = document.getElementById('next-btn');
+
+  function showError(message) {
+    errorContainer.innerHTML = `<div class="error-message">⚠️ ${message}</div>`;
+    setTimeout(() => { errorContainer.innerHTML = ''; }, 5000);
+  }
+
+  // Normalize question shape so each question has:
+  // - options: array of strings
+  // - answerIndex: numeric index (or null if unknown)
+  // - answerText: raw correct text if backend sent text
+  function normalizeQuestions(rawQuestions) {
+    return (rawQuestions || []).map(q => {
+      const copy = Object.assign({}, q);
+      // ensure options array
+      copy.options = Array.isArray(copy.options) ? copy.options : (copy.opts ? copy.opts : []);
+      // preserve raw answer
+      copy.answerRaw = (copy.answer !== undefined) ? copy.answer : null;
+
+      // Try to derive numeric index
+      let answerIndex = null;
+      // Case A: backend sends number or numeric-string index
+      if (copy.answerRaw !== null && copy.answerRaw !== undefined) {
+        if (typeof copy.answerRaw === 'number' && Number.isFinite(copy.answerRaw)) {
+          answerIndex = Number(copy.answerRaw);
+        } else if (typeof copy.answerRaw === 'string' && /^\d+$/.test(copy.answerRaw.trim())) {
+          answerIndex = Number(copy.answerRaw.trim());
+        } else if (typeof copy.answerRaw === 'string') {
+          // Maybe backend sent the correct option text; try to find it in options
+          const idx = copy.options.findIndex(opt => String(opt).trim().toLowerCase() === copy.answerRaw.trim().toLowerCase());
+          if (idx !== -1) answerIndex = idx;
+          // store the raw text in answerText for fallback display
+          copy.answerText = copy.answerRaw;
+        }
+      }
+
+      // If still out of range, treat as null
+      if (answerIndex !== null) {
+        if (answerIndex < 0 || answerIndex >= copy.options.length) answerIndex = null;
+      }
+
+      // final normalized fields
+      copy.answerIndex = (answerIndex === null) ? null : answerIndex;
+      // If no answerText set yet but we have numeric index, populate answerText from options
+      if (!copy.answerText && copy.answerIndex !== null && copy.options[copy.answerIndex] !== undefined) {
+        copy.answerText = copy.options[copy.answerIndex];
+      }
+
+      // ensure explanation exists
+      copy.explanation = copy.explanation || '';
+
+      return copy;
+    });
+  }
+
+  async function fetchQuizQuestions(state) {
+    try {
+      document.getElementById('question').textContent = '⏳ Loading questions...';
+      document.getElementById('options').innerHTML = '';
+
+      const response = await fetch(`${API_BASE_URL}/api/get-quiz?state=${encodeURIComponent(state)}`);
+      if (!response.ok) throw new Error(`Server error: ${response.status}`);
+      const data = await response.json();
+      if (!data.success) {
+        showError(data.error || 'Failed to load quiz');
+        document.getElementById('question').textContent = '';
+        return [];
+      }
+      // normalize the incoming questions
+      return normalizeQuestions(data.questions || []);
+    } catch (error) {
+      console.error('Error fetching quiz:', error);
+      showError('Connection error. Make sure backend is running on http://localhost:4000');
+      document.getElementById('question').textContent = '';
+      return [];
+    }
+  }
+
+  function updateScores() {
+    document.getElementById('currScore').textContent = score;
+    // Make sure highScore value is valid number
+    const hsKey = highScoreKeyPrefix + (selectedState || '');
+    const stored = Number(localStorage.getItem(hsKey) || 0);
+    highScore = Number.isFinite(stored) ? stored : 0;
+    document.getElementById('highScore').textContent = highScore;
+  }
+
+  function renderQuiz() {
+    document.getElementById('results').style.display = "none";
+    errorContainer.innerHTML = '';
+
+    if (!quizData.length) {
+      document.getElementById('question').textContent = 'No questions available!';
+      return;
+    }
+
+    // Reset selection state
+    selectedOption = null;
+    nextBtn.disabled = true;            // disable Next until user selects
+    nextBtn.style.display = "none";     // hide Next until after a choice
+
+    const q = quizData[currentQuestion];
+    document.getElementById('question').textContent = q.question || 'Untitled question';
+    const optionsDiv = document.getElementById('options');
+    optionsDiv.innerHTML = '';
+    document.getElementById('feedback').textContent = '';
+
+    // Create buttons for options
+    for (let i = 0; i < q.options.length; i++) {
+      const btn = document.createElement('button');
+      btn.textContent = q.options[i];
+      btn.type = 'button';
+      btn.className = ''; // reset
+      btn.disabled = false;
+      btn.onclick = () => selectOption(i, btn);
+      optionsDiv.appendChild(btn);
+    }
+
+    // If there are zero options (malformed), show a message
+    if (!q.options || q.options.length === 0) {
+      document.getElementById('question').textContent = 'Question has no options';
+      nextBtn.style.display = 'block';
+      nextBtn.disabled = false;
+    }
+
+    document.getElementById('progress').textContent = `Q${currentQuestion + 1} / ${quizData.length}`;
+    updateScores();
+  }
+
+  function selectOption(optionIndex, btn) {
+    // ignore if already selected
+    if (selectedOption !== null) return;
+
+    const q = quizData[currentQuestion];
+    const correctIndex = q.answerIndex; // normalized index or null
+    const totalOptions = q.options ? q.options.length : 0;
+
+    selectedOption = optionIndex;
+
+    // collect all option buttons (live list)
+    const allBtns = Array.from(document.querySelectorAll('.options button'));
+
+    // disable all buttons immediately
+    allBtns.forEach(b => b.disabled = true);
+
+    // mark selected button
+    btn.classList.add('selected');
+
+    // highlight correct answer if it exists
+    if (correctIndex !== null && allBtns[correctIndex]) {
+      allBtns[correctIndex].classList.add('correct');
+    }
+
+    // if selected is not correct, mark it incorrect
+    const isCorrect = (correctIndex !== null) && (optionIndex === correctIndex);
+    if (!isCorrect) btn.classList.add('incorrect');
+
+    // update feedback, score, answers
+    if (isCorrect) {
+      document.getElementById('feedback').innerHTML = `<span class="correct">✓ Correct!</span>`;
+      score++;
+    } else {
+      // show correct answer text (use normalized answerText if available)
+      const correctText = q.answerText || (correctIndex !== null && q.options[correctIndex]) || 'N/A';
+      document.getElementById('feedback').innerHTML =
+        `<span class="incorrect">✗ Incorrect.</span> <span class="explanation">Correct Answer: ${correctText}</span>`;
+    }
+
+    if (q.explanation) {
+      document.getElementById('feedback').innerHTML += `<div class="explanation">${q.explanation}</div>`;
+    }
+
+    answers.push({ chosen: optionIndex, correct: correctIndex });
+    nextBtn.disabled = false;
+    nextBtn.style.display = "block";
+
+    updateScores();
+  }
+
+  nextBtn.onclick = () => {
+    // Prevent moving forward if user hasn't selected any option
+    if (selectedOption === null) {
+      showError('Please select an option before proceeding.');
+      return;
+    }
+
+    currentQuestion++;
+    if (currentQuestion < quizData.length) {
+      renderQuiz();
+    } else {
+      showResults();
+    }
+  };
+
+  function showResults() {
+    if (!selectedState) {
+      // safety: if selectedState missing, set a default key
+      selectedState = selectedState || 'default';
+    }
+
+    // Update high score if needed and store per-state
+    const hsKey = highScoreKeyPrefix + selectedState;
+    const stored = Number(localStorage.getItem(hsKey) || 0);
+    if (score > stored) {
+      localStorage.setItem(hsKey, String(score));
+      highScore = score;
+    } else {
+      highScore = stored;
+    }
+
+    updateScores();
+
+    document.getElementById('question').textContent = '';
+    document.getElementById('options').innerHTML = '';
+    document.getElementById('feedback').textContent = '';
+    document.getElementById('progress').textContent = '';
+
+    const total = quizData.length;
+    const percentage = total ? Math.round((score / total) * 100) : 0;
+
+    let msg = '';
+    if (score === total) msg = "🌟 Awesome! You know India's culture very well!";
+    else if (percentage >= 70) msg = "🌞 Excellent! Keep learning more about our heritage.";
+    else if (percentage >= 50) msg = "📚 Good effort! Learn a bit more each day.";
+    else msg = "🏛️ Explore India's diversity and try again!";
+
+    let resultsHTML = `
+      <div class="score">Your Score: ${score}/${total}</div>
+      <div style="font-size: 1.1em; color: #ffd54f; margin: 8px 0;">${percentage}%</div>
+      <div class="hiscore">🏆 High Score: ${highScore}/${total}</div>
+      <div style="margin: 15px 0; font-size: 1.05em; color: #ffeb3b;">${msg}</div>
+      <div style="margin:20px 0 10px 0;"><b>📋 Review Your Answers:</b></div>
+      <ol style="font-size:0.95em; color:#ffecb3;">
+    `;
+
+    quizData.forEach((q, idx) => {
+      const ans = answers[idx] || { chosen: null, correct: null };
+      const isCorrect = (ans.chosen !== null && ans.correct !== null) ? ans.chosen === ans.correct : false;
+
+      // prefer normalized answerText, then indexed option, then fallback
+      const correctText = q.answerText || (q.answerIndex !== null ? (q.options && q.options[q.answerIndex]) : null) || 'N/A';
+      const yourText = (ans.chosen !== null && q.options && q.options[ans.chosen]) ? q.options[ans.chosen] : 'No answer';
+
+      resultsHTML += `
+        <li>
+          <strong>${q.question}</strong><br>
+          <span style="color:#b2ff59;">✓ Correct: <b>${correctText}</b></span>
+          ${(!isCorrect && ans.chosen !== null) ? `<br><span style="color:#ff6f60;">✗ Your answer: ${yourText}</span>` : ''}
+        </li>
+      `;
+    });
+
+    resultsHTML += '</ol><button id="restart-btn">Restart Quiz</button>';
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = resultsHTML;
+    resultsDiv.style.display = "block";
+
+    document.getElementById('restart-btn').onclick = () => {
+      currentQuestion = 0;
+      score = 0;
+      selectedOption = null;
+      answers = [];
+      loadAndRenderQuiz(selectedState);
+    };
+  }
+
+  async function loadAndRenderQuiz(state) {
+    selectedState = state;
+    quizData = await fetchQuizQuestions(state);
+
+    if (quizData.length === 0) {
+      scoreBox.style.display = 'none';
+      document.getElementById('question').textContent = '';
+      return;
+    }
+
+    currentQuestion = 0;
+    score = 0;
+    selectedOption = null;
+    answers = [];
+    highScore = Number(localStorage.getItem(highScoreKeyPrefix + state) || 0);
+
+    scoreBox.style.display = 'flex';
+    renderQuiz();
+  }
+
+  // wire state select
+  stateSelect.addEventListener('change', () => {
+    if (stateSelect.value) loadAndRenderQuiz(stateSelect.value);
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/images/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>CulturalTreasure - Discover India's Heritage</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/topojson-client@3"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+/* (your existing CSS — preserved exactly) */
+ * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    overflow-x: hidden;
+}
+
+button {
+    color: #d4681f;
+    background-color: white;
+    font-size: 1.5rem;
+}
+/* Navigation Styles */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    max-width: 1250px;
+    margin: 0 auto;
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #d4681f;
+}
+
+.nav-logo img {
+    width: 60px;
+    height: 60px;
+    margin-right: 0.5rem;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    
+}
+/* Add this to style overlay if not already present */
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  display: none; /* toggled via JS */
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  background: rgba(0,0,0,0.6);
+  padding: 20px;
+}
+.login-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-menu a:hover {
+    color: #d4681f;
+}
+.musicPromptBtn{
+    display:none;
+    position:fixed;
+    bottom:30px;
+    right:30px;
+    z-index:3000;
+    background:#ffb22d;
+    color:#fff;
+    border:none;
+    font-size:1.2em;
+    border-radius:30px;
+    padding:14px 28px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    cursor:pointer;
+}
+.language-selector select {
+    padding: 0.5rem;
+    border: 2px solid #d4681f;
+    border-radius: 25px;
+    background: white;
+    color: #333;
+    font-weight: 500;
+}
+
+/* Hero Section */
+.hero {
+    height: 100vh;
+    background: url('/images/india.png') no-repeat center center;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-content {
+    z-index: 2;
+    max-width: 800px;
+    padding: 0 2rem;
+}
+
+.hero-title {
+    font-size: 4rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+    animation: fadeInUp 1s ease-out;
+    background-color: #4e4d4d38; /* Light yellow background as highlight */
+    padding: 0 0.3em; /* Horizontal padding around the text */
+    border-radius: 0.2em; /* Optional rounded corners */
+}
+
+.hero-subtitle {
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 2rem;
+    animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+.cta-button {
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #d4681f;
+    background: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: fadeInUp 1s ease-out 0.4s both;
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.hero-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.floating-elements {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.cultural-icon {
+    position: absolute;
+    font-size: 4rem;
+    opacity: 0.1;
+    animation: float 6s ease-in-out infinite;
+}
+
+.cultural-icon:nth-child(1) {
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.cultural-icon:nth-child(2) {
+    top: 60%;
+    right: 15%;
+    animation-delay: 2s;
+}
+
+.cultural-icon:nth-child(3) {
+    top: 30%;
+    right: 20%;
+    animation-delay: 4s;
+}
+
+.cultural-icon:nth-child(4) {
+    bottom: 20%;
+    left: 15%;
+    animation-delay: 1s;
+}
+
+/* Category Section */
+.category-section {
+    padding: 5rem 2rem;
+    background: #f8f9fa;
+    text-align: center;
+}
+
+.category-section h2 {
+    font-size: 3rem;
+    color: #333;
+    margin-bottom: 3rem;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.category-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 3px solid transparent;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    border-color: #d4681f;
+}
+
+.category-card.active {
+    border-color: #d4681f;
+    background: linear-gradient(135deg, #ff9a56 0%, #d4681f 100%);
+    color: white;
+}
+
+.category-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.category-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Map Section */
+.map-section {
+    padding: 5rem 2rem;
+    background: white;
+}
+
+.map-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.map-container h2 {
+    font-size: 3rem;
+    color: #333;
+    margin-bottom: 2rem;
+}
+
+.map-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1rem 2rem;
+    background: #f8f9fa;
+    border-radius: 15px;
+}
+
+.active-category {
+    font-weight: 600;
+    color: #d4681f;
+}
+
+.treasure-score {
+    font-weight: 600;
+    color: #28a745;
+}
+
+#india-map {
+    width: 100%;
+    height: 600px;
+    background: #f8f9fa;
+    border-radius: 20px;
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.map-legend {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.legend-color.visited {
+    background: #28a745;
+}
+
+.legend-color.treasure {
+    background: #ffc107;
+}
+
+.legend-color.connection {
+    background: #d4681f;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 2% auto;
+    padding: 0;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 1000px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+.modal-header {
+    padding: 2rem;
+    background: linear-gradient(135deg, #ff9a56 0%, #d4681f 100%);
+    color: white;
+    border-radius: 20px 20px 0 0;
+}
+
+.modal-header h2 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.modal-location {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.virtual-tour {
+    margin-bottom: 2rem;
+}
+
+#virtual-tour-container {
+    height: 300px;
+    background: #f8f9fa;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.tour-placeholder {
+    text-align: center;
+    color: #666;
+}
+
+.tour-placeholder i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.tour-controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.tour-btn {
+    padding: 0.8rem 1.5rem;
+    background: #d4681f;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.tour-btn:hover {
+    background: #b8561a;
+    transform: translateY(-2px);
+}
+
+.cultural-info {
+    display: grid;
+    gap: 2rem;
+}
+
+.info-section h3 {
+    color: #d4681f;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.info-section p {
+    line-height: 1.8;
+    color: #666;
+}
+
+.info-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.info-section li {
+    padding: 0.5rem 0;
+    color: #666;
+    border-bottom: 1px solid #eee;
+}
+
+#culturalConnections {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.connection-tag {
+    background: #e8f4fd;
+    color: #0056b3;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.connection-tag:hover {
+    background: #d4681f;
+    color: white;
+}
+
+.modal-actions {
+    padding: 2rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    background: #f8f9fa;
+    border-radius: 0 0 20px 20px;
+}
+
+.action-btn {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.treasure-btn {
+    background: #ffc107;
+    color: #333;
+}
+
+.explore-btn {
+    background: #d4681f;
+    color: white;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Quiz Section */
+.quiz-section {
+    padding: 5rem 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.quiz-container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.quiz-container h2 {
+    font-size: 3rem;
+    margin-bottom: 3rem;
+}
+
+.quiz-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    color: #333;
+}
+
+.quiz-progress {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.progress-bar {
+    width: 70%;
+    height: 10px;
+    background: #eee;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #d4681f;
+    width: 10%;
+    transition: width 0.3s ease;
+}
+
+.quiz-content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: #333;
+}
+
+.quiz-options {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.quiz-option {
+    padding: 1rem;
+    background: #f8f9fa;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.quiz-option:hover {
+    border-color: #d4681f;
+    background: #fff;
+}
+
+.quiz-option.selected {
+    border-color: #d4681f;
+    background: #fff5f0;
+}
+
+.quiz-btn {
+    padding: 1rem 2rem;
+    background: #d4681f;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.quiz-btn:hover {
+    background: #b8561a;
+}
+
+/* Community Section */
+.community-section {
+    padding: 5rem 2rem;
+    background: #f8f9fa;
+}
+
+.community-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.community-container h2 {
+    text-align: center;
+    font-size: 3rem;
+    color: #333;
+    margin-bottom: 3rem;
+}
+
+.contribution-grid {
+    display: grid;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.contribution-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.contributor-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.contributor-info img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.contributor-info h4 {
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.contributor-info p {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.contribution-content h3 {
+    color: #d4681f;
+    margin-bottom: 1rem;
+}
+
+.contribution-content audio {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.contribute-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.contribute-section h3 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+}
+
+.contribution-form {
+    display: grid;
+    gap: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.contribution-form input,
+.contribution-form select,
+.contribution-form textarea {
+    padding: 1rem;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    transition: border-color 0.3s ease;
+}
+
+.contribution-form input:focus,
+.contribution-form select:focus,
+.contribution-form textarea:focus {
+    outline: none;
+    border-color: #d4681f;
+}
+
+.submit-btn {
+    padding: 1rem 2rem;
+    background: #d4681f;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    justify-self: center;
+}
+
+.submit-btn:hover {
+    background: #b8561a;
+    transform: translateY(-2px);
+}
+
+/* Footer */
+.footer {
+    background: #333;
+    color: white;
+    padding: 3rem 2rem 1rem;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-section h3 {
+    color: #d4681f;
+    margin-bottom: 1rem;
+}
+
+.footer-section ul {
+    list-style: none;
+}
+
+.footer-section ul li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-section a {
+    color: #ccc;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-section a:hover {
+    color: #d4681f;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.social-links a {
+    width: 40px;
+    height: 40px;
+    background: #d4681f;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+    background: #ff9a56;
+    transform: translateY(-2px);
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #555;
+    color: #ccc;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .category-section h2,
+    .map-container h2,
+    .quiz-container h2,
+    .community-container h2 {
+        font-size: 2rem;
+    }
+
+    .nav-container {
+        padding: 1rem;
+    }
+
+    .nav-menu {
+        gap: 1rem;
+    }
+
+    .category-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .map-controls {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 5% auto;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero {
+        padding: 0 1rem;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .category-section,
+    .map-section,
+    .quiz-section,
+    .community-section {
+        padding: 3rem 1rem;
+    }
+
+    .quiz-options {
+        gap: 0.5rem;
+    }
+
+    .quiz-option {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* State highlighting and interaction effects */
+.state-path {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    stroke: #333;
+    stroke-width: 1;
+}
+
+.state-path:hover {
+    opacity: 0.8;
+    stroke-width: 2;
+}
+
+.state-path.visited {
+    fill: #28a745;
+}
+
+.state-path.has-treasure {
+    fill: #ffc107;
+}
+
+.state-path.connected {
+    fill: #d4681f;
+}
+
+/* Cultural connections visualization */
+.connection-line {
+    stroke: #d4681f;
+    stroke-width: 2;
+    stroke-dasharray: 5,5;
+    animation: dashArray 2s linear infinite;
+}
+
+@keyframes dashArray {
+    to {
+        stroke-dashoffset: -10;
+    }
+}
+
+/* Treasure hunt elements */
+.treasure-marker {
+    cursor: pointer;
+    animation: pulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+    from {
+        transform: scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: scale(1.2);
+        opacity: 0.7;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+   
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="nav-logo">
+      <img src="/images/logo.jpeg" alt="Logo">
+      <span>Parampara</span>
+    </div>
+    <div class="nav-menu">
+      <a href="#home">Home</a>
+      <a href="treasure_hunt.html">Explore</a>
+      <a href="#community">Community</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="#feedback">Feedback</a>
+
+      <!-- 🧭 User Info (no image now) -->
+      <div id="userInfo" style="display:none; align-items:center; gap:8px;">
+        <span id="userNameEmail" style="color:#333;"></span>
+        <button id="signOutBtn" style="background:#d4681f;color:#fff;border:none;padding:3px 3px;border-radius:5px;cursor:pointer,;">Sign out</button>
+      </div>
+
+      <div class="language-selector">
+        <select id="languageSelect">
+          <option value="en">English</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Rest of your HTML structure remains identical -->
+
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 class="hero-title">Discover India's Rich Cultural Heritage</h1>
+            <p class="hero-subtitle">Embark on a virtual treasure hunt through India's diverse traditions, festivals, cuisine, and architecture</p>
+            <button class="cta-button" onclick="window.location.href='tr2.html'">Start Your Journey</button>
+        </div>
+        <div class="hero-animation"></div>
+        <!-- <button id="musicPromptBtn">🎵 Tap to enable site music</button> -->
+    </section>
+
+    <!-- Voices of Parampara Section -->
+    <section class="parampara-stories-section" id="community" style="background: #ffffff; color: #ffb22d;">
+        <div class="stories-container" style="max-width: 1100px; margin: 0 auto; padding: 60px 30px;">
+            <div class="stories-header" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 25px; margin-bottom: 40px;">
+                <img src="/images/community.jpeg" alt="Voices of Parampara" class="stories-img" style="width: 160px; height: 160px; object-fit: cover; border-radius: 50%; border: 3px solid #ffb22d; box-shadow: 0 0 15px rgba(255, 178, 45, 0.5); margin-top: 10px;">
+                <div class="stories-text" style="max-width: 600px;">
+                    <h2 style="font-size: 2em; color: #ff9900; margin-bottom: 10px;">Voices of Parampara: Your Stories & Inspirations</h2>
+                    <p style="margin-top: 0; font-size: 1.1em; color: #cc7a00; line-height: 1.6;">
+                        Every story holds the essence of our culture — from ancestral traditions to modern expressions.  
+                        Share your story and inspire others to connect with India’s living heritage.
+                    </p>
+                </div>
+            </div>
+
+            <div class="stories-share-box" style="background: #fff6e6; padding: 25px 20px; margin: 0 auto 40px auto; max-width: 700px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); color: #662e00;">
+                <h3 style="color: #ff9900; text-transform: uppercase; margin-bottom: 15px; font-size: 1.3em; letter-spacing: 1px;">Share Your Story</h3>
+                <input type="text" id="story-name" placeholder="Your Name" required style="width: 90%; background: #fff1cc; border: 1.5px solid #ffbb33; color: #662e00; border-radius: 7px; margin: 8px 0; padding: 10px; font-size: 1em;">
+                <textarea id="story-input" rows="4" placeholder="Share your cultural experience, memory, or insight..." style="width: 90%; background: #fff1cc; border: 1.5px solid #ffbb33; color: #662e00; border-radius: 7px; margin: 8px 0; padding: 10px; font-size: 1em;"></textarea>
+                <button id="story-submit" style="background: #ffb22d; border: none; padding: 10px 22px; color: #4e2d00; font-weight: 600; border-radius: 6px; margin-top: 12px; cursor: pointer; transition: background 0.3s; font-size: 1em;">Share My Story</button>
+            </div>
+
+            <div class="stories-feed" id="stories-feed" style="margin-top: 30px; display: grid; gap: 20px; justify-items: center;"></div>
+        </div>
+    </section>
+
+    <!-- Feedback Section -->
+    <section id="feedback" style="background: #ffffff; color: #ffb22d;">
+        <div class="feedback-container" style="max-width: 1100px; margin: 0 auto; padding: 60px 30px;">
+            <div class="feedback-header" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 25px; margin-bottom: 40px;">
+                <img src="/images/feedback.png" alt="Feedback" class="feedback-img" style="width: 160px; height: 160px; object-fit: cover; border-radius: 50%; border: 3px solid #ffb22d; box-shadow: 0 0 15px rgba(255, 178, 45, 0.5); margin-top: 10px;">
+                <div class="feedback-text" style="max-width: 600px;">
+                    <h2 style="font-size: 2em; color: #ff9900; margin-bottom: 10px;">We Value Your Feedback!</h2>
+                    <p style="margin-top: 0; font-size: 1.1em; color: #cc7a00; line-height: 1.6;">
+                        Help us improve Parampara by sharing your thoughts and experiences. Your feedback shapes our journey!
+                    </p>
+                </div>
+            </div>
+
+            <div class="feedback-form-box" style="background: #fff6e6; padding: 25px 20px; margin: 0 auto 40px auto; max-width: 700px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); color: #662e00;">
+                <h3 style="color: #ff9900; text-transform: uppercase; margin-bottom: 15px; font-size: 1.3em; letter-spacing: 1px;">Share Your Feedback</h3>
+                <form id="paramparaFeedbackForm" style="display: flex; flex-direction: column; gap: 15px;">
+                    <input type="text" id="name" name="name" placeholder="Your name" required style="width: 90%; padding: 10px; background: #fff1cc; border: 1.5px solid #ffbb33; color: #662e00; border-radius: 7px; font-size: 1em;">
+                    <input type="email" id="email" name="email" placeholder="Your email" required style="width: 90%; padding: 10px; background: #fff1cc; border: 1.5px solid #ffbb33; color: #662e00; border-radius: 7px; font-size: 1em;">
+
+                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                        <span style="font-weight: bold; color: #ff9900;">Rate Parampara:</span>
+                        <div id="starRating" style="display: flex; gap: 5px; cursor: pointer; font-size: 1.8rem; color: #ccc;">
+                            <span data-value="1">&#9733;</span>
+                            <span data-value="2">&#9733;</span>
+                            <span data-value="3">&#9733;</span>
+                            <span data-value="4">&#9733;</span>
+                            <span data-value="5">&#9733;</span>
+                        </div>
+                        <input type="hidden" id="rating" name="rating" required>
+                    </div>
+
+                    <textarea id="comments" name="comments" placeholder="Write your feedback here..." rows="4" required style="width: 90%; padding: 10px; background: #fff1cc; border: 1.5px solid #ffbb33; color: #662e00; border-radius: 7px; font-size: 1em;"></textarea>
+
+                    <button type="submit" style="background: #ffb22d; border: none; padding: 10px 22px; color: #4e2d00; font-weight: 600; border-radius: 6px; margin-top: 12px; cursor: pointer; transition: background 0.3s; font-size: 1em;">Submit Feedback</button>
+                </form>
+
+                <p id="feedbackMessage" style="text-align: center; color: #28a745; font-weight: bold; display: none; margin-top: 15px;">Thank you for your feedback!</p>
+            </div>
+
+            <div style="max-width: 700px; margin: 0 auto;">
+                <h3 style="margin-top: 30px; color: #ff9900; font-size: 1.4em;">Previous Feedbacks</h3>
+                <div id="feedbackList" style="margin-top: 20px; display: grid; gap: 20px; justify-items: center;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>CulturalTreasure</h3>
+                <p>Preserving and celebrating India's rich cultural heritage through immersive digital experiences.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="treasure_hunt.html">Explore</a></li>
+                <li><a href="#community">Community</a></li>
+                <li><a href="quiz.html">Quiz</a></li>
+                <li><a href="#feedback">feedback</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect With Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 CulturalTreasure. All rights reserved. | Built for Smart India Hackathon 2025</p>
+        </div>
+    </footer>
+
+    
+
+    <!-- Login Overlay -->
+    <div class="auth-overlay" id="authOverlay" role="dialog" aria-label="Login required">
+        <div class="login-container" id="auth-container">
+            <h2>Login / Register - Parampara</h2>
+
+            <div id="authTabs" style="display:flex; gap:8px; margin-bottom:12px;">
+                <button id="tabLogin" style="flex:1;padding:8px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;">Login</button>
+                <button id="tabRegister" style="flex:1;padding:8px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" style="display:block; margin-bottom:12px;">
+                <input type="text" id="login-username" placeholder="Username or email" autocomplete="username" style="width:100%;padding:8px;margin-bottom:8px;">
+                <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" style="width:100%;padding:8px;margin-bottom:8px;">
+                <div style="display:flex; gap:8px;">
+                    <button type="button" id="loginBtn" onclick="loginUser()" style="flex:1;padding:10px;border-radius:8px;border:none;background:#d4681f;color:white;cursor:pointer;">Login</button>
+                    <button type="button" id="loginCancel" onclick="hideOverlay()" style="flex:1;padding:10px;border-radius:8px;border:none;background:#eee;color:#333;cursor:pointer;">Cancel</button>
+                </div>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" style="display:none; margin-bottom:12px;" enctype="multipart/form-data" onsubmit="return false;">
+                <input type="text" id="reg-username" placeholder="Username" autocomplete="username" required style="width:100%;padding:8px;margin-bottom:8px;">
+                <input type="email" id="reg-email" placeholder="Email" autocomplete="email" required style="width:100%;padding:8px;margin-bottom:8px;">
+                <input type="password" id="reg-password" placeholder="Password" required style="width:100%;padding:8px;margin-bottom:8px;">
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <input type="file" id="reg-picture" accept="image/*" />
+                    <img id="reg-picture-preview" src="" alt="preview" style="width:48px;height:48px;border-radius:8px;object-fit:cover;display:none;border:1px solid #eee;" />
+                </div>
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                    <button type="button" id="registerBtn" onclick="registerUserMultipart()" style="flex:1;padding:10px;border-radius:8px;border:none;background:#28a745;color:white;cursor:pointer;">Register</button>
+                    <button type="button" id="registerCancel" onclick="hideOverlay()" style="flex:1;padding:10px;border-radius:8px;border:none;background:#eee;color:#333;cursor:pointer;">Cancel</button>
+                </div>
+            </form>
+
+            <!-- Google Sign-In -->
+            <div style="display:flex; justify-content:center; margin-top:8px;">
+                <div id="g_id_onload"
+                     data-client_id="538014316805-cjnta4j1g02ueiarnlsvp2jvr5cangeo.apps.googleusercontent.com"
+                     data-callback="handleCredentialResponse"
+                     data-auto_prompt="false">
+                </div>
+                <div id="g_id_signin"></div>
+            </div>
+
+            <p id="message" style="margin-top:10px;"></p>
+        </div>
+    </div>
+    
+    <audio id="login-music" src="intro.mp3" preload="auto" muted></audio>
+    
+
+<!-- Fallback button: shown only if autoplay is blocked -->
+<button id="enable-audio-btn" style="display:none; position:fixed; bottom:20px; right:20px; z-index:4000;
+        background:#ffb22d; color:#fff; border:none; padding:10px 16px; border-radius:24px; cursor:pointer;">
+  🔊 Enable audio
+</button>
+
+    <script>
+/* === Auth + optional Force-Logout logic === */
+
+const API_BASE = 'http://localhost:3000';
+const GOOGLE_CLIENT_ID = '538014316805-cjnta4j1g02ueiarnlsvp2jvr5cangeo.apps.googleusercontent.com';
+
+// DOM refs
+const authOverlay = document.getElementById('authOverlay');
+const messageEl = document.getElementById('message');
+const userInfoBox = document.getElementById('userInfo');
+const userNameEmail = document.getElementById('userNameEmail');
+const signOutBtn = document.getElementById('signOutBtn');
+const tabLogin = document.getElementById('tabLogin');
+const tabRegister = document.getElementById('tabRegister');
+const loginForm = document.getElementById('loginForm');
+const registerForm = document.getElementById('registerForm');
+const loginMusic = document.getElementById('login-music');
+
+function isIndexPage() {
+  const p = window.location.pathname.toLowerCase();
+  return p === '/' || p.endsWith('/index.html') || p.endsWith('/index.htm');
+}
+function showOverlay(){ if (authOverlay) authOverlay.style.display = 'flex'; }
+function hideOverlay(){ if (authOverlay) authOverlay.style.display = 'none'; }
+
+function persistUserLocally(user){ try { localStorage.setItem('loggedInUser', JSON.stringify(user)); } catch{} }
+function removeLocalUser(){ try { localStorage.removeItem('loggedInUser'); } catch{} }
+function getLocalUser(){ try { const u = JSON.parse(localStorage.getItem('loggedInUser')); if (u && (u.email || u.name)) return u; } catch{} return null; }
+
+// --- Audio helpers (put once at top-level of your script) ---
+const enableAudioBtn = document.getElementById('enable-audio-btn');
+const audioEl = document.getElementById('login-music');
+
+async function tryPlayAudioWithFallback() {
+  if (!audioEl) return false;
+  try {
+    // Attempt to unmute + play. This will fail in many browsers unless triggered
+    // by a user gesture — if blocked we'll catch and show the fallback button.
+    audioEl.muted = false;
+    await audioEl.play();
+    console.log('🎵 Audio started automatically after login');
+    if (enableAudioBtn) enableAudioBtn.style.display = 'none';
+    return true;
+  } catch (err) {
+    console.warn('Autoplay blocked or play() failed:', err);
+    // Keep audio muted so it won't make noise until user explicitly enables it
+    try { audioEl.muted = true; } catch(e){}
+    if (enableAudioBtn) enableAudioBtn.style.display = 'block';
+    return false;
+  }
+}
+
+// Wire up fallback button: this click is a user gesture so play will succeed
+if (enableAudioBtn) {
+  enableAudioBtn.addEventListener('click', async () => {
+    try {
+      // If you use WebAudio elsewhere, resume AudioContext here (optional)
+      if (window.audioContext && typeof window.audioContext.resume === 'function') {
+        await window.audioContext.resume();
+      }
+      if (!audioEl) return;
+      audioEl.muted = false;
+      await audioEl.play();
+      enableAudioBtn.style.display = 'none';
+      console.log('🎵 Audio enabled by user gesture');
+    } catch (err) {
+      console.error('Play failed after user gesture:', err);
+      alert('Unable to play audio. Please check your browser settings.');
+    }
+  });
+}
+
+// --- Updated showSignedIn (replace your existing function) ---
+function showSignedIn(user){
+  if (!user) return;
+  window.__currentUser = user;
+  if (userInfoBox) userInfoBox.style.display = 'flex';
+  if (userNameEmail)
+    userNameEmail.textContent = user.name ? `${user.name} (${user.email||''})` : user.email || '';
+  hideOverlay();
+  persistUserLocally(user);
+
+  // music prompt only when allowed by explicit login flows
+  if (!sessionStorage.getItem('musicPromptShown') && sessionStorage.getItem('allowMusicPrompt') === '1'){
+    sessionStorage.setItem('musicPromptShown','1');
+
+    // Removed blocking alert to avoid timing issues; if you still want a notice, use a non-blocking toast.
+    // Attempt autoplay, then show fallback button if blocked.
+    tryPlayAudioWithFallback().catch(err => {
+      console.warn('tryPlayAudioWithFallback error:', err);
+      // show fallback button in case of unexpected error
+      if (enableAudioBtn) enableAudioBtn.style.display = 'block';
+    });
+  }
+}
+
+function hideSignedIn(){
+  window.__currentUser = null;
+  if (userInfoBox) userInfoBox.style.display = 'none';
+  if (userNameEmail) userNameEmail.textContent = '';
+  removeLocalUser();
+}
+
+// Tabs
+if (tabLogin && tabRegister){
+  tabLogin.addEventListener('click', ()=>{ loginForm.style.display='block'; registerForm.style.display='none'; tabLogin.style.background='#f7f7f7'; tabRegister.style.background='#fff'; if (messageEl) messageEl.textContent=''; });
+  tabRegister.addEventListener('click', ()=>{ loginForm.style.display='none'; registerForm.style.display='block'; tabRegister.style.background='#f7f7f7'; tabLogin.style.background='#fff'; if (messageEl) messageEl.textContent=''; });
+}
+
+// Sign out button click
+if (signOutBtn){
+  signOutBtn.addEventListener('click', async ()=>{
+    try { await fetch(API_BASE + '/api/logout', { method:'POST', credentials:'include' }); } catch {}
+    hideSignedIn();
+    showOverlay();
+    if (tabLogin) tabLogin.click();
+  });
+}
+
+/* Decide whether to force logout:
+   - force if URL has ?forceLogout=1 OR sessionStorage.forceLogout === '1'
+   - otherwise run the normal restore+server-validate flow (which does NOT re-open overlay if we have local user)
+*/
+function shouldForceLogout(){
+  try {
+    const qp = new URLSearchParams(window.location.search);
+    if (qp.get('forceLogout') === '1') return true;
+    if (sessionStorage.getItem('forceLogout') === '1') return true;
+  } catch(e){}
+  return false;
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
+  const force = shouldForceLogout();
+
+  if (force) {
+    // Forced logout path (explicit)
+    sessionStorage.removeItem('musicPromptShown');
+    sessionStorage.setItem('allowMusicPrompt','0');
+
+    try { await fetch(API_BASE + '/api/logout', { method:'POST', credentials:'include' }); } catch (err) { console.warn('Forced logout failed:', err); }
+
+    hideSignedIn();
+    removeLocalUser();
+    showOverlay();
+    if (tabLogin) tabLogin.click();
+
+    // render Google button if available
+    if (isIndexPage() && window.google) {
+      try {
+        google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleCredentialResponse });
+        google.accounts.id.renderButton(document.getElementById('g_id_signin'), { theme:'outline', size:'large' });
+      } catch(e){ console.warn('Google init failed', e); }
+    }
+    return;
+  }
+
+  // --- Normal (non-forced) flow ---
+  // 1) Restore local user immediately for instant UI
+  const localUser = getLocalUser();
+  if (localUser) {
+    showSignedIn(localUser);
+    if (isIndexPage()) console.log(`Welcome back, ${localUser.name || 'Explorer'} 👋`);
+  } else {
+    // keep overlay hidden for a moment until server check completes (avoids flicker)
+    hideOverlay();
+  }
+
+  // 2) validate session with server (background)
+  let serverUser = null;
+  try {
+    const res = await fetch(API_BASE + '/api/session', { credentials:'include' });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.user || data.loggedIn) {
+        serverUser = data.user || data;
+        showSignedIn(serverUser); // server truth overrides local
+      }
+    }
+  } catch (err) {
+    console.warn('Session check failed:', err);
+  }
+
+  // 3) Only show overlay if neither local nor server authenticated
+  if (!localUser && !serverUser) {
+    showOverlay();
+    if (tabLogin) tabLogin.click();
+  }
+
+  // render google if available
+  if (isIndexPage() && window.google) {
+    try {
+      google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleCredentialResponse });
+      google.accounts.id.renderButton(document.getElementById('g_id_signin'), { theme:'outline', size:'large' });
+    } catch(e){ console.warn('Google init failed', e); }
+  }
+
+  if (tabLogin) tabLogin.click();
+});
+
+// --- Login action ---
+async function loginUser() {
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  if (!username || !password) { if (messageEl){ messageEl.style.color='red'; messageEl.textContent='Enter username and password'; } return; }
+  if (messageEl){ messageEl.style.color='black'; messageEl.textContent='Logging in...'; }
+
+  try {
+    const res = await fetch(API_BASE + '/api/login', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      credentials:'include',
+      body: JSON.stringify({ identifier: username, password })
+    });
+    const data = await res.json();
+    if (res.ok && data.user) {
+      sessionStorage.setItem('allowMusicPrompt','1');
+      showSignedIn(data.user);
+    } else {
+      if (messageEl){ messageEl.style.color='red'; messageEl.textContent = data.message || 'Invalid credentials'; }
+    }
+  } catch(e) {
+    if (messageEl){ messageEl.style.color='red'; messageEl.textContent='Server error'; }
+  }
+}
+
+// --- Register ---
+async function registerUserMultipart(){
+  const username = document.getElementById('reg-username').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const picture = document.getElementById('reg-picture').files[0];
+  if (!username || !password) { if (messageEl){ messageEl.style.color='red'; messageEl.textContent='Username and password required'; } return; }
+
+  const fd = new FormData();
+  fd.append('username', username);
+  fd.append('email', email);
+  fd.append('password', password);
+  if (picture) fd.append('picture', picture);
+
+  try {
+    const res = await fetch(API_BASE + '/api/register-multipart', { method:'POST', body: fd, credentials:'include' });
+    const data = await res.json();
+    if (res.ok && data.user) {
+      sessionStorage.setItem('allowMusicPrompt','1');
+      showSignedIn(data.user);
+      if (messageEl){ messageEl.style.color='green'; messageEl.textContent='Registered successfully'; }
+    } else {
+      if (messageEl){ messageEl.style.color='red'; messageEl.textContent = data.message || 'Registration failed'; }
+    }
+  } catch(e){
+    if (messageEl){ messageEl.style.color='red'; messageEl.textContent='Network error'; }
+  }
+}
+
+// --- Google login handler ---
+async function handleCredentialResponse(response){
+  if (!response || !response.credential) { if (messageEl){ messageEl.textContent='Google login failed'; messageEl.style.color='red'; } return; }
+  try {
+    const res = await fetch(API_BASE + '/api/google-login', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      credentials:'include',
+      body: JSON.stringify({ credential: response.credential })
+    });
+    const data = await res.json();
+    if (res.ok && data.user) {
+      sessionStorage.setItem('allowMusicPrompt','1');
+      showSignedIn(data.user);
+    } else {
+      if (messageEl){ messageEl.style.color='red'; messageEl.textContent = data.message || 'Google sign-in failed'; }
+    }
+  } catch(e){
+    if (messageEl){ messageEl.style.color='red'; messageEl.textContent='Server error verifying Google token'; }
+  }
+}
+</script>
+
+    <!-- optional external script placeholder
+    <script src="script.js"></script> -->
+</body>
+</html>

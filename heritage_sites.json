@@ -1,0 +1,252 @@
+{
+  "North Goa": {
+    "Basilica of Bom Jesus": {
+      "district": "North Goa",
+      "url": "https://3dwarehouse.sketchup.com/embed/906bb7782d4ce98e629bc1320ab60604?token=O2flnZyAmFw=&binaryName=s21",
+      "audio": "The Basilica of Bom Jesus in Goa is a UNESCO World Heritage Site, famous for housing the mortal remains of St. Francis Xavier and showcasing exquisite Baroque architecture."
+    },
+    "Aguada Fort": {
+      "district": "North Goa",
+      "url": "https://sketchfab.com/models/69ac80a8e0654649ac86b27d48f18327/embed",
+      "audio": "Fort Aguada is a 17th-century Portuguese fort in Goa overlooking the Arabian Sea. It once served as a crucial defense point and a lighthouse guiding ships to safety."
+    },
+    "Baga Beach": {
+      "district": "North Goa",
+      "url": "https://sketchfab.com/models/77bc9575b55947cc907e390ca9efd280/embed",
+      "audio": "Baga Beach in Goa is one of India's most popular coastal destinations, famous for its golden sands, vibrant nightlife, and water sports along the Arabian Sea."
+    },
+    "Calangute Beach": {
+      "district": "North Goa",
+      "url": "https://sketchfab.com/models/36680a8026314a959ea0adb77f019912/embed",
+      "audio": "Calangute Beach, often called the Queen of Beaches in Goa, is known for its wide sandy stretch, lively shacks, and water adventures."
+    }
+  },
+  "South Goa": {
+    "Dudhsagar Falls": {
+      "district": "South Goa",
+      "url": "https://sketchfab.com/models/b1852a8dfb514592b313810bfa42dd9a/embed",
+      "audio": "Dudhsagar Falls, located on the Mandovi River in Goa, is one of India's tallest waterfalls — its name means 'Sea of Milk'."
+    },
+    "Palolem Beach": {
+      "district": "South Goa",
+      "url": "https://sketchfab.com/models/bdcd31375efc441b8bb6892d3680301c/embed",
+      "audio": "Palolem Beach in South Goa is famous for its crescent-shaped coastline, calm waters and laid-back vibe."
+    },
+    "Colva Beach": {
+      "district": "South Goa",
+      "url": "https://sketchfab.com/models/72e7fb6b25014695959af8edcc5a1ada/embed",
+      "audio": "Colva Beach is a long white-sand beach in South Goa known for peaceful sunsets and long walks."
+    }
+  },
+  "Central Delhi": {
+    "India Gate": {
+      "district": "Central Delhi",
+      "url": "https://sketchfab.com/models/924b5f2c37c84a2e9cbdb927cf7c1d7d/embed",
+      "audio": "India Gate, located in New Delhi, is a war memorial built in honor of the soldiers of the Indian Army who died during World War I. Designed by Sir Edwin Lutyens, it stands as a symbol of valor and national pride."
+    },
+    "Rashtrapati Bhavan": {
+      "district": "Central Delhi",
+      "url": "https://sketchfab.com/models/9189f8f9d0ac44d6bc28a91b36428aaa/embed",
+      "audio": "Rashtrapati Bhavan in New Delhi is the official residence of the President of India. This monumental complex blends classical and Indian architectural styles and sits on the Raisina Hill overlooking the city."
+    },
+    "Connaught Place": {
+      "district": "Central Delhi",
+      "url": "https://3dwarehouse.sketchup.com/embed/0db78097-f954-49fa-98b2-398415c18f82?token=YLZ-AlkBues=&binaryName=s21",
+      "audio": "Connaught Place, located in the heart of New Delhi, is one of the city's most famous commercial and heritage centers. Known for its Georgian-style architecture, circular design, and lively shopping streets, it remains a cultural and business hub of the capital."
+    },
+    "National Museum of Modern Art": {
+      "district": "Central Delhi",
+      "url": "https://sketchfab.com/models/e9c81d67a50b4958bfb3ff5a8e513b4b/embed",
+      "audio": "The National Museum of Modern Art in New Delhi showcases India's rich heritage of modern and contemporary art. It houses a vast collection of paintings, sculptures, and photographs representing diverse artistic traditions."
+    },
+    "Gurudwara Bangla Sahib": {
+      "district": "Central Delhi",
+      "url": "https://3dwarehouse.sketchup.com/embed/ada6d74789cf1873fee1e0a4220b8da?token=9spKS0UfB-4=&binaryName=s21",
+      "audio": "Gurudwara Bangla Sahib in New Delhi is one of the most prominent Sikh gurdwaras in India, known for its golden dome and serene Sarovar. Built in the 17th century, it is associated with Guru Har Krishan, the eighth Sikh Guru."
+    },
+    "Qutub Minar": {
+      "district": "Central Delhi",
+      "url": "https://sketchfab.com/models/cf4f8f1bcdbd4cb49056c688f8739e77/embed",
+      "audio": "Qutub Minar, located in Delhi, is a UNESCO World Heritage Site and one of India’s tallest minarets, standing at 73 meters. Built in the early 13th century by Qutb-ud-din Aibak and later completed by Iltutmish, it symbolizes the beginning of Muslim rule in India."
+    },
+    "Lotus Temple": {
+      "district": "Central Delhi",
+      "url": "https://sketchfab.com/models/0a81d18db3c947fbbdc8d60edd1ef323/embed",
+      "audio": "The Lotus Temple in New Delhi is a Bahá'í House of Worship, renowned for its flower-like architectural design. Open to all faiths, it symbolizes unity, peace, and purity. Its white marble petals make it one of the most iconic landmarks of India."
+    },
+    "Humayun’s Tomb": {
+      "district": "Central Delhi",
+      "url": "https://sketchfab.com/models/592c6356517b4199bd88e5caf68da36d/embed",
+      "audio": "Humayun’s Tomb in New Delhi is a UNESCO World Heritage Site and the first garden-tomb built in India. Commissioned by Empress Bega Begum in the 16th century, it inspired the later Mughal architectural marvels like the Taj Mahal."
+    },
+    "Red Fort": {
+      "district": "Central Delhi",
+      "url": "https://3dwarehouse.sketchup.com/embed/db873c66d177fa62f81ca56fe0bd79bc?token=ambCs4ekfW8=&binaryName=s21",
+      "audio": "The Red Fort in New Delhi is a UNESCO World Heritage Site and a symbol of India’s independence. Built by Mughal Emperor Shah Jahan in the 17th century, it is known for its massive red sandstone walls and intricate Mughal architecture."
+    }
+  },
+  "Thiruvananthapuram": {
+    "Padmanabhaswamy Temple": {
+      "district": "Thiruvananthapuram",
+      "url": "https://sketchfab.com/models/764f3a3192c84f0f9ff2a0aa5c075dc2/embed",
+      "audio": "Sree Padmanabhaswamy Temple, located in Thiruvananthapuram, Kerala, is one of the richest and most revered Hindu temples in India. Dedicated to Lord Vishnu, it is famous for its Dravidian-style architecture and immense treasures discovered in its vaults."
+    },
+    "Kovalam Beach": {
+      "district": "Thiruvananthapuram",
+      "url": "https://3dwarehouse.sketchup.com/embed/uec8d93c9-a036-421f-a563-133013265286?token=l5SBZC8z94Y=&binaryName=s21",
+      "audio": "Kovalam Beach, located near Thiruvananthapuram in Kerala, is one of India’s most famous coastal destinations. Known for its crescent-shaped shoreline, serene waves, and the iconic lighthouse, it attracts tourists from all over the world."
+    }
+  },
+  "Kannur": {
+    "Kannur Lighthouse": {
+      "district": "Kannur",
+      "url": "https://sketchfab.com/models/5011cc9834be458eb42b4ae9a22148a3/embed",
+      "audio": "Kannur Lighthouse, located on the coast of Kerala, is one of the oldest lighthouses on the Arabian Sea. Built in the early 20th century, it offers a panoramic view of the sea and the historic town of Kannur."
+    }
+  },
+  "East Sikkim": {
+    "Tsomgo Lake": {
+      "district": "East Sikkim",
+      "url": "https://sketchfab.com/models/11708835626c4b3da8935fb5b2a8b3bc/embed",
+      "audio": "Tsomgo Lake, also known as Changu Lake, is a glacial lake located about 40 kilometers from Gangtok in Sikkim. Surrounded by steep mountains and often frozen during winter, the lake is considered sacred by the Sikkimese people and reflects the serene beauty of the Himalayas."
+    },
+    "Rabdentse Ruins": {
+      "district": "West Sikkim",
+      "url": "https://sketchfab.com/models/026ac5900aeb4df7b9e101e430b0bd5b/embed",
+      "audio": "Rabdentse Ruins, located near Pelling in West Sikkim, are the remains of the second capital of the former Kingdom of Sikkim, established in the 17th century. These ruins stand as silent witnesses to Sikkim’s royal history, overlooking the beautiful Kanchenjunga range."
+    }
+  },
+  "North Sikkim": {
+    "Lachen Valley": {
+      "district": "North Sikkim",
+      "url": "https://sketchfab.com/models/6e68b8e58a7c4287b03e2ad2e01711c4/embed",
+      "audio": "Lachen Valley, located in North Sikkim, is a breathtaking Himalayan valley surrounded by snow-capped peaks and alpine meadows. It serves as the gateway to Gurudongmar Lake and is home to the Lachenpas, known for their unique Buddhist culture and warm hospitality."
+    },
+    "Tendong Hill": {
+      "district": "South Sikkim",
+      "url": "https://sketchfab.com/models/6dff907d427f4c9f8d301075f8019c82/embed",
+      "audio": "Tendong Hill in Sikkim is an important sacred mountain for the Lepcha community and a popular trekking destination. It is associated with the Tendong Lho Rumfaat legend — a great flood that the local people survived by taking refuge on the hill. Tendong is valued for its rich biodiversity, cool forests, and panoramic Himalayan views."
+    }
+  },
+  "West Sikkim": {
+    "Pine Forest": {
+      "district": "West Sikkim",
+      "url": "https://sketchfab.com/models/ece69535f7584e099488f65f2072264e/embed",
+      "audio": "The Pine Forests of Sikkim are serene stretches of evergreen trees spread across the hillsides. Known for their cool air, the whispering sound of the wind, and mist-covered paths, these forests provide a peaceful retreat for nature lovers and trekkers. Pine trees play a vital role in maintaining the region’s ecosystem."
+    }
+  },
+  "Punjab": {
+    "Sri Mullana Sahib": {
+      "district": "Ambala",
+      "url": "https://sketchfab.com/models/99db0c15bd22483f831f768a226a589b/embed",
+      "audio": "Sri Mullana Sahib, located in Punjab, is a revered Sikh Gurudwara known for its spiritual serenity and historical significance. It attracts devotees from across the region who come to offer prayers and seek blessings. The shrine stands as a symbol of faith, peace, and devotion in Sikhism."
+    },
+    "Baba Banda Bahadur Gurudwara": {
+      "district": "Ambala",
+      "url": "https://sketchfab.com/models/b5fa3c933ad94b50a294ca266d2ac342/embed",
+      "audio": "Baba Banda Bahadur Gurudwara in Punjab is dedicated to the great Sikh warrior Baba Banda Singh Bahadur, who led a historic uprising against Mughal rule in the early 18th century. The Gurudwara commemorates his bravery, leadership, and sacrifice in defending Sikh faith and justice."
+    }
+  },
+  "Mathura": {
+    "New Guriya Mahadev Mandir": {
+      "district": "Mathura",
+      "url": "https://3dwarehouse.sketchup.com/embed/d0fc9234-7dfd-4e4c-a54f-d0ceaaf3a74b?token=z_uiq7QxqWQ=&binaryName=s21",
+      "audio": "New Guriya Mahadev Mandir is a sacred Hindu temple dedicated to Lord Shiva, known for its peaceful atmosphere and architectural simplicity. The temple attracts devotees who come to offer prayers and seek blessings from Mahadev, symbolizing devotion and spiritual purity."
+    },
+    "Harappan Archaeological Site": {
+      "district": "Bhiwani",
+      "url": "https://sketchfab.com/models/a98eb43db09d419db4df3d96c6fd0c31/embed",
+      "audio": "The Harappan Archaeological Site represents one of the world’s earliest urban civilizations, part of the Indus Valley Civilization that flourished around 2500 BCE. Known for its advanced town planning, drainage systems, and craftsmanship, Harappa reveals the sophistication of ancient South Asian societies."
+    }
+  },
+  "Panipat": {
+    "Mughal Panipat": {
+      "district": "Fatehabad",
+      "url": "https://sketchfab.com/models/7956cb14af724713ad441348e2670d2e/embed",
+      "audio": "Panipat, located in Haryana, holds great historical importance as the site of three major battles that shaped Indian history. The Mughal architectural style seen in forts like Hajiganj reflects the empire’s strength and artistry during the 16th and 17th centuries."
+    }
+  },
+  "Imphal": {
+    "Imphal War Cemetery": {
+      "district": "Bishnupur",
+      "url": "https://3dwarehouse.sketchup.com/embed/6c6fa145fa7dd8ba4beb212213f2377?token=gELfQs1Ew8c=&binaryName=s21",
+      "audio": "The Imphal War Cemetery in Manipur commemorates the soldiers of the Allied Forces who lost their lives during the Battle of Imphal in World War II. Maintained by the Commonwealth War Graves Commission, it stands as a solemn reminder of courage and sacrifice."
+    },
+    "Kangla Fort": {
+      "district": "Imphal East",
+      "url": "https://sketchfab.com/models/c8c7ccb3404b4b5d81488fcdb49ccae5/embed",
+      "audio": "Kangla Fort, located in Imphal, Manipur, served as the ancient capital of the Meitei rulers. Known for its iconic Kangla Gate and the sacred Kangla Sha statues, the fort stands as a symbol of Manipur’s royal heritage, spirituality, and resilience."
+    }
+  },
+  "Northeast Manipur": {
+    "Stone Circles": {
+      "district": "Senapati",
+      "url": "https://sketchfab.com/models/7c197b263a1a4db1b2b3eb15df782989/embed",
+      "audio": "The ancient Stone Circles found across Northeast India are megalithic monuments built by early tribal communities. These stone structures were often used as burial markers, ritual altars, or symbols of clan heritage, representing a deep spiritual connection with ancestors and nature."
+    }
+  },
+  "South Garo Hills": {
+    "Dawki River": {
+      "district": "East Garo Hills",
+      "url": "https://sketchfab.com/models/af063698f63e427fbdb2d5bf15d978ca/embed",
+      "audio": "The Dawki River, also known as the Umngot River, flows between India and Bangladesh in Meghalaya. Famous for its crystal-clear waters that make boats appear to float on air, it is surrounded by lush hills and is one of the cleanest rivers in India."
+    },
+    "Siju Cave": {
+      "district": "South Garo Hills",
+      "url": "https://sketchfab.com/models/48a370136f9f40bda9dbfc1bc9153ffe/embed",
+      "audio": "Siju Cave, located in the South Garo Hills of Meghalaya, is one of the longest limestone caves in India. Known for its impressive stalactites, stalagmites, and natural limestone formations, it is often called the 'Bat Cave' due to its large bat population. The cave is a marvel of nature and an important ecological site."
+    }
+  },
+  "Meghalaya": {
+    "Dawki River": {
+      "district": "East Garo Hills",
+      "url": "https://sketchfab.com/models/af063698f63e427fbdb2d5bf15d978ca/embed",
+      "audio": "The Dawki River, also known as the Umngot River, flows between India and Bangladesh in Meghalaya. Famous for its crystal-clear waters that make boats appear to float on air, it is surrounded by lush hills and is one of the cleanest rivers in India."
+    },
+    "Siju Cave": {
+      "district": "West Garo Hills",
+      "url": "https://sketchfab.com/models/48a370136f9f40bda9dbfc1bc9153ffe/embed",
+      "audio": "Siju Cave, located in the South Garo Hills of Meghalaya, is one of the longest limestone caves in India. Known for its impressive stalactites, stalagmites, and natural limestone formations, it is often called the 'Bat Cave' due to its large bat population. The cave is a marvel of nature and an important ecological site."
+    }
+  },
+    "Taj Mahal": {
+      "district": "Agra",
+      "url": "https://sketchfab.com/models/33149233cefd492b9abdd50fe5a8c921/embed",
+      "audio": "The Taj Mahal, located in Agra, Uttar Pradesh, is one of the Seven Wonders of the World. Built by Mughal Emperor Shah Jahan in memory of his wife Mumtaz Mahal in the 17th century, it is a UNESCO World Heritage Site renowned for its white marble architecture and intricate craftsmanship."
+    },
+    "Agra Fort": {
+      "district": "Agra",
+      "url": "https://3dwarehouse.sketchup.com/embed/7adcc1b3c71fdd60a9f1261f85b4bbaf?token=-DmJNi9kvB0=&binaryName=s21",
+      "audio": "Agra Fort, located in Agra, Uttar Pradesh, is a UNESCO World Heritage Site and one of India’s most important Mughal forts. Built by Emperor Akbar in the 16th century, it served as the main residence of the Mughal emperors until the capital shifted to Delhi. Its red sandstone walls and grand palaces reflect the height of Mughal architecture."
+    },
+    "Rumi Darwaza": {
+      "district": "Lucknow",
+      "url": "https://sketchfab.com/models/b1f0aef17c634f05842f226a8a2f7cc8/embed",
+      "audio": "Rumi Darwaza, located in Lucknow, Uttar Pradesh, is an iconic gateway built in 1784 by Nawab Asaf-ud-Daula. Standing 60 feet tall, it is a fine example of Awadhi architecture, inspired by the gateways of Istanbul, and symbolizes the grandeur of Lucknow’s royal heritage."
+    },
+    "Jhansi Fort": {
+      "district": "Jhansi",
+      "url": "https://sketchfab.com/models/2bad6cb7f74e437281e93840e2519b43/embed",
+      "audio": "Jhansi Fort, located in Jhansi, Uttar Pradesh, is a historic fortress built in the 17th century by Raja Bir Singh Deo of Orchha. It played a key role during the First War of Indian Independence in 1857 under the leadership of Rani Lakshmibai. The fort stands as a symbol of bravery and resistance against British rule."
+    },
+    "Kusum Sarovar": {
+      "district": "Mathura",
+      "url": "https://sketchfab.com/models/9a15320e240b45c9a9b23df2275d268a/embed",
+      "audio": "Kusum Sarovar, located near Govardhan in Mathura district of Uttar Pradesh, is a beautiful sandstone monument and sacred water tank. Associated with the legends of Radha and Krishna, it features elegant chhatris built by the Jat rulers of Bharatpur in the 18th century."
+    },
+    "Ram Janmabhoomi": {
+      "district": "Ayodhya",
+      "url": "https://sketchfab.com/models/aeac510879414942875fc6e76e1e8d12/embed",
+      "audio": "The Ram Janmabhoomi Temple in Ayodhya, Uttar Pradesh, marks the birthplace of Lord Rama, one of the most revered deities in Hinduism. Recently reconstructed in grand style, the temple stands as a symbol of faith, unity, and cultural heritage, attracting devotees from across the world."
+    },
+    "Jama Masjid Shahjahanpur": {
+      "district": "Shahjahanpur",
+      "url": "https://3dwarehouse.sketchup.com/embed/5d68e1daf9f7cdf377cc0c541e15fdb9?token=QNbpo2zN4j4=&binaryName=s21",
+      "audio": "The Jama Masjid in Shahjahanpur, Uttar Pradesh, is an architectural gem built during the Mughal era. Featuring intricate domes and minarets, it reflects the grandeur and symmetry typical of Mughal architecture. The mosque continues to serve as a vital center of worship and community gatherings."
+    },
+    "Kashi Vishwanath Temple": {
+      "district": "Varanasi",
+      "url": "https://sketchfab.com/models/9066339c9b904f1ca091e9ff2357a5e5/embed",
+      "audio": "Kashi Vishwanath Temple in Varanasi, Uttar Pradesh, is one of the most sacred temples in Hinduism, dedicated to Lord Shiva. The temple stands on the western bank of the Ganges and has been a center of pilgrimage, spirituality and culture for centuries."
+    }
+}

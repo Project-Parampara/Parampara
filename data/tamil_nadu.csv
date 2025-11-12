@@ -1,0 +1,246 @@
+district,site_name,state
+Chennai,Kapaleeshwarar Temple,Tamil Nadu
+Chennai,Fort St. George,Tamil Nadu
+Chennai,Government Museum,Tamil Nadu
+Chennai,Marina Beach,Tamil Nadu
+Chennai,[translate:ஸ்ரீ பர்தசாரதி கோவில்],Tamil Nadu
+Chennai,Arignar Anna Zoological Park,Tamil Nadu
+Chennai,San Thome Basilica,Tamil Nadu
+Madurai,Meenakshi Amman Temple,Tamil Nadu
+Madurai,Tirumalai Nayak Palace,Tamil Nadu
+Madurai,Gandhi Memorial Museum,Tamil Nadu
+Madurai,Koodal Azhagar Temple,Tamil Nadu
+Madurai,Alagar Kovil,Tamil Nadu
+Madurai,[translate:திருப்பரங்குன்றம் முருகன் கோவில்],Tamil Nadu
+Madurai,Pazhamudircholai,Tamil Nadu
+Thanjavur,Brihadeeswarar Temple,Tamil Nadu
+Thanjavur,Thanjavur Royal Palace,Tamil Nadu
+Thanjavur,Saraswathi Mahal Library,Tamil Nadu
+Thanjavur,Airavatesvara Temple,Tamil Nadu
+Thanjavur,Gangaikonda Cholapuram,Tamil Nadu
+Thanjavur,Swamimalai Murugan Temple,Tamil Nadu
+Thanjavur,Thiruvaiyaru Ayyanar Temple,Tamil Nadu
+Coimbatore,Marudamalai Temple,Tamil Nadu
+Coimbatore,Siruvani Waterfalls,Tamil Nadu
+Coimbatore,Gangai Konda Chozhapuram,Tamil Nadu
+Coimbatore,Perur Srikalahasti Temple,Tamil Nadu
+Coimbatore,Anna Zoological Park,Tamil Nadu
+Coimbatore,Black Thunder,Tamil Nadu
+Coimbatore,Eachanari Vinayagar Temple,Tamil Nadu
+Tiruchirappalli,Ranganathaswamy Temple,Tamil Nadu
+Tiruchirappalli,Rockfort Temple,Tamil Nadu
+Tiruchirappalli,Jambukeswarar Temple,Tamil Nadu
+Tiruchirappalli,St. Lourdes Church,Tamil Nadu
+Tiruchirappalli,Government Museum,Tamil Nadu
+Tiruchirappalli,Peelamedu Murugan Temple,Tamil Nadu
+Tiruchirappalli,Kallanai Dam,Tamil Nadu
+Namakkal,Malaimalai Murugan Temple,Tamil Nadu
+Namakkal,Rock Fort Temple,Tamil Nadu
+Namakkal,Anjaneyar Temple,Tamil Nadu
+Namakkal,Mariamman Temple,Tamil Nadu
+Namakkal,Hogenakkal Falls,Tamil Nadu
+Namakkal,Paramathi Velur Fort,Tamil Nadu
+Namakkal,Aravankadu Tea Factory,Tamil Nadu
+Erode,Kolli Hills,Tamil Nadu
+Erode,Periyar Temple,Tamil Nadu
+Erode,Thindal Murugan Temple,Tamil Nadu
+Erode,Chennimalai Hill,Tamil Nadu
+Erode,KRP Sugar Factory,Tamil Nadu
+Erode,Avinashi Temple,Tamil Nadu
+Erode,Veerappa Nayakkar Palayam,Tamil Nadu
+Salem,Kottai Mariamman Temple,Tamil Nadu
+Salem,Mettur Dam,Tamil Nadu
+Salem,Yercaud Hills,Tamil Nadu
+Salem,Kottai Mariamman,Tamil Nadu
+Salem,Husbandry Museum,Tamil Nadu
+Salem,Whitefield Murugan Temple,Tamil Nadu
+Salem,Sri Kailasanathar Temple,Tamil Nadu
+Tirunelveli,Nellaiappar Temple,Tamil Nadu
+Tirunelveli,Papanasam Falls,Tamil Nadu
+Tirunelveli,Kalakkad Mundanthurai Tiger Reserve,Tamil Nadu
+Tirunelveli,Tirunelveli Murugan Temple,Tamil Nadu
+Tirunelveli,Thamirabarani River,Tamil Nadu
+Tirunelveli,Manimuthar Dam,Tamil Nadu
+Tirunelveli,Kadananathi River,Tamil Nadu
+Villupuram,Mamallapuram Shore Temple,Tamil Nadu
+Villupuram,Gingee Fort,Tamil Nadu
+Villupuram,Ariyamaan Beach,Tamil Nadu
+Villupuram,Devanur Fort,Tamil Nadu
+Villupuram,Pichavaram Mangrove Forest,Tamil Nadu
+Villupuram,Kodiyarai Fort,Tamil Nadu
+Villupuram,Ramanatha Swamy Temple,Tamil Nadu
+Tiruppur,Avinashi Temple,Tamil Nadu
+Tiruppur,Textile Industry,Tamil Nadu
+Tiruppur,Kangeyam Bull,Tamil Nadu
+Tiruppur,Thirumuruganpoondi Temple,Tamil Nadu
+Tiruppur,Dharmapuri Falls,Tamil Nadu
+Tiruppur,Thirumurugan Temple,Tamil Nadu
+Tiruppur,Chandrapura Fort,Tamil Nadu
+Nagapattinam,Velankanni Church,Tamil Nadu
+Nagapattinam,Poompuhar Beach,Tamil Nadu
+Nagapattinam,Kamalalayam Tank,Tamil Nadu
+Nagapattinam,Tharangambadi (Tranquebar),Tamil Nadu
+Nagapattinam,Velankanni Basilica,Tamil Nadu
+Nagapattinam,Thirukkuvalai Temple,Tamil Nadu
+Nagapattinam,Chidambaram Temple,Tamil Nadu
+Cuddalore,Silver Beach,Tamil Nadu
+Cuddalore,Pichavaram Mangrove Forest,Tamil Nadu
+Cuddalore,Sri Puranthaka Perumal Temple,Tamil Nadu
+Cuddalore,Thiruvanthipuram Pond,Tamil Nadu
+Cuddalore,Ramanathapuram Fort,Tamil Nadu
+Cuddalore,Thiruvadirai Amman Temple,Tamil Nadu
+Cuddalore,Silver Beach Lighthouse,Tamil Nadu
+Thoothukudi,Kamakshi Amman Temple,Tamil Nadu
+Thoothukudi,Our Lady of Snows Basilica,Tamil Nadu
+Thoothukudi,Fishing Harbor,Tamil Nadu
+Thoothukudi,Yamunampatty Shipyard,Tamil Nadu
+Thoothukudi,Senthil Nagar Beach,Tamil Nadu
+Thoothukudi,Kurpakkam Museum,Tamil Nadu
+Thoothukudi,Chitra Pani Temple,Tamil Nadu
+Virudhunagar,Sethu Lakshmi Narayanasamy Temple,Tamil Nadu
+Virudhunagar,Vinayagar Chathurthi Festival,Tamil Nadu
+Virudhunagar,Arulmigu Sri Kaliamman Temple,Tamil Nadu
+Virudhunagar,Virudhunagar Market,Tamil Nadu
+Virudhunagar,Meenakshi Amman Temple,Tamil Nadu
+Virudhunagar,Tiruchuli,Tamil Nadu
+Virudhunagar,Kadambankulam Dam,Tamil Nadu
+Kanyakumari,Vivekananda Rock Memorial,Tamil Nadu
+Kanyakumari,Thiruvalluvar Statue,Tamil Nadu
+Kanyakumari,Our Lady of Ransom Church,Tamil Nadu
+Kanyakumari,Kanyakumari Beach,Tamil Nadu
+Kanyakumari,Padmanabhapuram Palace,Tamil Nadu
+Kanyakumari,Thirparappu Waterfalls,Tamil Nadu
+Kanyakumari,Suchindram Thanumalayan Temple,Tamil Nadu
+Dharmapuri,Kolli Hills,Tamil Nadu
+Dharmapuri,Fort,Tamil Nadu
+Dharmapuri,Poovanthi Dam,Tamil Nadu
+Dharmapuri,KRP Sugar Factory,Tamil Nadu
+Dharmapuri,St. Thomas Church,Tamil Nadu
+Dharmapuri,Narasimha Temple,Tamil Nadu
+Dharmapuri,Mariamman Temple,Tamil Nadu
+Perambalur,Puliyur Siddhanar Temple,Tamil Nadu
+Perambalur,Vallalar Temple,Tamil Nadu
+Perambalur,Wells Garden,Tamil Nadu
+Perambalur,Arulmigu Lakshmi Narasimha Temple,Tamil Nadu
+Perambalur,Government Museum,Tamil Nadu
+Perambalur,Brahmapuriswarar Temple,Tamil Nadu
+Perambalur,Perambalur Fort,Tamil Nadu
+Ramanathapuram,Rameswaram Temple,Tamil Nadu
+Ramanathapuram,Dhanushkodi Beach,Tamil Nadu
+Ramanathapuram,Mannar Wildlife Sanctuary,Tamil Nadu
+Ramanathapuram,Imam Muhammad Anwar Shah Mosque,Tamil Nadu
+Ramanathapuram,Kothandaramaswamy Temple,Tamil Nadu
+Ramanathapuram,Agni Theertham,Tamil Nadu
+Ramanathapuram,Gandhi Memorial Museum,Tamil Nadu
+Periyar,Waterfalls,Tamil Nadu
+Periyar,Thekkady,Tamil Nadu
+Periyar,Spice Plantations,Tamil Nadu
+Periyar,Periyar Lake,Tamil Nadu
+Periyar,Chinnakanal,Tamil Nadu
+Periyar,Murikkady,Tamil Nadu
+Periyar,Anakkara,Tamil Nadu
+Nilgiris,Ooty Botanical Garden,Tamil Nadu
+Nilgiris,Doddabetta Peak,Tamil Nadu
+Nilgiris,Nilgiri Mountain Railway,Tamil Nadu
+Nilgiris,Tea Estates,Tamil Nadu
+Nilgiris,Sims Park,Tamil Nadu
+Nilgiris,Sacred Kalhatty Falls,Tamil Nadu
+Nilgiris,Udhagamandalam Town,Tamil Nadu
+Thiruvallur,Kasi Viswanathar Temple,Tamil Nadu
+Thiruvallur,Tiruvallur Lake,Tamil Nadu
+Thiruvallur,Vallur Temple,Tamil Nadu
+Thiruvallur,Poondi Reservoir,Tamil Nadu
+Thiruvallur,Veeranjaneya Temple,Tamil Nadu
+Thiruvallur,Nandivaram Reserve Forest,Tamil Nadu
+Thiruvallur,Thiruninravur Temple,Tamil Nadu
+Pudukkottai,Avudaiyarkoil Temple,Tamil Nadu
+Pudukkottai,Pudukkottai Palace,Tamil Nadu
+Pudukkottai,Araiyamangalam Temple,Tamil Nadu
+Pudukkottai,Thirumayam Fort,Tamil Nadu
+Pudukkottai,Kundrakudi Murugan Temple,Tamil Nadu
+Pudukkottai,Haridra Nadhi Temple,Tamil Nadu
+Pudukkottai,Kallalagar Temple,Tamil Nadu
+Karur,Pasupathieswarar Temple,Tamil Nadu
+Karur,Tirumalai Nayakar Mahal,Tamil Nadu
+Karur,Vettakkudi Murugan Temple,Tamil Nadu
+Karur,Kollimalai Hills,Tamil Nadu
+Karur,Karur Fort,Tamil Nadu
+Karur,Sundara Temple,Tamil Nadu
+Karur,Kaveri River,Tamil Nadu
+Thiruvarur,[translate:ஸ்ரீ தியக்ராஜா கோவில்],Tamil Nadu
+Thiruvarur,Chidambaram Nataraja Temple,Tamil Nadu
+Thiruvarur,Anbil Temple,Tamil Nadu
+Thiruvarur,Tiruvarur Market,Tamil Nadu
+Thiruvarur,Thiruthuraipoondi Temple,Tamil Nadu
+Thiruvarur,Karkala,Tamil Nadu
+Thiruvarur,Swamimalai Temple,Tamil Nadu
+Theni,Suruli Falls,Tamil Nadu
+Theni,Periyakulam Town,Tamil Nadu
+Theni,Ayyappan Temple,Tamil Nadu
+Theni,Kodaiyar Dam,Tamil Nadu
+Theni,Munnar Hill Station,Tamil Nadu
+Theni,Thekkady,Tamil Nadu
+Theni,Manjalar Dam,Tamil Nadu
+Ariyalur,Chola Temples,Tamil Nadu
+Ariyalur,Gangaikonda Cholapuram,Tamil Nadu
+Ariyalur,Thirumazhapadi Sivan Temple,Tamil Nadu
+Ariyalur,Palanai Fort,Tamil Nadu
+Ariyalur,Cheraman Juma Mosque,Tamil Nadu
+Ariyalur,Vettakudi Murugan Temple,Tamil Nadu
+Ariyalur,Periyapalayam Shiva Temple,Tamil Nadu
+Chengalpattu,Kanchipuram Temples,Tamil Nadu
+Chengalpattu,St. Thomas Mount,Tamil Nadu
+Chengalpattu,Muttukadu,Tamil Nadu
+Chengalpattu,Semmanarkoil Shiva Temple,Tamil Nadu
+Chengalpattu,Ponneri Fort,Tamil Nadu
+Chengalpattu,Pallavaram Cantonment,Tamil Nadu
+Chengalpattu,Chengalpattu Market,Tamil Nadu
+Dindigul,Dindigul Fort,Tamil Nadu
+Dindigul,Thadikombu Perumal Temple,Tamil Nadu
+Dindigul,Samanar Hills,Tamil Nadu
+Dindigul,Dindigul Rock Fortress,Tamil Nadu
+Dindigul,Muniyandi Temple,Tamil Nadu
+Dindigul,Palani Murugan Temple,Tamil Nadu
+Dindigul,Municipal Park,Tamil Nadu
+Kallakurichi,Kallakurichi Fort,Tamil Nadu
+Kallakurichi,Veerathuneshwarar Temple,Tamil Nadu
+Kallakurichi,Mudhal Eri Lake,Tamil Nadu
+Kallakurichi,Mangalagiri Hill,Tamil Nadu
+Kallakurichi,Arasur Rock Art Site,Tamil Nadu
+Kallakurichi,Vinayagar Temple,Tamil Nadu
+Kallakurichi,Kottravai Amman Temple,Tamil Nadu
+Krishnagiri,Krishnagiri Fort,Tamil Nadu
+Krishnagiri,Bismillah Shah Dargah,Tamil Nadu
+Krishnagiri,Pochampalli Silk Weaving,Tamil Nadu
+Krishnagiri,Hanumanthayyanar Temple,Tamil Nadu
+Krishnagiri,Moonaru Hills,Tamil Nadu
+Krishnagiri,Sathanur Dam,Tamil Nadu
+Krishnagiri,Vaniyambadi Mosque,Tamil Nadu
+Ranipet,Arulmigu Athi Varadar Temple,Tamil Nadu
+Ranipet,Ramnagar Fort,Tamil Nadu
+Ranipet,Kalathu Mariamman Temple,Tamil Nadu
+Ranipet,Vellore Fort,Tamil Nadu
+Ranipet,Science Park,Tamil Nadu
+Ranipet,Amirthi Zoological Park,Tamil Nadu
+Ranipet,St. John's Church,Tamil Nadu
+Sivaganga,Kalayarkovil,Tamil Nadu
+Sivaganga,Senguttuvan Temple,Tamil Nadu
+Sivaganga,Chettinad Palaces,Tamil Nadu
+Sivaganga,Gandhi Museum,Tamil Nadu
+Sivaganga,Thirupuvanam Temple,Tamil Nadu
+Sivaganga,Ilayangudi Mosque,Tamil Nadu
+Sivaganga,Manamadurai Market,Tamil Nadu
+Tirupathur,Krishnagiri Hills,Tamil Nadu
+Tirupathur,Tirupathur Fort,Tamil Nadu
+Tirupathur,Murugan Temple,Tamil Nadu
+Tirupathur,Vaniyambadi,Tamil Nadu
+Tirupathur,Yelagiri Hills,Tamil Nadu
+Tirupathur,Jain Hills,Tamil Nadu
+Tirupathur,Periya Kottai,Tamil Nadu
+Mayiladuthurai,Mayuranathaswami Temple,Tamil Nadu
+Mayiladuthurai,Tharangambadi Fort,Tamil Nadu
+Mayiladuthurai,Poompuhar Beach,Tamil Nadu
+Mayiladuthurai,Fort St. David,Tamil Nadu
+Mayiladuthurai,Maruthur Sundara Swamigal Ashram,Tamil Nadu
+Mayiladuthurai,Kaveri River,Tamil Nadu
+Mayiladuthurai,Manimuthar Dam,Tamil Nadu

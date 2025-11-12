@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Parampara — Login</title>
+
+  <!-- Google Identity -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Poppins",sans-serif;margin:0;height:100vh;display:flex;align-items:center;justify-content:center;background:#f6f7fb}
+    .card{width:100%;max-width:460px;padding:28px;border-radius:12px;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.08);text-align:center}
+    h1{color:#d4681f;margin-bottom:6px}
+    p.muted{color:#666;margin-bottom:20px}
+    button.linklike{background:#d4681f;color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:700;margin-top:12px}
+    .small{font-size:0.9rem;color:#666;margin-top:10px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Parampara</h1>
+    <p class="muted">Sign in with your Google account to continue to CulturalTreasure</p>
+
+    <!-- Place where Google button will render -->
+    <div id="g_id_signin" style="display:flex;justify-content:center"></div>
+
+    <div style="margin-top:12px">
+      <button id="manualBtn" class="linklike">Sign in with Google (manual)</button>
+    </div>
+
+    <p class="small">By signing in you agree to share your Google account email with this site. You may be redirected back to the app after signing in.</p>
+  </div>
+  <script>
+  // redirect to login page if not logged-in locally
+  if (localStorage.getItem('parampara_logged_in') !== 'true') {
+    // don't redirect if already on the login page
+    if (!location.pathname.endsWith('/login.html')) {
+      window.location.href = 'login.html';
+    }
+  }
+</script>
+  <script>
+    // CONFIG
+    const GOOGLE_CLIENT_ID = '538014316805-cjnta4j1g02ueiarnlsvp2jvr5cangeo.apps.googleusercontent.com'; // keep your client ID here
+    const REDIRECT_TO = 'indexes.html'; // the main page to open after successful sign in (change if needed)
+
+    // helper: base64url decode
+    function base64UrlDecode(str) {
+      // replace '-' -> '+', '_' -> '/'
+      str = str.replace(/-/g, '+').replace(/_/g, '/');
+      // pad with '='
+      const pad = str.length % 4;
+      if (pad) str += '='.repeat(4 - pad);
+      try {
+        return decodeURIComponent(escape(window.atob(str)));
+      } catch (e) {
+        // fallback
+        return window.atob(str);
+      }
+    }
+
+    function parseJwt(credential) {
+      // credential is a JWT like header.payload.signature
+      try {
+        const parts = credential.split('.');
+        if (parts.length < 2) return null;
+        const payload = parts[1];
+        const json = base64UrlDecode(payload);
+        return JSON.parse(json);
+      } catch (e) {
+        console.error('JWT parse error', e);
+        return null;
+      }
+    }
+
+    // callback from Google Identity
+    function handleCredentialResponse(response) {
+      if (!response || !response.credential) {
+        alert('Google sign-in failed.');
+        return;
+      }
+      const payload = parseJwt(response.credential);
+      if (!payload) { alert('Could not read account data.'); return; }
+
+      // basic fields: payload.email, payload.name, payload.picture, payload.email_verified
+      if (!payload.email_verified) {
+        alert('Please use a verified Google account email.');
+        return;
+      }
+
+      const user = {
+        name: payload.name || '',
+        email: payload.email || '',
+        picture: payload.picture || ''
+      };
+
+      // save minimal local auth state
+      localStorage.setItem('parampara_logged_in', 'true');
+      localStorage.setItem('parampara_user', JSON.stringify(user));
+
+      // navigate to protected page
+      window.location.href = REDIRECT_TO;
+    }
+
+    // Render the Google button when library is ready
+    function initGsi(tries = 0) {
+      if (window.google && google.accounts && google.accounts.id) {
+        google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleCredentialResponse,
+          // auto_select: false
+        });
+        google.accounts.id.renderButton(document.getElementById('g_id_signin'), {
+          theme: 'outline',
+          size: 'large',
+          width: 280
+        });
+        // optional: prompt but it may be intrusive
+        // google.accounts.id.prompt();
+      } else if (tries < 20) {
+        setTimeout(() => initGsi(tries + 1), 200);
+      } else {
+        console.warn('Google Identity not available.');
+      }
+    }
+    initGsi();
+
+    // manual button fallback: call prompt()
+    document.getElementById('manualBtn').addEventListener('click', () => {
+      if (window.google && google.accounts && google.accounts.id) {
+        google.accounts.id.prompt();
+      } else {
+        alert('Google Identity script not loaded yet — please try again in a moment.');
+      }
+    });
+
+    // If user already logged in locally, go to app
+    if (localStorage.getItem('parampara_logged_in') === 'true') {
+      // optional: you could verify with server here
+      window.location.href = REDIRECT_TO;
+    }
+  </script>
+</body>
+</html>
