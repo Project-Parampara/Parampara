@@ -98,6 +98,14 @@ app.use('/uploads', (req, res, next) => {
   next();
 }, express.static(uploadDir));
 
+app.get('/', (req, res) => {
+  res.json({
+    service: 'Parampara API',
+    status: 'ok',
+    endpoints: ['/api/sites', '/api/get-states', '/api/get-quiz']
+  });
+});
+
 // -------------------------------
 // Helper: Verify place via Google Geocode API (with logging)
 // -------------------------------
@@ -219,6 +227,50 @@ app.get('/api/sites', async (req, res) => {
   } catch (err) {
     console.error("Error fetching sites:", err && (err.stack || err.message || err));
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.get('/api/get-quiz', async (req, res) => {
+  const { state } = req.query;
+  if (!state || typeof state !== 'string' || !state.trim()) {
+    return res.status(400).json({ success: false, error: 'Please provide a valid state parameter' });
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT state, question, options, answer, explanation
+       FROM quiz_questions
+       WHERE LOWER(state) = LOWER($1)
+       ORDER BY id`,
+      [state.trim()]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: `Quiz questions not found for state: ${state}.`
+      });
+    }
+    return res.json({
+      success: true,
+      state: state.trim(),
+      questions: result.rows,
+      totalQuestions: result.rows.length
+    });
+  } catch (err) {
+    console.error('Error fetching quiz questions:', err);
+    return res.status(500).json({ success: false, error: 'Internal Server Error' });
+  }
+});
+
+app.get('/api/get-states', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT DISTINCT state FROM quiz_questions ORDER BY state'
+    );
+    return res.json({ success: true, states: result.rows.map(row => row.state), totalStates: result.rows.length });
+  } catch (err) {
+    console.error('Error fetching quiz states:', err);
+    return res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 });
 
