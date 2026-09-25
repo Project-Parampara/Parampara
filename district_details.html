@@ -203,8 +203,14 @@
   };
 
   // ✅ Load sites from backend
-  fetch(`http://localhost:3000/api/sites?state=${encodeURIComponent(stateName)}&district=${encodeURIComponent(districtName)}`)
-    .then(res => res.json())
+  fetch(`http://127.0.0.1:3001/api/sites?state=${encodeURIComponent(stateName)}&district=${encodeURIComponent(districtName)}`)
+    .then(async res => {
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || `API request failed with status ${res.status}`);
+      }
+      return data;
+    })
     .then(data => {
       console.log("Fetched data:", data);
       const container = document.getElementById('sites');
@@ -245,7 +251,7 @@ addSiteForm.onsubmit = async function (e) {
 
   try {
     // <-- Make sure this matches the port your server actually listens on (3000 by default)
-    const res = await fetch('http://localhost:3000/api/add-site', {
+    const res = await fetch('http://127.0.0.1:3001/api/add-site', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',                // optional: include cookies/session if you need them

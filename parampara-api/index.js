@@ -21,6 +21,10 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '538014316805-cjnta4j1g
 const SESSION_SECRET = process.env.SESSION_SECRET || 'change_this_in_prod';
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY || '';
 
+function normalizeLocation(value) {
+  return String(value || '').trim().replace(/\s+/g, ' ');
+}
+
 // FRONTEND_ORIGINS: comma-separated list of allowed frontend origins
 const FRONTEND_ORIGINS = (process.env.FRONTEND_ORIGINS || 'http://127.0.0.1:5500,http://localhost:5500')
   .split(',')
@@ -32,11 +36,7 @@ console.log('GOOGLE_MAPS_API_KEY set?', !!GOOGLE_MAPS_API_KEY);
 
 // CORS options
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true); // allow non-browser tools (curl/postman)
-    if (FRONTEND_ORIGINS.indexOf(origin) !== -1) return callback(null, true);
-    return callback(new Error(`Origin ${origin} not allowed by CORS`), false);
-  },
+  origin: process.env.NODE_ENV === 'production' ? FRONTEND_ORIGINS : true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
@@ -211,8 +211,9 @@ app.get('/api/sites', async (req, res) => {
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
 
-  const { state, district } = req.query;
-  if (!state || !district || typeof state !== 'string' || typeof district !== 'string' || !state.trim() || !district.trim()) {
+  const state = normalizeLocation(req.query.state);
+  const district = normalizeLocation(req.query.district);
+  if (!state || !district) {
     return res.status(400).json({ error: "Missing or invalid state/district" });
   }
 
@@ -220,8 +221,9 @@ app.get('/api/sites', async (req, res) => {
     const result = await pool.query(
       `SELECT site_name, district, state
        FROM cultural_sites
-       WHERE LOWER(state) = LOWER($1) AND LOWER(district) = LOWER($2)`,
-      [state.trim(), district.trim()]
+       WHERE LOWER(REGEXP_REPLACE(TRIM(state), '\\s+', ' ', 'g')) = LOWER($1)
+         AND LOWER(REGEXP_REPLACE(TRIM(district), '\\s+', ' ', 'g')) = LOWER($2)`,
+      [state, district]
     );
     res.status(200).json(result.rows);
   } catch (err) {

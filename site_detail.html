@@ -1062,7 +1062,7 @@
         captionDiv.innerHTML = siteData.caption;
       } else {
         container.innerHTML = "<p style='color:white;'>No AR/VR model available for this site.</p>";
-        captionDiv.innerHTML = "";
+        captionDiv.textContent = `${site} is a heritage location in ${district}. 3D model data is not available yet.`;
       }
     }
 

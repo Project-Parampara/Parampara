@@ -1,0 +1,8 @@
+.git
+.gitignore
+.env
+node_modules
+parampara-api/node_modules
+parampara-api/.env
+parampara-api/uploads
+*.log
