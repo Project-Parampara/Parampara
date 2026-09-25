@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "db:init": "node scripts/init-db.js",
+    "db:import": "node scripts/import-data.js",
+    "test": "node --check index.js && node --check scripts/init-db.js && node --check scripts/import-data.js"
   },
   "keywords": [],
   "author": "",
