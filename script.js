@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
       submitBtn.disabled = true;
       submitBtn.textContent = 'Submitting...';
 
-      fetch('http://localhost:3000/api/add-site', {
+      fetch('https://parampara-backend-7qrt.onrender.com/api/add-site', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)

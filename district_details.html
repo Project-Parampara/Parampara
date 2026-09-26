@@ -203,7 +203,7 @@
   };
 
   // ✅ Load sites from backend
-  fetch(`http://127.0.0.1:3001/api/sites?state=${encodeURIComponent(stateName)}&district=${encodeURIComponent(districtName)}`)
+  fetch(`https://parampara-backend-7qrt.onrender.com/api/sites?state=${encodeURIComponent(stateName)}&district=${encodeURIComponent(districtName)}`)
     .then(async res => {
       const data = await res.json();
       if (!res.ok) {
@@ -251,7 +251,7 @@ addSiteForm.onsubmit = async function (e) {
 
   try {
     // <-- Make sure this matches the port your server actually listens on (3000 by default)
-    const res = await fetch('http://127.0.0.1:3001/api/add-site', {
+    const res = await fetch('https://parampara-backend-7qrt.onrender.com/api/add-site', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',                // optional: include cookies/session if you need them
